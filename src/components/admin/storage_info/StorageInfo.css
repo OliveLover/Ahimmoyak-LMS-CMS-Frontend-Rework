@@ -1,0 +1,29 @@
+.storage-info {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  width: 100%;
+}
+
+.storage-info h5 {
+  color: #fff;
+}
+
+.storage-bar {
+  background-color: #e0e0e0;
+  border-radius: 0.4rem;
+  height: 0.8rem;
+  margin: 10px auto;
+  width: 80%;
+  position: relative;
+}
+
+.storage-fill {
+  height: 100%;
+  border-radius: 10px;
+}
+
+.storage-text {
+  font-size: 0.8rem;
+  margin-top: 10px;
+  color: #fff;
+}
