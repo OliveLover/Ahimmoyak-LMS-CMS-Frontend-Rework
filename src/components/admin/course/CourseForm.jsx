@@ -1,6 +1,13 @@
-import './CourseForm.css';
+import { useState } from 'react';
+import AddContentsForm from './AddContentsForm';
 
 const CourseForm = ({ formId }) => {
+  const [contents, setContents] = useState([]);
+
+  const addContent = () => {
+    setContents([...contents, contents.length + 1]);
+  }
+
   return (
     <div className="accordion-item">
       <h2 className="accordion-header" id={`heading-${formId}`}>
@@ -21,7 +28,12 @@ const CourseForm = ({ formId }) => {
         aria-labelledby={`heading-${formId}`}
       >
         <div className="accordion-body">
-          <strong>This is accordion item #{formId}'s body.</strong> You can customize this content as needed.
+          {contents.map((contentId) => (
+            <AddContentsForm key={contentId} contentId={contentId} />
+          ))}
+          <button className="btn btn-secondary mt-3" onClick={addContent}>
+            + 콘텐츠 추가
+          </button>
         </div>
       </div>
     </div>
