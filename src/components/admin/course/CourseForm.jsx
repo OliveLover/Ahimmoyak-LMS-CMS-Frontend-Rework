@@ -4,14 +4,21 @@ import './CourseForm.css';
 
 const CourseForm = ({ formId, index, onRemoveCourse }) => {
   const [contents, setContents] = useState([]);
+  const [nextContentId, setNextContentId] = useState(1);
 
   const addContent = () => {
-    setContents([...contents, contents.length + 1]);
+    const newContentId = nextContentId;
+    setNextContentId(nextContentId + 1);
+    const newContent = { contentId: newContentId, contentIndex: contents.length + 1 };
+    setContents([...contents, newContent]);
   };
 
-  const removeContent = (id) => {
-    const updatedContents = contents.filter((contentId) => contentId !== id);
-    setContents(updatedContents.map((_, index) => index + 1));
+  const removeContent = (contentId) => {
+    const updatedContents = contents.filter((content) => content.contentId !== contentId);
+    setContents(updatedContents.map((content, idx) => ({
+      ...content,
+      contentIndex: idx + 1,
+    })));
   };
 
   const removeCourse = () => {
@@ -41,10 +48,11 @@ const CourseForm = ({ formId, index, onRemoveCourse }) => {
         aria-labelledby={`heading-${formId}`}
       >
         <div className="accordion-body">
-          {contents.map((contentId) => (
+          {contents.map((content) => (
             <AddContentsForm
-              key={contentId}
-              contentId={contentId}
+              key={content.contentId}
+              contentId={content.contentId}
+              contentIndex={content.contentIndex}
               onRemove={removeContent}
             />
           ))}

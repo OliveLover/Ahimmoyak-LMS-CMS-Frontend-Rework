@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './AddContentsForm.css';
 
-const AddContentsForm = ({ contentId, onRemove }) => {
+const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
   const [type, setType] = useState('');
@@ -13,12 +13,19 @@ const AddContentsForm = ({ contentId, onRemove }) => {
     }
   };
 
+  const handleRemove = () => {
+    const confirmRemove = window.confirm('현재 콘텐츠 구성내용을 삭제하시겠습니까?');
+    if (confirmRemove) {
+      onRemove(contentId);
+    }
+  };
+
   return (
     <div className="add-course-contents-form">
-      <button className="remove-button" onClick={() => onRemove(contentId)}>
+      <button className="remove-button" onClick={handleRemove}>
         ×
       </button>
-      <h2>콘텐츠 {contentId}</h2>
+      <h2>콘텐츠 {contentIndex}</h2>
       <div className="content-input-group">
         {/* 제목 입력 */}
         <label htmlFor={`title-${contentId}`}>인덱스 제목</label>
@@ -64,3 +71,4 @@ const AddContentsForm = ({ contentId, onRemove }) => {
 };
 
 export default AddContentsForm;
+
