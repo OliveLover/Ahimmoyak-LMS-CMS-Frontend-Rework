@@ -1,0 +1,132 @@
+.add-course-meta-contents {
+  width: 100%;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-course-meta-contents h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.course-meta-input-group {
+  margin-bottom: 20px;
+}
+
+.course-meta-input-group label {
+  font-size: 16px;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.course-meta-input-group input,
+.course-meta-input-group textarea,
+.course-meta-input-group select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.course-meta-input-group input[type="file"] {
+  padding: 5px;
+  background-color: transparent;
+}
+
+.course-meta-input-group textarea {
+  resize: vertical;
+  height: 120px;
+}
+
+.course-meta-input-group img {
+  margin-top: 10px;
+  max-width: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.course-meta-input-group-file-and-type,
+.course-meta-input-group-flex {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.course-meta-input-group-flex .course-meta-input-group {
+  flex: 1;
+}
+
+.course-meta-input-group select {
+  cursor: pointer;
+}
+
+.course-meta-input-group select:focus,
+.course-meta-input-group input[type="text"]:focus,
+.course-meta-input-group input[type="file"]:focus,
+.course-meta-input-group textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+.course-meta-input-group span {
+  font-size: 16px;
+  color: #555;
+  margin-left: 8px;
+  align-self: center;
+}
+
+.course-meta-input-group .radio-group {
+  display: flex;
+  gap: 15px;
+}
+
+.course-meta-input-group {
+  width: 100%;
+}
+
+.course-meta-input-group-flex {
+  flex-direction: row;
+}
+
+.course-meta-input-group-flex .course-meta-input-group {
+  flex: 1;
+}
+
+.course-meta-input-group {
+  width: 100%;
+}
+
+.course-meta-input-group-file-and-type {
+  flex-direction: row;
+}
+
+.course-meta-input-group-flex {
+  flex-direction: row;
+}
+
+.course-meta-input-group {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .course-meta-input-group-file-and-type,
+  .course-meta-input-group-flex {
+    flex-direction: column;
+  }
+
+  .course-meta-input-group-flex .course-meta-input-group {
+    flex: none;
+    margin-bottom: 15px;
+  }
+}
