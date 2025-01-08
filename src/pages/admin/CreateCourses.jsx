@@ -1,21 +1,29 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CourseForm from "../../components/admin/course/CourseForm";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 
 function CreateCourses() {
   const [forms, setForms] = useState([{ id: 1 }]);
+  const navigate = useNavigate();
 
   const addCourseForm = () => {
     const newForm = { id: forms.length + 1 };
     setForms([...forms, newForm]);
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-      <div style={styles.headerText}>과정 구성</div>
+        <div style={styles.headerText}>과정 구성</div>
         <div style={styles.headerButtons}>
-          <button style={styles.buttonSecondary}>돌아가기</button>
+          <button style={styles.buttonSecondary} onClick={handleBack}>
+            돌아가기
+          </button>
           <button style={styles.buttonSuccess}>과정 생성</button>
         </div>
       </div>
