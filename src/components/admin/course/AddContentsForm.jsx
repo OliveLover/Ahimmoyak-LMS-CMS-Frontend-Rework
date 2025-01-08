@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import AddQuizForm from './AddQuizForm';
 import './AddContentsForm.css';
 
 const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
   const [type, setType] = useState('');
+  const [quizzes, setQuizzes] = useState([]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -20,14 +22,31 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
     }
   };
 
+  const handleAddQuiz = () => {
+    const newQuizId = quizzes.length > 0 ? quizzes[quizzes.length - 1].quizId + 1 : 1;
+    const newQuiz = { quizId: newQuizId, quizIndex: quizzes.length + 1 };
+    setQuizzes([...quizzes, newQuiz]);
+  };
+
+  const handleRemoveQuiz = (quizId) => {
+    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizId !== quizId);
+
+    // 재정렬: quizIndex를 다시 설정
+    const reorderedQuizzes = updatedQuizzes.map((quiz, idx) => ({
+      ...quiz,
+      quizIndex: idx + 1,
+    }));
+
+    setQuizzes(reorderedQuizzes);
+  };
+
   return (
     <div className="add-course-contents-form">
-      <button className="remove-button" onClick={handleRemove}>
+      <button className="add-course-remove-button" onClick={handleRemove}>
         ×
       </button>
       <h2>콘텐츠 {contentIndex}</h2>
       <div className="content-input-group">
-        {/* 제목 입력 */}
         <label htmlFor={`title-${contentId}`}>인덱스 제목</label>
         <input
           type="text"
@@ -39,19 +58,7 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
         />
       </div>
 
-      {/* 파일 업로드와 타입 선택 */}
       <div className="content-input-group-file-and-type">
-        <div className="content-input-group">
-          <label htmlFor={`file-${contentId}`}>파일 업로드</label>
-          <input
-            type="file"
-            id={`file-${contentId}`}
-            accept="image/*,video/*"
-            onChange={handleFileChange}
-          />
-          {file && <p>업로드된 파일: {file.name}</p>}
-        </div>
-
         <div className="content-input-group">
           <label htmlFor={`type-${contentId}`}>타입</label>
           <select
@@ -66,9 +73,42 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
           </select>
         </div>
       </div>
+
+      {type === '강의 영상' && (
+        <div className="content-input-group">
+          <label htmlFor={`file-${contentId}`}>파일 업로드</label>
+          <input
+            type="file"
+            id={`file-${contentId}`}
+            accept="video/*"
+            onChange={handleFileChange}
+          />
+          {file && <p>업로드된 파일: {file.name}</p>}
+        </div>
+      )}
+
+      {type === '퀴즈' && (
+        <div className="quiz-section">
+          {quizzes.map((quiz, index) => (
+            <div key={quiz.quizId} className="quiz-form-wrapper">
+              <AddQuizForm
+                quizIndex={quiz.quizIndex}
+                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizId)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {type === '퀴즈' && (
+        <div className="quiz-controls">
+          <button type="button" onClick={handleAddQuiz}>
+            퀴즈 추가
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AddContentsForm;
-
