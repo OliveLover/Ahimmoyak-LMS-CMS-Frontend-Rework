@@ -1,0 +1,7 @@
+.custom-player-container {
+  width: 100%;
+  height: 56.25vw;
+  max-width: 1280px;
+  max-height: 720px;
+  margin: 0 auto;
+}

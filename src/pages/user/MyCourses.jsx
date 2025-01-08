@@ -1,9 +1,10 @@
 import React from 'react';
+import PlayerContainer from '../../components/user/player/PlayerContainer';
 
 function MyCourses() {
   return (
     <div>
-      <h1>내 강의</h1>
+      <PlayerContainer />
     </div>
   );
 }
