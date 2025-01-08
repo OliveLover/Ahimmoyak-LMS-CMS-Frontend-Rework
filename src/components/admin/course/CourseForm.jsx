@@ -9,7 +9,8 @@ const CourseForm = ({ formId }) => {
   };
 
   const removeContent = (id) => {
-    setContents(contents.filter((contentId) => contentId !== id));
+    const updatedContents = contents.filter((contentId) => contentId !== id);
+    setContents(updatedContents.map((_, index) => index + 1));
   };
 
   return (
