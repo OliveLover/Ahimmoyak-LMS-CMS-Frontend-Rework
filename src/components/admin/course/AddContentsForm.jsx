@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './AddContentsForm.css';
 
-const AddContentsForm = ({ contentId }) => {
+const AddContentsForm = ({ contentId, onRemove }) => {
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
   const [type, setType] = useState('');
@@ -15,6 +15,9 @@ const AddContentsForm = ({ contentId }) => {
 
   return (
     <div className="add-course-contents-form">
+      <button className="remove-button" onClick={() => onRemove(contentId)}>
+        ×
+      </button>
       <h2>콘텐츠 {contentId}</h2>
       <div className="content-input-group">
         {/* 제목 입력 */}

@@ -6,7 +6,11 @@ const CourseForm = ({ formId }) => {
 
   const addContent = () => {
     setContents([...contents, contents.length + 1]);
-  }
+  };
+
+  const removeContent = (id) => {
+    setContents(contents.filter((contentId) => contentId !== id));
+  };
 
   return (
     <div className="accordion-item">
@@ -29,7 +33,11 @@ const CourseForm = ({ formId }) => {
       >
         <div className="accordion-body">
           {contents.map((contentId) => (
-            <AddContentsForm key={contentId} contentId={contentId} />
+            <AddContentsForm
+              key={contentId}
+              contentId={contentId}
+              onRemove={removeContent}
+            />
           ))}
           <button className="btn btn-secondary mt-3" onClick={addContent}>
             + 콘텐츠 추가
