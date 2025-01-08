@@ -39,6 +39,7 @@
   color: #555;
   display: block;
   margin-bottom: 5px;
+  text-align: left;
 }
 
 .content-input-group input,

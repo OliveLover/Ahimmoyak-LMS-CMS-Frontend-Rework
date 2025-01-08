@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import CourseLifecycleStatus from '../../components/admin/course/CourseLifecycleStatus';
 
 function Courses() {
   return (
@@ -10,9 +11,15 @@ function Courses() {
         </Link>
       </div>
       <div style={styles.gridContainer}>
-        <div style={styles.gridItem}>미활성 과정</div>
-        <div style={styles.gridItem}>활성 과정</div>
-        <div style={styles.gridItem}>종료 과정</div>
+        <div style={styles.gridItem}>미활성 과정
+          <CourseLifecycleStatus />
+        </div>
+        <div style={styles.gridItem}>활성 과정
+        <CourseLifecycleStatus />
+        </div>
+        <div style={styles.gridItem}>종료 과정
+        <CourseLifecycleStatus />
+        </div>
       </div>
     </div>
   );
