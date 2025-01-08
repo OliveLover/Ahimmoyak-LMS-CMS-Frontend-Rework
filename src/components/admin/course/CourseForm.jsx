@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AddContentsForm from './AddContentsForm';
 
-const CourseForm = ({ formId }) => {
+const CourseForm = ({ formId, index, onRemoveCourse }) => {
   const [contents, setContents] = useState([]);
 
   const addContent = () => {
@@ -11,6 +11,10 @@ const CourseForm = ({ formId }) => {
   const removeContent = (id) => {
     const updatedContents = contents.filter((contentId) => contentId !== id);
     setContents(updatedContents.map((_, index) => index + 1));
+  };
+
+  const removeCourse = () => {
+    onRemoveCourse(formId);
   };
 
   return (
@@ -24,7 +28,7 @@ const CourseForm = ({ formId }) => {
           aria-expanded="true"
           aria-controls={`collapse-${formId}`}
         >
-          {formId} 차시
+          {index} 차시
         </button>
       </h2>
       <div
@@ -40,6 +44,9 @@ const CourseForm = ({ formId }) => {
               onRemove={removeContent}
             />
           ))}
+          <button className="btn btn-danger mt-3" onClick={removeCourse}>
+            x 차시 제거
+          </button>
           <button className="btn btn-secondary mt-3" onClick={addContent}>
             + 콘텐츠 추가
           </button>
