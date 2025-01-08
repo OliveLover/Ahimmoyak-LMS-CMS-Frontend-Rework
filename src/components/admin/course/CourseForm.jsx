@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AddContentsForm from './AddContentsForm';
+import './CourseForm.css';
 
 const CourseForm = ({ formId, index, onRemoveCourse }) => {
   const [contents, setContents] = useState([]);
@@ -14,7 +15,10 @@ const CourseForm = ({ formId, index, onRemoveCourse }) => {
   };
 
   const removeCourse = () => {
-    onRemoveCourse(formId);
+    const confirmRemove = window.confirm('현재 차시를 제거하시겠습니까?');
+    if (confirmRemove) {
+      onRemoveCourse(formId);
+    }
   };
 
   return (
@@ -44,12 +48,14 @@ const CourseForm = ({ formId, index, onRemoveCourse }) => {
               onRemove={removeContent}
             />
           ))}
-          <button className="btn btn-danger mt-3" onClick={removeCourse}>
-            x 차시 제거
-          </button>
-          <button className="btn btn-secondary mt-3" onClick={addContent}>
-            + 콘텐츠 추가
-          </button>
+          <div className="course-form-button-group">
+            <button className="btn btn-secondary mt-3" onClick={addContent}>
+              + 콘텐츠 추가
+            </button>
+            <button className="btn btn-danger mt-3" onClick={removeCourse}>
+              x 현재 차시 제거
+            </button>
+          </div>
         </div>
       </div>
     </div>

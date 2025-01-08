@@ -1,0 +1,6 @@
+.course-form-button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
