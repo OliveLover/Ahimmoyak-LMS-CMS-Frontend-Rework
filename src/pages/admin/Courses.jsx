@@ -45,8 +45,8 @@ const styles = {
   },
   gridContainer: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr',
+    gridTemplateRows: '1fr 1fr 1fr',
     gap: '1rem',
     height: 'calc(var(--vh, 1vh) * 100)',
     width: '100%',
