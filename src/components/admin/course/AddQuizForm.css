@@ -1,0 +1,60 @@
+.add-quiz-form {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fdfdfd;
+  position: relative;
+}
+
+.add-quiz-form h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.quiz-input-group {
+  margin-bottom: 15px;
+}
+
+.quiz-input-group label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.quiz-input-group input,
+.quiz-input-group select,
+.quiz-input-group textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.quiz-input-group textarea {
+  resize: vertical;
+}
+
+.quiz-choice {
+  margin-bottom: 10px;
+}
+
+.add-quiz-remove-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: #000;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-quiz-remove-button:hover {
+  color: #007bff;
+}
