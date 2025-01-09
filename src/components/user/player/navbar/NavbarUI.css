@@ -1,7 +1,7 @@
 .player-navbar-ui {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0 1.5rem;
   background-color: #333;
   color: white;
@@ -22,20 +22,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.play-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 0.1rem;
-  width: 1rem;
-}
-
-.play-button:hover {
-  color: #007bff;
 }
 
 .progress-bar {
@@ -86,17 +72,24 @@
   gap: 0.125rem;
 }
 
-.mute-button {
+.mute-button,
+.play-button,
+.fullscreen-button {
   background: none;
   border: none;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1rem;
   cursor: pointer;
-  margin-right: 0.125rem;
-  width: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.75rem;
 }
 
-.mute-button:hover {
+.mute-button:hover,
+.play-button:hover,
+.fullscreen-button:hover {
   color: #007bff;
 }
 
@@ -118,18 +111,4 @@
   background: #007bff;
   border-radius: 50%;
   cursor: pointer;
-}
-
-.fullscreen-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.25rem;
-  cursor: pointer;
-  margin-left: 0.25rem;
-  width: 1rem;
-}
-
-.fullscreen-button:hover {
-  color: #007bff;
 }
