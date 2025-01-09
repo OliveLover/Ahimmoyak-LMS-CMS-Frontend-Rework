@@ -38,7 +38,7 @@ jobs:
 
       # Step 6: S3에 빌드 결과 업로드
       - name: Sync build folder to S3
-        run: aws s3 sync ./build/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+        run: aws s3 sync ./dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
 
       # Step 7: CloudFront 캐시 무효화
       - name: Invalidate CloudFront cache
