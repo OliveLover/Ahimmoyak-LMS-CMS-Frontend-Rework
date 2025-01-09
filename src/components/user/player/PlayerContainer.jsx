@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import VideoUI from './video/VideoUI';
 import NavbarUI from './navbar/NavbarUI';
+import IndexUI from './index/IndexUI';
 import './PlayerContainer.css';
 
 const PlayerContainer = () => {
@@ -9,6 +10,7 @@ const PlayerContainer = () => {
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(100);
+  const [showIndex, setShowIndex] = useState(false);
   const playerRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -66,6 +68,10 @@ const PlayerContainer = () => {
     }
   };
 
+  const toggleIndexUI = () => {
+    setShowIndex((prev) => !prev);
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
@@ -93,7 +99,9 @@ const PlayerContainer = () => {
             isMuted={isMuted}
             volume={volume}
           />
+          {showIndex && <IndexUI onClose={() => setShowIndex(false)} />}
         </div>
+
         <div className="navbar-container">
           <NavbarUI
             isPlaying={isPlaying}
@@ -106,6 +114,7 @@ const PlayerContainer = () => {
             toggleMute={toggleMute}
             volume={volume}
             onVolumeChange={onVolumeChange}
+            toggleIndexUI={toggleIndexUI}
           />
         </div>
       </div>

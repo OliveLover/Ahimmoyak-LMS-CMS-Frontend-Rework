@@ -112,3 +112,11 @@
   border-radius: 50%;
   cursor: pointer;
 }
+
+.navbar-index span {
+  cursor: pointer;
+}
+
+.navbar-index span:hover {
+  color: #007bff;
+}
