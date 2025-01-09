@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import VideoUI from './video/VideoUI';
 import NavbarUI from './navbar/NavbarUI';
 import './PlayerContainer.css';
@@ -13,7 +13,7 @@ const PlayerContainer = () => {
   const containerRef = useRef(null);
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    setIsPlaying((prevState) => !prevState);
   };
 
   const handleProgress = (state) => {
@@ -66,28 +66,49 @@ const PlayerContainer = () => {
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPlaying]);
+
   return (
     <div className="custom-player-container" ref={containerRef}>
-      <VideoUI
-        isPlaying={isPlaying}
-        playerRef={playerRef}
-        handleProgress={handleProgress}
-        handleDuration={handleDuration}
-        isMuted={isMuted}
-        volume={volume}
-      />
-      <NavbarUI
-        isPlaying={isPlaying}
-        togglePlay={togglePlay}
-        progressValue={progressValue}
-        duration={duration}
-        onProgressChange={handleSeek}
-        toggleFullscreen={toggleFullscreen}
-        isMuted={isMuted}
-        toggleMute={toggleMute}
-        volume={volume}
-        onVolumeChange={onVolumeChange}
-      />
+      <div className="player-wrapper">
+        <div className="video-container">
+          <VideoUI
+            isPlaying={isPlaying}
+            playerRef={playerRef}
+            handleProgress={handleProgress}
+            handleDuration={handleDuration}
+            isMuted={isMuted}
+            volume={volume}
+          />
+        </div>
+        <div className="navbar-container">
+          <NavbarUI
+            isPlaying={isPlaying}
+            togglePlay={togglePlay}
+            progressValue={progressValue}
+            duration={duration}
+            onProgressChange={handleSeek}
+            toggleFullscreen={toggleFullscreen}
+            isMuted={isMuted}
+            toggleMute={toggleMute}
+            volume={volume}
+            onVolumeChange={onVolumeChange}
+          />
+        </div>
+      </div>
     </div>
   );
 };
