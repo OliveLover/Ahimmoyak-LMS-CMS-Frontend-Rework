@@ -133,12 +133,8 @@
 
 .navbar-page span {
   margin: 0 0.3125rem;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.navbar-page span:hover {
-  color: #007bff;
+  cursor: default;
+  color: white;
 }
 
 .navbar-page svg {
