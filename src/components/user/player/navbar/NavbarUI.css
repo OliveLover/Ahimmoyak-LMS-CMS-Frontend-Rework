@@ -120,3 +120,33 @@
 .navbar-index span:hover {
   color: #007bff;
 }
+
+.navbar-page {
+  flex: 1;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  font-size: 1rem;
+}
+
+.navbar-page span {
+  margin: 0 0.3125rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.navbar-page span:hover {
+  color: #007bff;
+}
+
+.navbar-page svg {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.navbar-page svg:hover {
+  transform: scale(1.2);
+  color: #007bff;
+}
