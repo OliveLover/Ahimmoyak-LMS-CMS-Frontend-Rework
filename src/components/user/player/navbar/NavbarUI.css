@@ -1,0 +1,148 @@
+.player-navbar-ui {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+  height: 100%;
+  width: 100%;
+}
+
+.navbar-index {
+  flex: 1;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+.navbar-progress {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-bar {
+  flex: 1;
+  padding: 0 0.75rem;
+}
+
+.progress-slider {
+  width: 100%;
+  height: 0.375rem;
+  background: #555;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.progress-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.time-display {
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.navbar-page {
+  flex: 1;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  font-size: 1rem;
+}
+
+.navbar-page span {
+  margin: 0 0.3125rem;
+}
+
+.navbar-sound {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.mute-button,
+.play-button,
+.fullscreen-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.75rem;
+}
+
+.mute-button:hover,
+.play-button:hover,
+.fullscreen-button:hover {
+  color: #007bff;
+}
+
+.volume-slider {
+  width: 6.25rem;
+  height: 0.375rem;
+  background: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid #555;
+  margin-left: 0.25rem;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.navbar-index span {
+  cursor: pointer;
+}
+
+.navbar-index span:hover {
+  color: #007bff;
+}
+
+.navbar-page {
+  flex: 1;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  font-size: 1rem;
+}
+
+.navbar-page span {
+  margin: 0 0.3125rem;
+  cursor: default;
+  color: white;
+}
+
+.navbar-page svg {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.navbar-page svg:hover {
+  transform: scale(1.2);
+  color: #007bff;
+}
