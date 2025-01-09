@@ -1,6 +1,6 @@
 import ReactPlayer from 'react-player';
 
-const VideoUI = ({ isPlaying, playerRef, handleProgress, handleDuration }) => {
+const VideoUI = ({ isPlaying, playerRef, handleProgress, handleDuration, isMuted, volume }) => {
   return (
     <ReactPlayer
       ref={playerRef}
@@ -11,6 +11,8 @@ const VideoUI = ({ isPlaying, playerRef, handleProgress, handleDuration }) => {
       height="100%"
       onProgress={handleProgress}
       onDuration={handleDuration}
+      muted={isMuted}
+      volume={volume / 100}
     />
   );
 };

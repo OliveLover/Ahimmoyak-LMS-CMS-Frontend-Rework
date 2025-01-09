@@ -39,9 +39,6 @@ const PlayerContainer = () => {
 
   const onVolumeChange = (e) => {
     setVolume(e.target.value);
-    if (playerRef.current) {
-      playerRef.current.seekTo(playerRef.current.getCurrentTime(), 'seconds');
-    }
   };
 
   const toggleFullscreen = () => {
