@@ -96,7 +96,6 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
               <option value="">타입을 선택하세요</option>
               <option value="내일배움카드">내일배움카드</option>
               <option value="기업직업훈련카드">기업직업훈련카드</option>
-              <option value="국민내일배움카드">국민내일배움카드</option>
             </select>
           </div>
         </div>

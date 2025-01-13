@@ -50,10 +50,6 @@ function CreateCourses() {
 
     axios
       .post("http://localhost:8080/api/v1/admin/courses", courseData)
-      .then((response) => {
-        console.log("Course created successfully:", response.data);
-        navigate("/somewhere");
-      })
       .catch((error) => {
         console.error("There was an error creating the course:", error);
       });
