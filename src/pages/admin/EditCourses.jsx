@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import CourseForm from "../../components/admin/course/CourseForm";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 
-function CreateCourses() {
+function EditCourses() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
-  const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
   const navigate = useNavigate();
 
   const addCourseForm = () => {
@@ -28,10 +27,6 @@ function CreateCourses() {
     navigate(-1);
   };
 
-  const handleAddCourseMeta = () => {
-    setIsCourseMetaVisible(false);
-  };
-
   return (
     <div style={styles.container}>
       <div style={styles.header}>
@@ -40,40 +35,28 @@ function CreateCourses() {
           <button style={styles.buttonSecondary} onClick={handleBack}>
             돌아가기
           </button>
+          <button style={styles.buttonSuccess}>과정 생성</button>
         </div>
       </div>
       <div className="accordion" id="accordionPanelsStayOpenExample">
-        {isCourseMetaVisible ? (
-          <div>
-            <AddCourseMeta />
-            <button
-              className="btn btn-primary mt-3"
-              onClick={handleAddCourseMeta}
-            >
-              과정 생성
-            </button>
-          </div>
-        ) : (
-          <>
-            {forms.map((form) => (
-              <CourseForm
-                key={form.formId}
-                formId={form.formId}
-                index={form.index}
-                onRemoveCourse={removeCourseForm}
-              />
-            ))}
-            <button className="btn btn-primary mt-3" onClick={addCourseForm}>
-              + 차시 추가
-            </button>
-          </>
-        )}
+        <AddCourseMeta />
+        {forms.map((form) => (
+          <CourseForm
+            key={form.formId}
+            formId={form.formId}
+            index={form.index}
+            onRemoveCourse={removeCourseForm}
+          />
+        ))}
+        <button className="btn btn-primary mt-3" onClick={addCourseForm}>
+          + 차시 추가
+        </button>
       </div>
     </div>
   );
 }
 
-export default CreateCourses;
+export default EditCourses;
 
 const styles = {
   container: {
@@ -94,6 +77,15 @@ const styles = {
     fontSize: '14px',
     padding: '10px 15px',
     backgroundColor: '#6c757d',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  buttonSuccess: {
+    fontSize: '14px',
+    padding: '10px 15px',
+    backgroundColor: '#28a745',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
