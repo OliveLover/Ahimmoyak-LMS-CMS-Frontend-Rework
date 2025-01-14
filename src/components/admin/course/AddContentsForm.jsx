@@ -31,7 +31,6 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
   const handleRemoveQuiz = (quizId) => {
     const updatedQuizzes = quizzes.filter((quiz) => quiz.quizId !== quizId);
 
-    // 재정렬: quizIndex를 다시 설정
     const reorderedQuizzes = updatedQuizzes.map((quiz, idx) => ({
       ...quiz,
       quizIndex: idx + 1,
