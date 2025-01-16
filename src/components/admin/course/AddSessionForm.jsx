@@ -8,6 +8,7 @@ import axios from 'axios';
 
 const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => {
   const [contents, setContents] = useState([]);
+  const [sessionId, setSessionId] = useState(null);
   const [nextContentId, setNextContentId] = useState(1);
   const [sessionTitle, setSessionTitle] = useState('');
   const [isSessionCreated, setIsSessionCreated] = useState(false);
@@ -22,6 +23,17 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
       setContentHeight(contentRef.current.scrollHeight);
     }
   }, [contents, isContentVisible]);
+
+  useEffect(() => {
+    if (sessionId) {
+      setContents((prevContents) =>
+        prevContents.map((content) => ({
+          ...content,
+          sessionId: sessionId,
+        }))
+      );
+    }
+  }, [sessionId]);
 
   const addContent = () => {
     const newContentId = nextContentId;
@@ -57,7 +69,7 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
 
     const sessionData = {
       courseId,
-      sessionId: null,
+      sessionId,
       sessionTitle,
       sessionIndex,
     };
@@ -68,9 +80,11 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
       });
 
       if (response.status === 200) {
+        const createdSessionId = response.data.sessionId;
         alert('세션이 성공적으로 생성되었습니다.');
         setIsSessionCreated(true);
         setIsEditing(false);
+        setSessionId(createdSessionId);
       }
     } catch (error) {
       console.error('세션 생성 중 오류 발생:', error);
@@ -132,7 +146,8 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
             {contents.map((content) => (
               <AddContentsForm
                 key={content.contentId}
-                contentId={content.contentId}
+                sessionId={sessionId}
+                courseId={courseId}
                 contentIndex={content.contentIndex}
                 onRemove={removeContent}
               />
