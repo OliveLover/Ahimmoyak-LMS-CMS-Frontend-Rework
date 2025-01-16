@@ -3,7 +3,8 @@ import { IoClose } from "react-icons/io5";
 import AddQuizForm from './AddQuizForm';
 import './AddContentsForm.css';
 
-const AddContentsForm = ({ contentId, contentIndex, onRemove, courseId, sessionId }) => {
+const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
+  const [contentId, setContentId] = useState(null);
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
   const [type, setType] = useState('VIDEO');
@@ -66,6 +67,11 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove, courseId, sessionI
       });
 
       if (response.ok) {
+
+        const responseData = await response.json();
+      const newContentId = responseData.contentId;
+        setContentId(newContentId);
+
         alert('콘텐츠가 성공적으로 추가되었습니다.');
         setIsEditing(true);
       } else {
