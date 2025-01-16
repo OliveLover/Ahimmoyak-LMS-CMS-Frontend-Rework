@@ -99,10 +99,17 @@
   padding-left: 10px;
   padding-top: 10px;
   margin-top: 10px;
-  overflow: visible;
-  transition: none;
+  visibility: hidden;
+  display: none;
+  transition: visibility 0s, opacity 0.3s ease-in-out;
 }
 
-.add-session-contents.show {
-  max-height: 1000px;
+.add-session-contents.visible {
+  visibility: visible;
+  display: block;
+}
+
+.add-session-contents.hidden {
+  visibility: hidden;
+  display: none;
 }

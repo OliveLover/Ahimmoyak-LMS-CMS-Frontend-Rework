@@ -126,13 +126,8 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
       {isSessionCreated && (
         <>
           <div
-            className={`add-session-contents ${isContentVisible ? 'show' : ''}`}
+            className={`add-session-contents ${isContentVisible ? 'visible' : 'hidden'}`}
             ref={contentRef}
-            style={{
-              maxHeight: isContentVisible ? `${contentHeight}px` : '0',
-              overflow: 'hidden',
-              transition: 'max-height 0.3s ease-out',
-            }}
           >
             {contents.map((content) => (
               <AddContentsForm
