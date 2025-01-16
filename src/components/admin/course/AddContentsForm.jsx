@@ -34,12 +34,10 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
 
   const handleRemoveQuiz = (quizId) => {
     const updatedQuizzes = quizzes.filter((quiz) => quiz.quizId !== quizId);
-
     const reorderedQuizzes = updatedQuizzes.map((quiz, idx) => ({
       ...quiz,
       quizIndex: idx + 1,
     }));
-
     setQuizzes(reorderedQuizzes);
   };
 
@@ -68,7 +66,6 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       });
 
       if (response.ok) {
-
         const responseData = await response.json();
         const newContentId = responseData.contentId;
         setContentId(newContentId);
@@ -126,21 +123,23 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
         </div>
       </div>
 
-      <div className="content-input-group-file-and-type">
-        <div className="content-input-group">
-          <select
-            id={`type-${contentId}`}
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            required
-          >
-            <option value="VIDEO">영상</option>
-            <option value="QUIZ">퀴즈</option>
-          </select>
+      {isEditing && (
+        <div className="content-input-group-file-and-type">
+          <div className="content-input-group">
+            <select
+              id={`type-${contentId}`}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            >
+              <option value="VIDEO">영상</option>
+              <option value="QUIZ">퀴즈</option>
+            </select>
+          </div>
         </div>
-      </div>
+      )}
 
-      {type === 'VIDEO' && (
+      {isEditing && type === 'VIDEO' && (
         <div className="content-input-group">
           <input
             type="file"
@@ -152,7 +151,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
         </div>
       )}
 
-      {type === 'QUIZ' && (
+      {isEditing && type === 'QUIZ' && (
         <div className="quiz-section">
           {quizzes.map((quiz) => (
             <div key={quiz.quizId} className="quiz-form-wrapper">
