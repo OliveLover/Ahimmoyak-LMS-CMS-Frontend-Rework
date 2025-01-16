@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { IoClose } from "react-icons/io5";
 import AddQuizForm from './AddQuizForm';
 import './AddContentsForm.css';
 
@@ -42,7 +43,7 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
   return (
     <div className="add-course-contents-form">
       <button className="add-course-remove-button" onClick={handleRemove}>
-        ×
+        <IoClose />
       </button>
       <h2>콘텐츠 {contentIndex}</h2>
       <div className="content-input-group">
@@ -88,7 +89,7 @@ const AddContentsForm = ({ contentId, contentIndex, onRemove }) => {
 
       {type === '퀴즈' && (
         <div className="quiz-section">
-          {quizzes.map((quiz, index) => (
+          {quizzes.map((quiz) => (
             <div key={quiz.quizId} className="quiz-form-wrapper">
               <AddQuizForm
                 quizIndex={quiz.quizIndex}

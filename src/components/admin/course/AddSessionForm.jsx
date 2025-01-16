@@ -1,6 +1,9 @@
 import './AddSessionForm.css';
+import { IoClose } from "react-icons/io5";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { MdDragIndicator } from "react-icons/md";
 import AddContentsForm from './AddContentsForm';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => {
@@ -9,6 +12,16 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
   const [sessionTitle, setSessionTitle] = useState('');
   const [isSessionCreated, setIsSessionCreated] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(true);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
+    }
+  }, [contents, isContentVisible]);
 
   const addContent = () => {
     const newContentId = nextContentId;
@@ -70,11 +83,23 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
     setIsSessionCreated(false);
   };
 
+  const toggleContentVisibility = () => {
+    setIsContentVisible(!isContentVisible);
+  };
+
   return (
     <div className="add-session-form">
       <div className="add-session-header-wrap">
+        <div className="add-session-left-group">
+          <button className="add-session-drag-indicator">
+            <MdDragIndicator />
+          </button>
+          <button className="add-session-btn add-session-btn-toggle" onClick={toggleContentVisibility}>
+            {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </button>
+        </div>
         <button className="add-session-remove-button" onClick={removeSession}>
-          ×
+          <IoClose />
         </button>
       </div>
       <div className="add-session-btn-wrap">
@@ -97,9 +122,18 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
           </button>
         )}
       </div>
+
       {isSessionCreated && (
         <>
-          <div>
+          <div
+            className={`add-session-contents ${isContentVisible ? 'show' : ''}`}
+            ref={contentRef}
+            style={{
+              maxHeight: isContentVisible ? `${contentHeight}px` : '0',
+              overflow: 'hidden',
+              transition: 'max-height 0.3s ease-out',
+            }}
+          >
             {contents.map((content) => (
               <AddContentsForm
                 key={content.contentId}
@@ -109,6 +143,7 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
               />
             ))}
           </div>
+
           <button className="add-session-btn add-session-btn-primary" onClick={addContent}>
             + 콘텐츠 추가
           </button>
