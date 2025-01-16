@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { IoClose } from "react-icons/io5";
+import { MdDragIndicator } from "react-icons/md";
 import AddQuizForm from './AddQuizForm';
 import './AddContentsForm.css';
 
@@ -69,7 +70,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       if (response.ok) {
 
         const responseData = await response.json();
-      const newContentId = responseData.contentId;
+        const newContentId = responseData.contentId;
         setContentId(newContentId);
 
         alert('콘텐츠가 성공적으로 추가되었습니다.');
@@ -92,6 +93,9 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
     <div className="add-course-contents-form">
       <button className="add-course-remove-button" onClick={handleRemove}>
         <IoClose />
+      </button>
+      <button className="add-content-drag-indicator">
+        <MdDragIndicator />
       </button>
       <h2>{contentIndex} 페이지</h2>
       <div className="content-input-group">
