@@ -28,13 +28,13 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
   };
 
   const handleAddQuiz = () => {
-    const newQuizId = quizzes.length > 0 ? quizzes[quizzes.length - 1].quizId + 1 : 1;
-    const newQuiz = { quizFormId: newQuizId, quizIndex: quizzes.length + 1 };
+    const newQuizFormId = quizzes.length + 1;
+    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1, quizId: null };
     setQuizzes([...quizzes, newQuiz]);
   };
 
-  const handleRemoveQuiz = (quizId) => {
-    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizId !== quizId);
+  const handleRemoveQuiz = (quizFormId) => {
+    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizFormId !== quizFormId);
     const reorderedQuizzes = updatedQuizzes.map((quiz, idx) => ({
       ...quiz,
       quizIndex: idx + 1,
@@ -86,17 +86,19 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       return;
     }
 
-    const quizData = quizzes.map((quiz, index) => {
-      const quizForm = document.getElementById(`quiz-form-${quiz.quizId}`);
+    const quizData = quizzes.map((quiz) => {
+      const quizForm = document.getElementById(`quiz-form-${quiz.quizFormId}`);
       if (!quizForm) {
-        console.error(`Quiz form with ID quiz-form-${quiz.quizId} not found`);
+        console.error(`Quiz form with ID quiz-form-${quiz.quizFormId} not found`);
         return null;
       }
 
-      const question = quizForm.querySelector(`#quiz-question-${quiz.quizId}`).value;
-      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizId}`).value;
-      const choices = Array.from(quizForm.querySelectorAll(`.quiz-choice-${quiz.quizId} input`)).map(input => input.value);
-      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizId}`).value;
+      const question = quizForm.querySelector(`#quiz-question-${quiz.quizFormId}`).value;
+      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizFormId}`).value;
+      const choices = Array.from(
+        quizForm.querySelectorAll(`.quiz-choice-${quiz.quizFormId} input`)
+      ).map((input) => input.value);
+      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizFormId}`).value;
 
       if (!question || !answer || choices.length === 0) {
         alert('모든 퀴즈 항목을 입력해야 합니다.');
@@ -104,13 +106,13 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       }
 
       return {
-        quizIndex: index + 1,
+        quizIndex: quiz.quizIndex,
         question,
         options: choices,
-        answer: choices.indexOf(answer) + 1,
+        answer: choices.indexOf(answer),
         explanation,
       };
-    }).filter(quiz => quiz !== null);
+    }).filter((quiz) => quiz !== null);
 
     if (quizData.length === 0) {
       alert('유효한 퀴즈 데이터가 없습니다.');
@@ -124,18 +126,23 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
     };
 
     try {
-      const response = await axios.put('http://localhost:8080/api/v1/admin/courses/sessions/contents/quizzes', payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      console.log(payload);
+      const response = await axios.put(
+        'http://localhost:8080/api/v1/admin/courses/sessions/contents/quizzes',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.status === 200) {
-        const responseData = response.data;
-        const updatedQuizzes = quizzes.map((quiz, index) => ({
-          ...quiz,
-          quizId: responseData[index],
+        const updatedQuizzes = response.data.quizzes.map((quiz, idx) => ({
+          ...quizzes[idx],
+          quizId: quiz.quizId,
         }));
+
         setQuizzes(updatedQuizzes);
         alert('퀴즈가 성공적으로 저장되었습니다.');
       } else {
@@ -150,6 +157,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
   const handleEditContent = () => {
     setIsEditing(true);
   };
+
 
   return (
     <div className="add-course-contents-form">
