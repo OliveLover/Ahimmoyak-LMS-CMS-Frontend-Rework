@@ -29,13 +29,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
 
   const handleAddQuiz = () => {
     const newQuizFormId = quizzes.length + 1;
-    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1, quizData: {
-      quizId: null,
-      question: '',
-      answer: '',
-      choices: ['', ''],
-      explanation: '',
-    } };
+    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1 };
     setQuizzes([...quizzes, newQuiz]);
   };
 
@@ -160,11 +154,9 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
     }
   };
 
-
   const handleEditContent = () => {
     setIsEditing(true);
   };
-
 
   return (
     <div className="add-course-contents-form">
@@ -238,7 +230,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
               <AddQuizForm
                 quizIndex={quiz.quizIndex}
                 quizFormId={quiz.quizFormId}
-                quizData={quiz.quizData}
+                quizId={quiz.quizId}
                 onRemoveQuiz={() => handleRemoveQuiz(quiz.quizFormId)}
               />
             </div>
