@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
 import AddQuizForm from './AddQuizForm';
+import axios from 'axios';
 import './AddContentsForm.css';
 
 const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
@@ -28,7 +29,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
 
   const handleAddQuiz = () => {
     const newQuizId = quizzes.length > 0 ? quizzes[quizzes.length - 1].quizId + 1 : 1;
-    const newQuiz = { quizId: newQuizId, quizIndex: quizzes.length + 1 };
+    const newQuiz = { quizFormId: newQuizId, quizIndex: quizzes.length + 1 };
     setQuizzes([...quizzes, newQuiz]);
   };
 
@@ -57,28 +58,92 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/api/v1/admin/courses/sessions/contents', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:8080/api/v1/admin/courses/sessions/contents', payload, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
       });
 
-      if (response.ok) {
-        const responseData = await response.json();
+      if (response.status === 200) {
+        const responseData = response.data;
         const newContentId = responseData.contentId;
         setContentId(newContentId);
 
         alert('콘텐츠가 성공적으로 추가되었습니다.');
         setIsEditing(true);
       } else {
-        const errorData = await response.json();
-        alert(`콘텐츠 추가 실패: ${errorData.message}`);
+        alert(`콘텐츠 추가 실패: ${response.data.message}`);
       }
     } catch (error) {
       console.error('Error creating content:', error);
       alert('콘텐츠 추가 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleSaveQuizzes = async () => {
+    if (quizzes.length === 0) {
+      alert('퀴즈가 없습니다.');
+      return;
+    }
+
+    const quizData = quizzes.map((quiz, index) => {
+      const quizForm = document.getElementById(`quiz-form-${quiz.quizId}`);
+      if (!quizForm) {
+        console.error(`Quiz form with ID quiz-form-${quiz.quizId} not found`);
+        return null;
+      }
+
+      const question = quizForm.querySelector(`#quiz-question-${quiz.quizId}`).value;
+      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizId}`).value;
+      const choices = Array.from(quizForm.querySelectorAll(`.quiz-choice-${quiz.quizId} input`)).map(input => input.value);
+      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizId}`).value;
+
+      if (!question || !answer || choices.length === 0) {
+        alert('모든 퀴즈 항목을 입력해야 합니다.');
+        return null;
+      }
+
+      return {
+        quizIndex: index + 1,
+        question,
+        options: choices,
+        answer: choices.indexOf(answer) + 1,
+        explanation,
+      };
+    }).filter(quiz => quiz !== null);
+
+    if (quizData.length === 0) {
+      alert('유효한 퀴즈 데이터가 없습니다.');
+      return;
+    }
+
+    const payload = {
+      courseId,
+      contentId,
+      quizzes: quizData,
+    };
+
+    try {
+      const response = await axios.put('http://localhost:8080/api/v1/admin/courses/sessions/contents/quizzes', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        const responseData = response.data;
+        const updatedQuizzes = quizzes.map((quiz, index) => ({
+          ...quiz,
+          quizId: responseData[index],
+        }));
+        setQuizzes(updatedQuizzes);
+        alert('퀴즈가 성공적으로 저장되었습니다.');
+      } else {
+        alert(`퀴즈 저장 실패: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error('Error saving quizzes:', error);
+      alert('퀴즈 저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -154,9 +219,10 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       {isEditing && type === 'QUIZ' && (
         <div className="quiz-section">
           {quizzes.map((quiz) => (
-            <div key={quiz.quizId} className="quiz-form-wrapper">
+            <div key={quiz.quizFormId} className="quiz-form-wrapper">
               <AddQuizForm
                 quizIndex={quiz.quizIndex}
+                quizFormId={quiz.quizFormId}
                 onRemoveQuiz={() => handleRemoveQuiz(quiz.quizId)}
               />
             </div>
@@ -164,6 +230,9 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
           <div className="quiz-controls">
             <button type="button" onClick={handleAddQuiz}>
               퀴즈 추가
+            </button>
+            <button type="button" onClick={handleSaveQuizzes}>
+              퀴즈 저장
             </button>
           </div>
         </div>

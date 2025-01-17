@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './AddQuizForm.css';
 
-const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
+const AddQuizForm = ({ quizIndex, onRemoveQuiz, quizId }) => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [choices, setChoices] = useState(['', '']);
@@ -26,7 +26,7 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
   };
 
   return (
-    <div className="add-quiz-form">
+    <div className={`add-quiz-form`} id={`quiz-form-${quizId}`}>
       <button
         className="add-quiz-remove-button"
         onClick={onRemoveQuiz}
@@ -35,10 +35,10 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
       </button>
       <h3>퀴즈 {quizIndex}</h3>
       <div className="quiz-input-group">
-        <label htmlFor="quiz-question">질문</label>
+        <label htmlFor={`quiz-question-${quizId}`}>질문</label>
         <input
           type="text"
-          id="quiz-question"
+          id={`quiz-question-${quizId}`}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="질문을 입력하세요"
@@ -46,9 +46,9 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
         />
       </div>
       <div className="quiz-input-group">
-        <label htmlFor="quiz-num-choices">선택지 개수</label>
+        <label htmlFor={`quiz-num-choices-${quizId}`}>선택지 개수</label>
         <select
-          id="quiz-num-choices"
+          id={`quiz-num-choices-${quizId}`}
           value={numChoices}
           onChange={handleNumChoicesChange}
         >
@@ -61,11 +61,11 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
       </div>
       <div className="quiz-input-group">
         {choices.map((choice, index) => (
-          <div key={index} className="quiz-choice">
-            <label htmlFor={`choice-${index}`}>선택지 {index + 1}</label>
+          <div key={index} className={`quiz-choice-${quizId}`}>
+            <label htmlFor={`choice-${quizId}-${index}`}>선택지 {index + 1}</label>
             <input
               type="text"
-              id={`choice-${index}`}
+              id={`choice-${quizId}-${index}`}
               value={choice}
               onChange={(e) => handleChoiceChange(index, e.target.value)}
               placeholder={`선택지 ${index + 1}를 입력하세요`}
@@ -75,9 +75,9 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
         ))}
       </div>
       <div className="quiz-input-group">
-        <label htmlFor="quiz-answer">정답</label>
+        <label htmlFor={`quiz-answer-${quizId}`}>정답</label>
         <select
-          id="quiz-answer"
+          id={`quiz-answer-${quizId}`}
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           required
@@ -91,9 +91,9 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz }) => {
         </select>
       </div>
       <div className="quiz-input-group">
-        <label htmlFor="quiz-explanation">해설</label>
+        <label htmlFor={`quiz-explanation-${quizId}`}>해설</label>
         <textarea
-          id="quiz-explanation"
+          id={`quiz-explanation-${quizId}`}
           value={explanation}
           onChange={(e) => setExplanation(e.target.value)}
           placeholder="해설을 입력하세요"
