@@ -29,7 +29,13 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
 
   const handleAddQuiz = () => {
     const newQuizFormId = quizzes.length + 1;
-    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1, quizId: null };
+    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1, quizData: {
+      quizId: null,
+      question: '',
+      answer: '',
+      choices: ['', ''],
+      explanation: '',
+    } };
     setQuizzes([...quizzes, newQuiz]);
   };
 
@@ -106,6 +112,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       }
 
       return {
+        quizId: quiz.quizId,
         quizIndex: quiz.quizIndex,
         question,
         options: choices,
@@ -126,7 +133,6 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
     };
 
     try {
-      console.log(payload);
       const response = await axios.put(
         'http://localhost:8080/api/v1/admin/courses/sessions/contents/quizzes',
         payload,
@@ -140,7 +146,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       if (response.status === 200) {
         const updatedQuizzes = response.data.quizzes.map((quiz, idx) => ({
           ...quizzes[idx],
-          quizId: quiz.quizId,
+          quizId: quiz,
         }));
 
         setQuizzes(updatedQuizzes);
@@ -153,6 +159,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
       alert('퀴즈 저장 중 오류가 발생했습니다.');
     }
   };
+
 
   const handleEditContent = () => {
     setIsEditing(true);
@@ -231,7 +238,8 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
               <AddQuizForm
                 quizIndex={quiz.quizIndex}
                 quizFormId={quiz.quizFormId}
-                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizId)}
+                quizData={quiz.quizData}
+                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizFormId)}
               />
             </div>
           ))}
