@@ -73,10 +73,11 @@ const styles = {
     gridTemplateColumns: '1fr',
     gridTemplateRows: '1fr 1fr 1fr',
     gap: '1rem',
-    height: 'calc(var(--vh, 1vh) * 200)',
+    height: '150vh',
     width: '100%',
     padding: '1rem',
     boxSizing: 'border-box',
+    overflowY: 'auto',
   },
   gridItem: {
     display: 'flex',
@@ -87,8 +88,7 @@ const styles = {
     fontSize: '1.5rem',
     color: theme.colors.text,
     borderRadius: '8px',
-    padding: '1rem',
-    height: 'auto'
+    padding: '2rem',
   },
   sectionTitle: {
     marginBottom: '1rem',
@@ -97,6 +97,7 @@ const styles = {
     color: theme.colors.text,
   },
 };
+
 
 
 export default Courses;
