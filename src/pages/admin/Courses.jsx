@@ -1,8 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import CourseLifecycleStatus from '../../components/admin/course/CourseLifecycleStatus';
 
 function Courses() {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/v1/admin/courses')
+      .then((response) => {
+        setCourses(response.data.courses || response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  const activeCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'ACTIVE') : [];
+  const inactiveCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'INACTIVE') : [];
+  const endedCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'END') : [];
+
   return (
     <div>
       <div style={styles.header}>
@@ -11,14 +29,17 @@ function Courses() {
         </Link>
       </div>
       <div style={styles.gridContainer}>
-        <div style={styles.gridItem}>미활성 과정
-          <CourseLifecycleStatus />
+        <div style={styles.gridItem}>
+          <h2 style={styles.sectionTitle}>활성 과정</h2>
+          <CourseLifecycleStatus courses={activeCourses} />
         </div>
-        <div style={styles.gridItem}>활성 과정
-        <CourseLifecycleStatus />
+        <div style={styles.gridItem}>
+          <h2 style={styles.sectionTitle}>미활성 과정</h2>
+          <CourseLifecycleStatus courses={inactiveCourses} />
         </div>
-        <div style={styles.gridItem}>종료 과정
-        <CourseLifecycleStatus />
+        <div style={styles.gridItem}>
+          <h2 style={styles.sectionTitle}>종료 과정</h2>
+          <CourseLifecycleStatus courses={endedCourses} />
         </div>
       </div>
     </div>
@@ -27,9 +48,6 @@ function Courses() {
 
 const theme = {
   colors: {
-    background: '#f0f0f0',
-    border: '#ccc',
-    text: '#333',
     buttonBackground: '#4CAF50',
     buttonHoverBackground: '#45a049',
   },
@@ -55,22 +73,30 @@ const styles = {
     gridTemplateColumns: '1fr',
     gridTemplateRows: '1fr 1fr 1fr',
     gap: '1rem',
-    height: 'calc(var(--vh, 1vh) * 100)',
+    height: 'calc(var(--vh, 1vh) * 200)',
     width: '100%',
     padding: '1rem',
     boxSizing: 'border-box',
   },
   gridItem: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
-    border: `1px solid ${theme.colors.border}`,
+    backgroundColor: '#f9f9f9',
     fontSize: '1.5rem',
     color: theme.colors.text,
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    padding: '1rem',
+    height: 'auto'
+  },
+  sectionTitle: {
+    marginBottom: '1rem',
+    fontSize: '1.8rem',
+    fontWeight: 'bold',
+    color: theme.colors.text,
   },
 };
+
 
 export default Courses;
