@@ -1,36 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
-import CourseForm from "../../components/admin/course/CourseForm";
+import AddSessionForm from "../../components/admin/course/AddSessionForm";
 
 function CreateCourses() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
   const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
+  const [courseId, setCourseId] = useState(null);
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
-    status: "",
+    status: "INACTIVE",
     activeStartDate: "",
     activeEndDate: "",
     instructor: "",
     thumbnailPath: "",
-    grade: "",
-    category: "",
+    grade: "PENDING",
+    ncsClassification: null,
     setDuration: 30,
-    fundingType: "",
+    fundingType: null,
     cardType: [],
   });
+
   const navigate = useNavigate();
 
-  const addCourseForm = () => {
-    const newFormId = forms.length > 0 ? Math.max(...forms.map(form => form.formId)) + 1 : 1;
+  const addSessionForm = () => {
+    const newFormId = forms.length > 0 ? Math.max(...forms.map((form) => form.formId)) + 1 : 1;
     const newIndex = forms.length + 1;
     const newForm = { formId: newFormId, index: newIndex };
     setForms([...forms, newForm]);
   };
 
-  const removeCourseForm = (formId) => {
+  const removeSessionForm = (formId) => {
     const updatedForms = forms.filter((form) => form.formId !== formId);
     const reorderedForms = updatedForms.map((form, idx) => ({
       ...form,
@@ -45,16 +47,22 @@ function CreateCourses() {
 
   const handleSubmitCourse = () => {
     if (!courseData.courseTitle.trim()) {
+      alert("과정 제목을 입력해주세요.");
       return;
     }
 
     axios
       .post("http://localhost:8080/api/v1/admin/courses", courseData)
+      .then((response) => {
+        if (response.data && response.data.courseId) {
+          setCourseId(response.data.courseId);
+          setIsCourseMetaVisible(false);
+        }
+      })
       .catch((error) => {
         console.error("There was an error creating the course:", error);
+        alert("과정 생성 중 오류가 발생했습니다.");
       });
-
-    setIsCourseMetaVisible(false);
   };
 
   return (
@@ -67,13 +75,11 @@ function CreateCourses() {
           </button>
         </div>
       </div>
+
       <div className="accordion" id="accordionPanelsStayOpenExample">
         {isCourseMetaVisible ? (
           <div>
-            <AddCourseMeta
-              courseData={courseData}
-              setCourseData={setCourseData}
-            />
+            <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
             <button className="btn btn-primary mt-3" onClick={handleSubmitCourse}>
               과정 생성
             </button>
@@ -81,14 +87,15 @@ function CreateCourses() {
         ) : (
           <>
             {forms.map((form) => (
-              <CourseForm
+              <AddSessionForm
                 key={form.formId}
                 formId={form.formId}
-                index={form.index}
-                onRemoveCourse={removeCourseForm}
+                courseId={courseId}
+                sessionIndex={form.index}
+                onRemoveSession={removeSessionForm}
               />
             ))}
-            <button className="btn btn-primary mt-3" onClick={addCourseForm}>
+            <button className="btn btn-primary mt-3" onClick={addSessionForm}>
               + 차시 추가
             </button>
           </>
