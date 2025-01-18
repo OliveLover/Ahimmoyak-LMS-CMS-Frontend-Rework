@@ -81,7 +81,7 @@ const CourseLifecycleStatus = ({ courses }) => {
 
   const rowSelection = useMemo(() => {
     return {
-      mode: "multiple",
+      mode: "multiRow",
     };
   }, []);
 
