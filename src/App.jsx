@@ -5,6 +5,7 @@ import Dashboards from './pages/admin/Dashboards';
 import Courses from './pages/admin/Courses';
 import Applications from './pages/admin/Applications';
 import CreateCourses from './pages/admin/CreateCourses';
+import CourseDetails from './pages/admin/CourseDetails';
 
 import UserSidebar from './components/user/sidebar/UserSidebar';
 import Header from './components/user/header/Header';
@@ -16,6 +17,7 @@ import MyExams from './pages/user/MyExams';
 import MyAssignments from './pages/user/MyAssignments';
 
 import './App.css'
+
 
 
 function App() {
@@ -65,6 +67,7 @@ function App() {
                   <Route path="courses" element={<Courses />} />
                   <Route path="applications" element={<Applications />} />
                   <Route path="create-courses" element={<CreateCourses />} />
+                  <Route path="course-info/:courseId" element={<CourseDetails />} />
                 </Routes>
               </div>
             </div>
