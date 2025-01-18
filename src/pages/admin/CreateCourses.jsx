@@ -11,15 +11,15 @@ function CreateCourses() {
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
-    status: "",
+    status: "INACTIVE",
     activeStartDate: "",
     activeEndDate: "",
     instructor: "",
     thumbnailPath: "",
-    grade: "",
-    category: "",
+    grade: "PENDING",
+    ncsClassification: null,
     setDuration: 30,
-    fundingType: "",
+    fundingType: null,
     cardType: [],
   });
 
