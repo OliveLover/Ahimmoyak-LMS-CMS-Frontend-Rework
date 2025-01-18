@@ -17,9 +17,9 @@ function CreateCourses() {
     instructor: "",
     thumbnailPath: "",
     grade: "PENDING",
-    ncsClassification: null,
+    ncsClassification: "UNDEFINED",
     setDuration: 30,
-    fundingType: null,
+    fundingType: "PENDING",
     cardType: [],
   });
 
