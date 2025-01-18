@@ -79,12 +79,6 @@ const CourseLifecycleStatus = ({ courses }) => {
     };
   }, []);
 
-  const rowSelection = useMemo(() => {
-    return {
-      mode: "multiRow",
-    };
-  }, []);
-
   const paginationPageSize = 10;
 
   return (
@@ -93,7 +87,6 @@ const CourseLifecycleStatus = ({ courses }) => {
         rowData={courses}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
-        rowSelection={rowSelection}
         pagination={true}
         paginationPageSize={paginationPageSize}
         paginationPageSizeSelector={[10, 25, 50]}
