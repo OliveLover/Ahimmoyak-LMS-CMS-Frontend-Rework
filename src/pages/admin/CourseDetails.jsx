@@ -6,7 +6,6 @@ import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm
 
 function CourseDetails() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
-  const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
@@ -59,26 +58,11 @@ function CourseDetails() {
     navigate(-1);
   };
 
-  const toggleCourseMetaVisibility = () => {
-    setIsCourseMetaVisible(!isCourseMetaVisible);
-  };
-
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
-          {isCourseMetaVisible ? (
-
-            <button className="btn btn-primary mt-3" onClick={toggleCourseMetaVisibility}>
-              차시 수정
-            </button>
-
-          ) : (
-            <button className="btn btn-secondary mt-3" onClick={toggleCourseMetaVisibility}>
-              훈련 과정 정보 수정
-            </button>
-          )}
           <button className="btn btn-secondary mt-3" onClick={handleBack}>
             수정 완료
           </button>
@@ -86,11 +70,9 @@ function CourseDetails() {
       </div>
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
-        {isCourseMetaVisible ? (
           <div>
             <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
           </div>
-        ) : (
           <>
             {courseData.sessions
               .sort((a, b) => a.sessionIndex - b.sessionIndex)
@@ -109,7 +91,6 @@ function CourseDetails() {
               + 차시 추가
             </button>
           </>
-        )}
       </div>
     </div>
   );
