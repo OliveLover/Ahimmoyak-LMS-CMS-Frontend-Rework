@@ -160,11 +160,11 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
 
 
   return (
-    <div className="add-course-contents-form">
-      <button className="add-course-remove-button" onClick={handleRemove}>
+    <div className="details-contents-form">
+      <button className="details-course-remove-button" onClick={handleRemove}>
         <IoClose />
       </button>
-      <button className="add-content-drag-indicator">
+      <button className="details-course-drag-indicator">
         <MdDragIndicator />
       </button>
       <h2>{contentIndex} 페이지</h2>
@@ -180,14 +180,14 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
           />
           {isEditing ? (
             <button
-              className="add-content-btn add-content-btn-primary"
+              className="details-content-btn details-content-btn-primary"
               onClick={handleEditContent}
             >
               수정
             </button>
           ) : (
             <button
-              className="add-content-btn add-content-btn-primary"
+              className="details-content-btn details-content-btn-primary"
               onClick={handleCreateContent}
             >
               확인

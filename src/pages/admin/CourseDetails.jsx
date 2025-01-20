@@ -79,7 +79,7 @@ function CourseDetails() {
               훈련 과정 정보 수정
             </button>
           )}
-          <button style={styles.buttonSecondary} onClick={handleBack}>
+          <button className="btn btn-secondary mt-3" onClick={handleBack}>
             수정 완료
           </button>
         </div>
