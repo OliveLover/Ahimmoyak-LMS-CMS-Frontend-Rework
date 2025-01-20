@@ -5,7 +5,8 @@ import AddQuizForm from './AddQuizForm';
 import axios from 'axios';
 import './ContentsDetailsForm.css';
 
-const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, contentId, propContentTitle, propContentType, propQuizzes }) => {
+const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
+  const [contentId, setContentId] = useState(propContentId || null);
   const [title, setTitle] = useState(propContentTitle || '');
   const [file, setFile] = useState(null);
   const [type, setType] = useState(propContentType || 'VIDEO');
@@ -27,18 +28,56 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, cont
   };
 
   const handleAddQuiz = () => {
-    const newQuizFormId = quizzes.length + 1;
-    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1 };
+    const newQuizIndex = quizzes.length + 1;
+    const newQuiz = { quizIndex: newQuizIndex };
     setQuizzes([...quizzes, newQuiz]);
   };
 
-  const handleRemoveQuiz = (quizFormId) => {
-    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizFormId !== quizFormId);
+  const handleRemoveQuiz = (quizIndex) => {
+    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizIndex !== quizIndex);
     const reorderedQuizzes = updatedQuizzes.map((quiz, idx) => ({
       ...quiz,
       quizIndex: idx + 1,
     }));
     setQuizzes(reorderedQuizzes);
+  };
+
+  const handleCreateContent = async () => {
+    if (!title) {
+      alert('인덱스에 들어갈 제목이 필요합니다.');
+      return;
+    }
+
+    const payload = {
+      courseId,
+      sessionId,
+      contentTitle: title,
+      contentType: type,
+      contentIndex,
+      contentId,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/admin/courses/sessions/contents', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        const responseData = response.data;
+        const newContentId = responseData.contentId;
+        setContentId(newContentId);
+
+        alert('콘텐츠가 성공적으로 추가되었습니다.');
+        setIsEditing(true);
+      } else {
+        alert(`콘텐츠 추가 실패: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error('Error creating content:', error);
+      alert('콘텐츠 추가 중 오류가 발생했습니다.');
+    }
   };
 
   const handleSaveQuizzes = async () => {
@@ -48,18 +87,18 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, cont
     }
 
     const quizData = quizzes.map((quiz) => {
-      const quizForm = document.getElementById(`quiz-form-${quiz.quizFormId}`);
+      const quizForm = document.getElementById(`quiz-form-${quiz.quizIndex}`);
       if (!quizForm) {
-        console.error(`Quiz form with ID quiz-form-${quiz.quizFormId} not found`);
+        console.error(`Quiz form with ID quiz-form-${quiz.quizIndex} not found`);
         return null;
       }
 
-      const question = quizForm.querySelector(`#quiz-question-${quiz.quizFormId}`).value;
-      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizFormId}`).value;
+      const question = quizForm.querySelector(`#quiz-question-${quiz.quizIndex}`).value;
+      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizIndex}`).value;
       const choices = Array.from(
-        quizForm.querySelectorAll(`.quiz-choice-${quiz.quizFormId} input`)
+        quizForm.querySelectorAll(`.quiz-choice-${quiz.quizIndex} input`)
       ).map((input) => input.value);
-      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizFormId}`).value;
+      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizIndex}`).value;
 
       if (!question || !answer || choices.length === 0) {
         alert('모든 퀴즈 항목을 입력해야 합니다.');
@@ -71,7 +110,7 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, cont
         quizIndex: quiz.quizIndex,
         question,
         options: choices,
-        answer: choices.indexOf(answer),
+        answer: parseInt(answer, 10),
         explanation,
       };
     }).filter((quiz) => quiz !== null);
@@ -119,12 +158,13 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, cont
     setIsEditing(true);
   };
 
+
   return (
-    <div className="details-contents-form">
-      <button className="details-remove-button" onClick={handleRemove}>
+    <div className="add-course-contents-form">
+      <button className="add-course-remove-button" onClick={handleRemove}>
         <IoClose />
       </button>
-      <button className="details-content-drag-indicator">
+      <button className="add-content-drag-indicator">
         <MdDragIndicator />
       </button>
       <h2>{contentIndex} 페이지</h2>
@@ -140,14 +180,15 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, cont
           />
           {isEditing ? (
             <button
-              className="details-content-btn details-content-btn-primary"
+              className="add-content-btn add-content-btn-primary"
               onClick={handleEditContent}
             >
               수정
             </button>
           ) : (
             <button
-              className="details-content-btn details-content-btn-primary"
+              className="add-content-btn add-content-btn-primary"
+              onClick={handleCreateContent}
             >
               확인
             </button>
@@ -185,16 +226,22 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, cont
 
       {isEditing && type === 'QUIZ' && (
         <div className="quiz-section">
-          {quizzes.map((quiz) => (
-            <div key={quiz.quizFormId} className="quiz-form-wrapper">
-              <AddQuizForm
-                quizIndex={quiz.quizIndex}
-                quizFormId={quiz.quizFormId}
-                quizId={quiz.quizId}
-                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizFormId)}
-              />
-            </div>
-          ))}
+          {quizzes
+            .slice()
+            .sort((a, b) => a.quizIndex - b.quizIndex)
+            .map((quiz) => (
+              <div key={quiz.quizIndex} className="quiz-form-wrapper">
+                <AddQuizForm
+                  quizIndex={quiz.quizIndex}
+                  propQuizId={quiz.quizId}
+                  propQuestion={quiz.question}
+                  propAnswer={quiz.answer}
+                  propOptions={quiz.options}
+                  propExplanation={quiz.explanation}
+                  onRemoveQuiz={() => handleRemoveQuiz(quiz.quizIndex)}
+                />
+              </div>
+            ))}
           <div className="quiz-controls">
             <button type="button" onClick={handleAddQuiz}>
               퀴즈 추가

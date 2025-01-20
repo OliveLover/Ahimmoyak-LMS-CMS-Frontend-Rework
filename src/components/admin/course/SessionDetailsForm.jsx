@@ -8,7 +8,6 @@ import axios from 'axios';
 
 
 const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRemoveSession, propContents }) => {
-  console.log("propContents : " + propContents);
   const [contents, setContents] = useState(propContents || []);
   const [sessionId, setSessionId] = useState(null);
   const [nextContentId, setNextContentId] = useState(1);
@@ -151,7 +150,7 @@ const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRe
                 sessionId={sessionId}
                 courseId={courseId}
                 contentIndex={content.contentIndex}
-                contentId={content.contentId}
+                propContentId={content.contentId}
                 propContentTitle={content.contentTitle}
                 propContentType={content.contentType}
                 propQuizzes={content.quizzes}
