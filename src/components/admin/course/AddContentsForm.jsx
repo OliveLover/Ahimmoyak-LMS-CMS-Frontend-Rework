@@ -5,12 +5,12 @@ import AddQuizForm from './AddQuizForm';
 import axios from 'axios';
 import './AddContentsForm.css';
 
-const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
-  const [contentId, setContentId] = useState(null);
-  const [title, setTitle] = useState('');
+const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
+  const [contentId, setContentId] = useState(propContentId || null);
+  const [title, setTitle] = useState(propContentTitle || '');
   const [file, setFile] = useState(null);
-  const [type, setType] = useState('VIDEO');
-  const [quizzes, setQuizzes] = useState([]);
+  const [type, setType] = useState(propContentType || 'VIDEO');
+  const [quizzes, setQuizzes] = useState(propQuizzes || []);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleFileChange = (e) => {
@@ -28,13 +28,13 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
   };
 
   const handleAddQuiz = () => {
-    const newQuizFormId = quizzes.length + 1;
-    const newQuiz = { quizFormId: newQuizFormId, quizIndex: quizzes.length + 1 };
+    const newQuizIndex = quizzes.length + 1;
+    const newQuiz = { quizIndex: newQuizIndex };
     setQuizzes([...quizzes, newQuiz]);
   };
 
-  const handleRemoveQuiz = (quizFormId) => {
-    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizFormId !== quizFormId);
+  const handleRemoveQuiz = (quizIndex) => {
+    const updatedQuizzes = quizzes.filter((quiz) => quiz.quizIndex !== quizIndex);
     const reorderedQuizzes = updatedQuizzes.map((quiz, idx) => ({
       ...quiz,
       quizIndex: idx + 1,
@@ -87,18 +87,18 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
     }
 
     const quizData = quizzes.map((quiz) => {
-      const quizForm = document.getElementById(`quiz-form-${quiz.quizFormId}`);
+      const quizForm = document.getElementById(`quiz-form-${quiz.quizIndex}`);
       if (!quizForm) {
-        console.error(`Quiz form with ID quiz-form-${quiz.quizFormId} not found`);
+        console.error(`Quiz form with ID quiz-form-${quiz.quizIndex} not found`);
         return null;
       }
 
-      const question = quizForm.querySelector(`#quiz-question-${quiz.quizFormId}`).value;
-      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizFormId}`).value;
+      const question = quizForm.querySelector(`#quiz-question-${quiz.quizIndex}`).value;
+      const answer = quizForm.querySelector(`#quiz-answer-${quiz.quizIndex}`).value;
       const choices = Array.from(
-        quizForm.querySelectorAll(`.quiz-choice-${quiz.quizFormId} input`)
+        quizForm.querySelectorAll(`.quiz-choice-${quiz.quizIndex} input`)
       ).map((input) => input.value);
-      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizFormId}`).value;
+      const explanation = quizForm.querySelector(`#quiz-explanation-${quiz.quizIndex}`).value;
 
       if (!question || !answer || choices.length === 0) {
         alert('모든 퀴즈 항목을 입력해야 합니다.');
@@ -110,7 +110,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
         quizIndex: quiz.quizIndex,
         question,
         options: choices,
-        answer: choices.indexOf(answer),
+        answer: parseInt(answer, 10),
         explanation,
       };
     }).filter((quiz) => quiz !== null);
@@ -225,13 +225,19 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId }) => {
 
       {isEditing && type === 'QUIZ' && (
         <div className="quiz-section">
-          {quizzes.map((quiz) => (
-            <div key={quiz.quizFormId} className="quiz-form-wrapper">
+          {quizzes
+          .slice()
+          .sort((a, b) => a.quizIndex - b.quizIndex)
+          .map((quiz) => (
+            <div key={quiz.quizIndex} className="quiz-form-wrapper">
               <AddQuizForm
                 quizIndex={quiz.quizIndex}
-                quizFormId={quiz.quizFormId}
-                quizId={quiz.quizId}
-                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizFormId)}
+                propQuizId={quiz.quizId}
+                propQuestion={quiz.question}
+                propAnswer={quiz.answer}
+                propOptions={quiz.options}
+                propExplanation={quiz.explanation}
+                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizIndex)}
               />
             </div>
           ))}

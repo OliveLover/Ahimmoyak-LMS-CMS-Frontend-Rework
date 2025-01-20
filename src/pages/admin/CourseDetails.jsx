@@ -31,8 +31,7 @@ function CourseDetails() {
       axios
         .get(`http://localhost:8080/api/v1/admin/courses/${courseId}`)
         .then((response) => {
-          console.log("Course Data:", response.data);
-          setCourseData(response.data); // Set course data along with sessions
+          setCourseData(response.data);
         })
         .catch((error) => {
           console.error("Error fetching course data:", error);
