@@ -1,0 +1,111 @@
+.details-contents-form {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  position: relative;
+  text-align: left;
+}
+
+.details-contents-form .details-remove-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: #000000;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.details-contents-form .details-remove-button:hover {
+  color: #007bff;
+}
+
+.details-contents-form h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.content-input-group {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.input-with-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.content-input-group input,
+.content-input-group select {
+  width: 100%;
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.details-content-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.details-content-btn:hover {
+  background-color: #0056b3;
+}
+
+
+.content-input-group input[type="file"] {
+  padding: 5px;
+}
+
+.content-input-group p {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #666;
+}
+
+.content-input-group-file-and-type {
+  display: flex;
+  gap: 20px;
+}
+
+.content-input-group-file-and-type .content-input-group {
+  flex: 1;
+}
+
+.quiz-section {
+  margin-top: 20px;
+}
+
+.quiz-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.quiz-controls button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.quiz-controls button:hover {
+  background-color: #0056b3;
+}

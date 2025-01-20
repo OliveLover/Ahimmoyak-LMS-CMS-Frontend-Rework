@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
-import AddSessionForm from "../../components/admin/course/AddSessionForm";
+import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 
-function EditCourses() {
+function CourseDetails() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
   const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
-  const [courseId, setCourseId] = useState(null);
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
@@ -21,9 +20,25 @@ function EditCourses() {
     setDuration: 30,
     fundingType: "PENDING",
     cardType: [],
+    sessions: [],
   });
 
   const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  useEffect(() => {
+    if (courseId) {
+      axios
+        .get(`http://localhost:8080/api/v1/admin/courses/${courseId}`)
+        .then((response) => {
+          console.log("Course Data:", response.data);
+          setCourseData(response.data); // Set course data along with sessions
+        })
+        .catch((error) => {
+          console.error("Error fetching course data:", error);
+        });
+    }
+  }, [courseId]);
 
   const addSessionForm = () => {
     const newFormId = forms.length > 0 ? Math.max(...forms.map((form) => form.formId)) + 1 : 1;
@@ -45,24 +60,8 @@ function EditCourses() {
     navigate(-1);
   };
 
-  const handleSubmitCourse = () => {
-    if (!courseData.courseTitle.trim()) {
-      alert("과정 제목을 입력해주세요.");
-      return;
-    }
-
-    axios
-      .post("http://localhost:8080/api/v1/admin/courses", courseData)
-      .then((response) => {
-        if (response.data && response.data.courseId) {
-          setCourseId(response.data.courseId);
-          setIsCourseMetaVisible(false);
-        }
-      })
-      .catch((error) => {
-        console.error("There was an error creating the course:", error);
-        alert("과정 생성 중 오류가 발생했습니다.");
-      });
+  const toggleCourseMetaVisibility = () => {
+    setIsCourseMetaVisible(!isCourseMetaVisible);
   };
 
   return (
@@ -70,8 +69,19 @@ function EditCourses() {
       <div style={styles.header}>
         <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
+          {isCourseMetaVisible ? (
+
+            <button className="btn btn-primary mt-3" onClick={toggleCourseMetaVisibility}>
+              차시 수정
+            </button>
+
+          ) : (
+            <button className="btn btn-secondary mt-3" onClick={toggleCourseMetaVisibility}>
+              훈련 과정 정보 수정
+            </button>
+          )}
           <button style={styles.buttonSecondary} onClick={handleBack}>
-            돌아가기
+            수정 완료
           </button>
         </div>
       </div>
@@ -80,21 +90,22 @@ function EditCourses() {
         {isCourseMetaVisible ? (
           <div>
             <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
-            <button className="btn btn-primary mt-3" onClick={handleSubmitCourse}>
-              과정 생성
-            </button>
           </div>
         ) : (
           <>
-            {forms.map((form) => (
-              <AddSessionForm
-                key={form.formId}
-                formId={form.formId}
-                courseId={courseId}
-                sessionIndex={form.index}
-                onRemoveSession={removeSessionForm}
-              />
-            ))}
+            {courseData.sessions
+              .sort((a, b) => a.sessionIndex - b.sessionIndex)
+              .map((session) => (
+                <SessionDetailsForm
+                  key={session.sessionId}
+                  formId={session.sessionId}
+                  courseId={courseId}
+                  sessionIndex={session.sessionIndex}
+                  sessionTitle={session.sessionTitle}
+                  propContents={session.contents}
+                  onRemoveSession={removeSessionForm}
+                />
+              ))}
             <button className="btn btn-primary mt-3" onClick={addSessionForm}>
               + 차시 추가
             </button>
@@ -136,4 +147,4 @@ const styles = {
   },
 };
 
-export default EditCourses;
+export default CourseDetails;

@@ -48,7 +48,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
           <input
             type="text"
             id="courseName"
-            value={courseData.courseTitle}
+            value={courseData.courseTitle || ''}
             onChange={(e) => setCourseData({ ...courseData, courseTitle: e.target.value })}
             placeholder="과정명을 입력하세요"
             required
@@ -64,7 +64,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <input
               type="text"
               id="instructor"
-              value={courseData.instructor}
+              value={courseData.instructor || ''}
               onChange={(e) => setCourseData({ ...courseData, instructor: e.target.value })}
               placeholder="강사명을 입력하세요"
               required
@@ -74,7 +74,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="ncsClassification">분류</label>
             <select
               id="ncsClassification"
-              value={courseData.ncsClassification}
+              value={courseData.ncsClassification || ''}
               onChange={(e) => setCourseData({ ...courseData, ncsClassification: e.target.value })}
               required
             >
@@ -111,7 +111,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
           <label htmlFor="courseDescription">과정소개</label>
           <textarea
             id="courseDescription"
-            value={courseData.courseIntroduce}
+            value={courseData.courseIntroduce || ''}
             onChange={(e) => setCourseData({ ...courseData, courseIntroduce: e.target.value })}
             placeholder="과정 소개를 입력하세요"
             required
@@ -134,7 +134,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="fundingType">환급 여부</label>
             <select
               id="fundingType"
-              value={courseData.fundingType}
+              value={courseData.fundingType || ''}
               onChange={(e) => setCourseData({ ...courseData, fundingType: e.target.value })}
               required
             >
@@ -179,7 +179,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="grade">등급</label>
             <select
               id="grade"
-              value={courseData.grade}
+              value={courseData.grade || ''}
               onChange={(e) => setCourseData({ ...courseData, grade: e.target.value })}
               required
             >
@@ -195,7 +195,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="isActive">활성화 여부</label>
             <select
               id="isActive"
-              value={courseData.status}
+              value={courseData.status || ''}
               onChange={(e) => setCourseData({ ...courseData, status: e.target.value })}
               required
             >
@@ -224,7 +224,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <input
               type="date"
               id="startDate"
-              value={courseData.activeStartDate}
+              value={courseData.activeStartDate || ''}
               onChange={(e) => setCourseData({ ...courseData, activeStartDate: e.target.value })}
               required
             />
@@ -235,7 +235,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <input
               type="date"
               id="endDate"
-              value={courseData.activeEndDate}
+              value={courseData.activeEndDate || ''}
               onChange={(e) => setCourseData({ ...courseData, activeEndDate: e.target.value })}
               required
             />

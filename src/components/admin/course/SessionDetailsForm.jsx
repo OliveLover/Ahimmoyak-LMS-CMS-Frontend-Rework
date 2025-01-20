@@ -1,26 +1,27 @@
-import './AddSessionForm.css';
+import './SessionDetailsForm.css';
 import { IoClose } from "react-icons/io5";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { MdDragIndicator } from "react-icons/md";
-import AddContentsForm from './AddContentsForm';
+import ContentsDetailsForm from './ContentsDetailsForm';
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
-const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => {
-  const [contents, setContents] = useState([]);
+
+const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRemoveSession, propContents }) => {
+  console.log("propContents : " + propContents);
+  const [contents, setContents] = useState(propContents || []);
   const [sessionId, setSessionId] = useState(null);
   const [nextContentId, setNextContentId] = useState(1);
-  const [sessionTitle, setSessionTitle] = useState('');
-  const [isSessionCreated, setIsSessionCreated] = useState(false);
+  const [localSessionTitle, setLocalSessionTitle] = useState(sessionTitle || '');
+  const [isSessionCreated, setIsSessionCreated] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(true);
-  const [contentHeight, setContentHeight] = useState(0);
 
   const contentRef = useRef(null);
 
   useEffect(() => {
     if (contentRef.current) {
-      setContentHeight(contentRef.current.scrollHeight);
+      contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
     }
   }, [contents, isContentVisible]);
 
@@ -29,7 +30,7 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
       setContents((prevContents) =>
         prevContents.map((content) => ({
           ...content,
-          sessionId: sessionId,
+          sessionId,
         }))
       );
     }
@@ -58,11 +59,11 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
   };
 
   const handleInputChange = (event) => {
-    setSessionTitle(event.target.value);
+    setLocalSessionTitle(event.target.value);
   };
 
   const handleCreateSession = async () => {
-    if (!sessionTitle.trim()) {
+    if (!localSessionTitle.trim()) {
       alert('차시 제목을 입력해주세요.');
       return;
     }
@@ -70,7 +71,7 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
     const sessionData = {
       courseId,
       sessionId,
-      sessionTitle,
+      sessionTitle: localSessionTitle,
       sessionIndex,
     };
 
@@ -102,36 +103,37 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
   };
 
   return (
-    <div className="add-session-form">
-      <div className="add-session-header-wrap">
-        <div className="add-session-left-group">
-          <button className="add-session-drag-indicator">
+    <div className="session-details-form">
+      <div className="session-details-header-wrap">
+        <div className="session-details-left-group">
+          <button className="session-details-drag-indicator">
             <MdDragIndicator />
           </button>
-          <button className="add-session-btn add-session-btn-toggle" onClick={toggleContentVisibility}>
+          <button className="session-details-btn session-details-btn-toggle" onClick={toggleContentVisibility}>
             {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </button>
         </div>
-        <button className="add-session-remove-button" onClick={removeSession}>
+        <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />
         </button>
       </div>
-      <div className="add-session-btn-wrap">
+
+      <div className="session-details-btn-wrap">
         <input
           type="text"
           id={`sessionTitle-${formId}`}
-          className="add-session-form-input-field"
+          className="session-details-form-input-field"
           placeholder="차시 제목을 입력하세요"
-          value={sessionTitle}
+          value={localSessionTitle}
           onChange={handleInputChange}
           disabled={isSessionCreated}
         />
         {!isSessionCreated ? (
-          <button className="add-session-btn add-session-btn-primary" onClick={handleCreateSession}>
+          <button className="session-details-btn session-details-btn-primary" onClick={handleCreateSession}>
             확인
           </button>
         ) : (
-          <button className="add-session-btn add-session-btn-primary" onClick={handleEditSession}>
+          <button className="session-details-btn session-details-btn-primary" onClick={handleEditSession}>
             수정
           </button>
         )}
@@ -140,21 +142,25 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
       {isSessionCreated && (
         <>
           <div
-            className={`add-session-contents ${isContentVisible ? 'visible' : 'hidden'}`}
+            className={`session-details-contents ${isContentVisible ? 'visible' : 'hidden'}`}
             ref={contentRef}
           >
             {contents.map((content) => (
-              <AddContentsForm
+              <ContentsDetailsForm
                 key={content.contentId}
                 sessionId={sessionId}
                 courseId={courseId}
                 contentIndex={content.contentIndex}
+                contentId={content.contentId}
+                propContentTitle={content.contentTitle}
+                propContentType={content.contentType}
+                propQuizzes={content.quizzes}
                 onRemove={removeContent}
               />
             ))}
           </div>
 
-          <button className="add-session-btn add-session-btn-primary" onClick={addContent}>
+          <button className="session-details-btn session-details-btn-primary" onClick={addContent}>
             + 콘텐츠 추가
           </button>
         </>
@@ -163,4 +169,4 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
   );
 };
 
-export default AddSessionForm;
+export default SessionDetailsForm;
