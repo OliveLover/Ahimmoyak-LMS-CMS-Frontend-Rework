@@ -54,8 +54,21 @@ function CourseDetails() {
     setForms(reorderedForms);
   };
 
-  const handleBack = () => {
-    navigate(-1);
+  const handleSave = () => {
+    const modifiedData = {
+      ...courseData,
+    };
+  
+    axios
+      .put(`http://localhost:8080/api/v1/admin/courses`, modifiedData)
+      .then((response) => {
+        alert("수정이 완료되었습니다.");
+        navigate(-1);
+      })
+      .catch((error) => {
+        console.error("Error updating course:", error);
+        alert("수정 중 오류가 발생했습니다.");
+      });
   };
 
   return (
@@ -63,7 +76,7 @@ function CourseDetails() {
       <div style={styles.header}>
         <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
-          <button className="btn btn-secondary mt-3" onClick={handleBack}>
+          <button className="btn btn-secondary mt-3" onClick={handleSave}>
             수정 완료
           </button>
         </div>
