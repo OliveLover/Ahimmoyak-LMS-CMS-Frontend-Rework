@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Badge from 'react-bootstrap/Badge'
 import './AddCourseMeta.css';
 
+
 const AddCourseMeta = ({ courseData, setCourseData }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -48,7 +49,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
           <input
             type="text"
             id="courseName"
-            value={courseData.courseTitle}
+            value={courseData.courseTitle || ''}
             onChange={(e) => setCourseData({ ...courseData, courseTitle: e.target.value })}
             placeholder="과정명을 입력하세요"
             required
@@ -64,23 +65,45 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <input
               type="text"
               id="instructor"
-              value={courseData.instructor}
+              value={courseData.instructor || ''}
               onChange={(e) => setCourseData({ ...courseData, instructor: e.target.value })}
               placeholder="강사명을 입력하세요"
               required
             />
           </div>
           <div className="course-meta-input-group">
-            <label htmlFor="ncsClassfication">분류</label>
+            <label htmlFor="ncsClassification">분류</label>
             <select
-              id="ncsClassfication"
-              value={courseData.ncsClassfication}
-              onChange={(e) => setCourseData({ ...courseData, ncsClassfication: e.target.value })}
+              id="ncsClassification"
+              value={courseData.ncsClassification || ''}
+              onChange={(e) => setCourseData({ ...courseData, ncsClassification: e.target.value })}
               required
             >
-              <option>분류를 선택하세요</option>
+              <option value="UNDEFINED">분류를 선택하세요</option>
               <option value="BUSINESS_MANAGEMENT">01. 사업관리</option>
               <option value="MANAGEMENT_ACCOUNTING_OFFICE_WORK">02. 경영·회계·사무</option>
+              <option value="FINANCE_INSURANCE">03. 금융·보험</option>
+              <option value="EDUCATION_NATURAL_SOCIAL_SCIENCES">04. 교육·자연·사회과학</option>
+              <option value="LAW_POLICE_FIRE_CORRECTIONS_NATIONAL_DEFENSE">05. 법률·경찰·소방·교도·국방</option>
+              <option value="HEALTH_MEDICAL_CARE">06. 보건·의료</option>
+              <option value="SOCIAL_WELFARE_RELIGION">07. 사회복지·종교</option>
+              <option value="CULTURE_ARTS_DESIGN_BROADCASTING">08. 문화·예술·디자인·방송</option>
+              <option value="DRIVING_TRANSPORTATION">09. 운전·운송</option>
+              <option value="SALES_MARKETING">10. 영업판매</option>
+              <option value="SECURITY_CLEANING">11. 경비·청소</option>
+              <option value="ACCOMMODATION_TRAVEL_LEISURE_SPORTS">12. 이용·숙박·여행·오락·스포츠</option>
+              <option value="FOOD_SERVICE">13. 음식서비스</option>
+              <option value="CONSTRUCTION">14. 건설</option>
+              <option value="MACHINERY">15. 기계</option>
+              <option value="MATERIALS">16. 재료</option>
+              <option value="CHEMISTRY_BIOTECHNOLOGY">17. 화학·바이오</option>
+              <option value="TEXTILES_APPAREL">18. 섬유·의복</option>
+              <option value="ELECTRICAL_ELECTRONICS">19. 전기·전자</option>
+              <option value="INFORMATION_COMMUNICATIONS">20. 정보통신</option>
+              <option value="FOOD_PROCESSING">21. 식품가공</option>
+              <option value="PRINTING_WOODWORKING_FURNITURE_CRAFTS">22. 인쇄·목재·가구·공예</option>
+              <option value="ENVIRONMENT_ENERGY_SAFETY">23. 환경·에너지·안전</option>
+              <option value="AGRICULTURE_FORESTRY_FISHERIES">24. 농림어업</option>
             </select>
           </div>
         </div>
@@ -89,7 +112,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
           <label htmlFor="courseDescription">과정소개</label>
           <textarea
             id="courseDescription"
-            value={courseData.courseIntroduce}
+            value={courseData.courseIntroduce || ''}
             onChange={(e) => setCourseData({ ...courseData, courseIntroduce: e.target.value })}
             placeholder="과정 소개를 입력하세요"
             required
@@ -112,11 +135,11 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="fundingType">환급 여부</label>
             <select
               id="fundingType"
-              value={courseData.fundingType}
+              value={courseData.fundingType || ''}
               onChange={(e) => setCourseData({ ...courseData, fundingType: e.target.value })}
               required
             >
-              <option>미정</option>
+              <option value="PENDING">미정</option>
               <option value="NON_REFUNDABLE">비환급 과정</option>
               <option value="REFUNDABLE">환급 과정</option>
             </select>
@@ -157,7 +180,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="grade">등급</label>
             <select
               id="grade"
-              value={courseData.grade}
+              value={courseData.grade || ''}
               onChange={(e) => setCourseData({ ...courseData, grade: e.target.value })}
               required
             >
@@ -173,7 +196,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <label htmlFor="isActive">활성화 여부</label>
             <select
               id="isActive"
-              value={courseData.status}
+              value={courseData.status || ''}
               onChange={(e) => setCourseData({ ...courseData, status: e.target.value })}
               required
             >
@@ -202,7 +225,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <input
               type="date"
               id="startDate"
-              value={courseData.activeStartDate}
+              value={courseData.activeStartDate || ''}
               onChange={(e) => setCourseData({ ...courseData, activeStartDate: e.target.value })}
               required
             />
@@ -213,7 +236,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             <input
               type="date"
               id="endDate"
-              value={courseData.activeEndDate}
+              value={courseData.activeEndDate || ''}
               onChange={(e) => setCourseData({ ...courseData, activeEndDate: e.target.value })}
               required
             />

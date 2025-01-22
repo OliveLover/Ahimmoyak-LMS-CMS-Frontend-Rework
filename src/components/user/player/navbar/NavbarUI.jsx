@@ -4,6 +4,7 @@ import { GoScreenFull } from "react-icons/go";
 import { AiFillSound, AiOutlineSound } from "react-icons/ai";
 import './NavbarUI.css';
 
+
 const NavbarUI = ({
   isPlaying,
   togglePlay,

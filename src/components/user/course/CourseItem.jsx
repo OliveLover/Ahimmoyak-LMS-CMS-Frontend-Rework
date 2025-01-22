@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const CourseItem = ({ course }) => {
   return (
     <div className="col-md-4 mb-4">

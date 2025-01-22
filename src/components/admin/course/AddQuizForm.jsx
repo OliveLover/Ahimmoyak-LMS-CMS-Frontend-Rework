@@ -1,42 +1,43 @@
 import { useState } from 'react';
 import './AddQuizForm.css';
 
-const AddQuizForm = ({ quizIndex, quizFormId, onRemoveQuiz, quizId }) => {
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [choices, setChoices] = useState(['', '']);
-  const [numChoices, setNumChoices] = useState(2);
-  const [explanation, setExplanation] = useState('');
+
+const AddQuizForm = ({ quizIndex, onRemoveQuiz, propQuizId, propQuestion, propAnswer, propOptions, propExplanation }) => {
+  const [question, setQuestion] = useState(propQuestion || '');
+  const [answer, setAnswer] = useState(propAnswer ?? '');
+  const [options, setOptions] = useState(propOptions || ['', '']);
+  const [numOptions, setNumOptions] = useState(options.length);
+  const [explanation, setExplanation] = useState(propExplanation || '');
 
   const handleChoiceChange = (index, value) => {
-    const updatedChoices = [...choices];
-    updatedChoices[index] = value;
-    setChoices(updatedChoices);
+    const updatedOptions = [...options];
+    updatedOptions[index] = value;
+    setOptions(updatedOptions);
   };
 
-  const handleNumChoicesChange = (e) => {
+  const handleNumOptionsChange = (e) => {
     const newNum = parseInt(e.target.value, 10);
-    const updatedChoices = [...choices];
+    const updatedOptions = [...options];
 
-    if (newNum > choices.length) {
-      updatedChoices.push(...Array(newNum - choices.length).fill(''));
+    if (newNum > options.length) {
+      updatedOptions.push(...Array(newNum - options.length).fill(''));
     } else {
-      updatedChoices.length = newNum;
+      updatedOptions.length = newNum;
     }
 
-    setChoices(updatedChoices);
-    setNumChoices(newNum);
+    setOptions(updatedOptions);
+    setNumOptions(newNum);
   };
 
   return (
-    <div className="add-quiz-form" id={`quiz-form-${quizFormId}`}>
+    <div className="add-quiz-form" id={`quiz-form-${quizIndex}`}>
       <button className="add-quiz-remove-button" onClick={onRemoveQuiz}>×</button>
       <h3>퀴즈 {quizIndex}</h3>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-question-${quizFormId}`}>질문</label>
+        <label htmlFor={`quiz-question-${quizIndex}`}>질문</label>
         <input
           type="text"
-          id={`quiz-question-${quizFormId}`}
+          id={`quiz-question-${quizIndex}`}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="질문을 입력하세요"
@@ -44,11 +45,11 @@ const AddQuizForm = ({ quizIndex, quizFormId, onRemoveQuiz, quizId }) => {
         />
       </div>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-num-choices-${quizFormId}`}>선택지 개수</label>
+        <label htmlFor={`quiz-num-choices-${quizIndex}`}>선택지 개수</label>
         <select
-          id={`quiz-num-choices-${quizFormId}`}
-          value={numChoices}
-          onChange={handleNumChoicesChange}
+          id={`quiz-num-choices-${quizIndex}`}
+          value={numOptions}
+          onChange={handleNumOptionsChange}
         >
           {[2, 3, 4, 5].map((num) => (
             <option key={num} value={num}>{num}</option>
@@ -56,12 +57,12 @@ const AddQuizForm = ({ quizIndex, quizFormId, onRemoveQuiz, quizId }) => {
         </select>
       </div>
       <div className="quiz-input-group">
-        {choices.map((choice, index) => (
-          <div key={index} className={`quiz-choice-${quizFormId}`}>
-            <label htmlFor={`choice-${quizFormId}-${index}`}>선택지 {index + 1}</label>
+        {options.map((choice, index) => (
+          <div key={index} className={`quiz-choice-${quizIndex}`}>
+            <label htmlFor={`choice-${quizIndex}-${index}`}>선택지 {index + 1}</label>
             <input
               type="text"
-              id={`choice-${quizFormId}-${index}`}
+              id={`choice-${quizIndex}-${index}`}
               value={choice}
               onChange={(e) => handleChoiceChange(index, e.target.value)}
               placeholder={`선택지 ${index + 1}를 입력하세요`}
@@ -71,23 +72,23 @@ const AddQuizForm = ({ quizIndex, quizFormId, onRemoveQuiz, quizId }) => {
         ))}
       </div>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-answer-${quizFormId}`}>정답</label>
+        <label htmlFor={`quiz-answer-${quizIndex}`}>정답</label>
         <select
-          id={`quiz-answer-${quizFormId}`}
+          id={`quiz-answer-${quizIndex}`}
           value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          onChange={(e) => setAnswer(parseInt(e.target.value, 10))}
           required
         >
-          <option value="">정답을 선택하세요</option>
-          {choices.map((choice, index) => (
-            <option key={index} value={choice}>{index + 1} : {choice}</option>
+          <option value="" disabled>정답을 선택하세요</option>
+          {options.map((choice, index) => (
+            <option key={index} value={index}>{index + 1} : {choice}</option>
           ))}
         </select>
       </div>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-explanation-${quizFormId}`}>해설</label>
+        <label htmlFor={`quiz-explanation-${quizIndex}`}>해설</label>
         <textarea
-          id={`quiz-explanation-${quizFormId}`}
+          id={`quiz-explanation-${quizIndex}`}
           value={explanation}
           onChange={(e) => setExplanation(e.target.value)}
           placeholder="해설을 입력하세요"

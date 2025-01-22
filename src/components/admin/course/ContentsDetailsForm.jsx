@@ -3,16 +3,16 @@ import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
 import AddQuizForm from './AddQuizForm';
 import axios from '../../../axios';
-import './AddContentsForm.css';
+import './ContentsDetailsForm.css';
 
 
-const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
+const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
   const [contentId, setContentId] = useState(propContentId || null);
   const [title, setTitle] = useState(propContentTitle || '');
   const [file, setFile] = useState(null);
   const [type, setType] = useState(propContentType || 'VIDEO');
   const [quizzes, setQuizzes] = useState(propQuizzes || []);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -159,12 +159,13 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
     setIsEditing(true);
   };
 
+
   return (
-    <div className="add-course-contents-form">
-      <button className="add-course-remove-button" onClick={handleRemove}>
+    <div className="details-contents-form">
+      <button className="details-course-remove-button" onClick={handleRemove}>
         <IoClose />
       </button>
-      <button className="add-content-drag-indicator">
+      <button className="details-course-drag-indicator">
         <MdDragIndicator />
       </button>
       <h2>{contentIndex} 페이지</h2>
@@ -180,14 +181,14 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
           />
           {isEditing ? (
             <button
-              className="add-content-btn add-content-btn-primary"
+              className="details-content-btn details-content-btn-primary"
               onClick={handleEditContent}
             >
               수정
             </button>
           ) : (
             <button
-              className="add-content-btn add-content-btn-primary"
+              className="details-content-btn details-content-btn-primary"
               onClick={handleCreateContent}
             >
               확인
@@ -256,4 +257,4 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
   );
 };
 
-export default AddContentsForm;
+export default ContentsDetailsForm;

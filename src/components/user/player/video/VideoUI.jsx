@@ -1,5 +1,6 @@
 import ReactPlayer from 'react-player';
 
+
 const VideoUI = ({ isPlaying, playerRef, handleProgress, handleDuration, isMuted, volume }) => {
   return (
     <ReactPlayer

@@ -2,6 +2,7 @@ import React from 'react';
 import Banner from '../../components/user/banner/Banner';
 import CourseList from '../../components/user/course/CourseList';
 
+
 function UserMain() {
   const courses = [
     {

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
-import AddSessionForm from "../../components/admin/course/AddSessionForm";
+import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 
 
-function CreateCourses() {
+function CourseDetails() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
-  const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
-  const [courseId, setCourseId] = useState(null);
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
@@ -22,9 +20,24 @@ function CreateCourses() {
     setDuration: 30,
     fundingType: "PENDING",
     cardType: [],
+    sessions: [],
   });
 
   const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  useEffect(() => {
+    if (courseId) {
+      axios
+        .get(`/api/v1/admin/courses/${courseId}`)
+        .then((response) => {
+          setCourseData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching course data:", error);
+        });
+    }
+  }, [courseId]);
 
   const addSessionForm = () => {
     const newFormId = forms.length > 0 ? Math.max(...forms.map((form) => form.formId)) + 1 : 1;
@@ -42,27 +55,20 @@ function CreateCourses() {
     setForms(reorderedForms);
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
-  const handleSubmitCourse = () => {
-    if (!courseData.courseTitle.trim()) {
-      alert("과정 제목을 입력해주세요.");
-      return;
-    }
+  const handleSave = () => {
+    const modifiedData = {
+      ...courseData,
+    };
 
     axios
-      .post('/api/v1/admin/courses', courseData)
+      .put(`/api/v1/admin/courses`, modifiedData)
       .then((response) => {
-        if (response.data && response.data.courseId) {
-          setCourseId(response.data.courseId);
-          setIsCourseMetaVisible(false);
-        }
+        alert("수정이 완료되었습니다.");
+        navigate(-1);
       })
       .catch((error) => {
-        console.error("There was an error creating the course:", error);
-        alert("과정 생성 중 오류가 발생했습니다.");
+        console.error("Error updating course:", error);
+        alert("수정 중 오류가 발생했습니다.");
       });
   };
 
@@ -71,36 +77,34 @@ function CreateCourses() {
       <div style={styles.header}>
         <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
-          <button style={styles.buttonSecondary} onClick={handleBack}>
-            돌아가기
+          <button className="btn btn-secondary mt-3" onClick={handleSave}>
+            수정 완료
           </button>
         </div>
       </div>
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
-        {isCourseMetaVisible ? (
-          <div>
-            <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
-            <button className="btn btn-primary mt-3" onClick={handleSubmitCourse}>
-              과정 생성
-            </button>
-          </div>
-        ) : (
-          <>
-            {forms.map((form) => (
-              <AddSessionForm
-                key={form.formId}
-                formId={form.formId}
+        <div>
+          <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
+        </div>
+        <>
+          {courseData.sessions
+            .sort((a, b) => a.sessionIndex - b.sessionIndex)
+            .map((session) => (
+              <SessionDetailsForm
+                key={session.sessionId}
+                formId={session.sessionId}
                 courseId={courseId}
-                sessionIndex={form.index}
+                sessionIndex={session.sessionIndex}
+                sessionTitle={session.sessionTitle}
+                propContents={session.contents}
                 onRemoveSession={removeSessionForm}
               />
             ))}
-            <button className="btn btn-primary mt-3" onClick={addSessionForm}>
-              + 차시 추가
-            </button>
-          </>
-        )}
+          <button className="btn btn-primary mt-3" onClick={addSessionForm}>
+            + 차시 추가
+          </button>
+        </>
       </div>
     </div>
   );
@@ -137,4 +141,4 @@ const styles = {
   },
 };
 
-export default CreateCourses;
+export default CourseDetails;

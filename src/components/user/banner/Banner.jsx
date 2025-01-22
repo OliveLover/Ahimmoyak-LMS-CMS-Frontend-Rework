@@ -2,6 +2,7 @@ import React from 'react';
 import LoginForm from '../../common/LoginForm';
 import './Banner.css';
 
+
 const Banner = () => {
   return (
     <section className="banner">
