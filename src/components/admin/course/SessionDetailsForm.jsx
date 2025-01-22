@@ -4,7 +4,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { MdDragIndicator } from "react-icons/md";
 import ContentsDetailsForm from './ContentsDetailsForm';
 import { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../../axios';
 
 
 const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRemoveSession, propContents }) => {
@@ -75,7 +75,7 @@ const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRe
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/admin/courses/sessions', sessionData, {
+      const response = await axios.post('/api/v1/admin/courses/sessions', sessionData, {
         headers: { 'Content-Type': 'application/json' },
       });
 

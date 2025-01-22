@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import axios from "../../axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 
@@ -29,7 +29,7 @@ function CourseDetails() {
   useEffect(() => {
     if (courseId) {
       axios
-        .get(`http://localhost:8080/api/v1/admin/courses/${courseId}`)
+        .get(`/api/v1/admin/courses/${courseId}`)
         .then((response) => {
           setCourseData(response.data);
         })
@@ -59,9 +59,9 @@ function CourseDetails() {
     const modifiedData = {
       ...courseData,
     };
-  
+
     axios
-      .put(`http://localhost:8080/api/v1/admin/courses`, modifiedData)
+      .put(`/api/v1/admin/courses`, modifiedData)
       .then((response) => {
         alert("수정이 완료되었습니다.");
         navigate(-1);
@@ -84,27 +84,27 @@ function CourseDetails() {
       </div>
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
-          <div>
-            <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
-          </div>
-          <>
-            {courseData.sessions
-              .sort((a, b) => a.sessionIndex - b.sessionIndex)
-              .map((session) => (
-                <SessionDetailsForm
-                  key={session.sessionId}
-                  formId={session.sessionId}
-                  courseId={courseId}
-                  sessionIndex={session.sessionIndex}
-                  sessionTitle={session.sessionTitle}
-                  propContents={session.contents}
-                  onRemoveSession={removeSessionForm}
-                />
-              ))}
-            <button className="btn btn-primary mt-3" onClick={addSessionForm}>
-              + 차시 추가
-            </button>
-          </>
+        <div>
+          <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
+        </div>
+        <>
+          {courseData.sessions
+            .sort((a, b) => a.sessionIndex - b.sessionIndex)
+            .map((session) => (
+              <SessionDetailsForm
+                key={session.sessionId}
+                formId={session.sessionId}
+                courseId={courseId}
+                sessionIndex={session.sessionIndex}
+                sessionTitle={session.sessionTitle}
+                propContents={session.contents}
+                onRemoveSession={removeSessionForm}
+              />
+            ))}
+          <button className="btn btn-primary mt-3" onClick={addSessionForm}>
+            + 차시 추가
+          </button>
+        </>
       </div>
     </div>
   );

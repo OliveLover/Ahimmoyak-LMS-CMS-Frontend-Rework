@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
 import AddQuizForm from './AddQuizForm';
-import axios from 'axios';
+import axios from '../../../axios';
 import './ContentsDetailsForm.css';
+
 
 const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
   const [contentId, setContentId] = useState(propContentId || null);
@@ -58,7 +59,7 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/admin/courses/sessions/contents', payload, {
+      const response = await axios.post('/api/v1/admin/courses/sessions/contents', payload, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -128,7 +129,7 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
 
     try {
       const response = await axios.put(
-        'http://localhost:8080/api/v1/admin/courses/sessions/contents/quizzes',
+        '/api/v1/admin/courses/sessions/contents/quizzes',
         payload,
         {
           headers: {

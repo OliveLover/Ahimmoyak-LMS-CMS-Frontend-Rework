@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
 import AddQuizForm from './AddQuizForm';
-import axios from 'axios';
+import axios from '../../../axios';
 import './AddContentsForm.css';
+
 
 const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
   const [contentId, setContentId] = useState(propContentId || null);
@@ -58,7 +59,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/admin/courses/sessions/contents', payload, {
+      const response = await axios.post('/api/v1/admin/courses/sessions/contents', payload, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -128,7 +129,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
 
     try {
       const response = await axios.put(
-        'http://localhost:8080/api/v1/admin/courses/sessions/contents/quizzes',
+        '/api/v1/admin/courses/sessions/contents/quizzes',
         payload,
         {
           headers: {
@@ -226,21 +227,21 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
       {isEditing && type === 'QUIZ' && (
         <div className="quiz-section">
           {quizzes
-          .slice()
-          .sort((a, b) => a.quizIndex - b.quizIndex)
-          .map((quiz) => (
-            <div key={quiz.quizIndex} className="quiz-form-wrapper">
-              <AddQuizForm
-                quizIndex={quiz.quizIndex}
-                propQuizId={quiz.quizId}
-                propQuestion={quiz.question}
-                propAnswer={quiz.answer}
-                propOptions={quiz.options}
-                propExplanation={quiz.explanation}
-                onRemoveQuiz={() => handleRemoveQuiz(quiz.quizIndex)}
-              />
-            </div>
-          ))}
+            .slice()
+            .sort((a, b) => a.quizIndex - b.quizIndex)
+            .map((quiz) => (
+              <div key={quiz.quizIndex} className="quiz-form-wrapper">
+                <AddQuizForm
+                  quizIndex={quiz.quizIndex}
+                  propQuizId={quiz.quizId}
+                  propQuestion={quiz.question}
+                  propAnswer={quiz.answer}
+                  propOptions={quiz.options}
+                  propExplanation={quiz.explanation}
+                  onRemoveQuiz={() => handleRemoveQuiz(quiz.quizIndex)}
+                />
+              </div>
+            ))}
           <div className="quiz-controls">
             <button type="button" onClick={handleAddQuiz}>
               퀴즈 추가

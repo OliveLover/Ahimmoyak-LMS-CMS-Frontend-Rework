@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import AddSessionForm from "../../components/admin/course/AddSessionForm";
 
@@ -53,7 +53,7 @@ function CreateCourses() {
     }
 
     axios
-      .post("http://localhost:8080/api/v1/admin/courses", courseData)
+      .post('/api/v1/admin/courses', courseData)
       .then((response) => {
         if (response.data && response.data.courseId) {
           setCourseId(response.data.courseId);

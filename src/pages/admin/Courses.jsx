@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../axios';
 import CourseLifecycleStatus from '../../components/admin/course/CourseLifecycleStatus';
 
 
@@ -9,7 +9,7 @@ function Courses() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/api/v1/admin/courses')
+      .get('/api/v1/admin/courses')
       .then((response) => {
         setCourses(response.data.courses || response.data);
       })

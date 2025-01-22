@@ -6,6 +6,7 @@ import './CourseLifecycleStatus.css';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+
 const CourseLifecycleStatus = ({ courses }) => {
   const [lastClickTime, setLastClickTime] = useState(0);
   const navigate = useNavigate();

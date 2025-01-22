@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Badge from 'react-bootstrap/Badge'
 import './AddCourseMeta.css';
 
+
 const AddCourseMeta = ({ courseData, setCourseData }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
