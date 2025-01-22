@@ -4,6 +4,7 @@ import axios from "axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 
+
 function CourseDetails() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
   const [courseData, setCourseData] = useState({

@@ -1,6 +1,7 @@
 import React from 'react';
 import CourseItem from './CourseItem';
 
+
 const CourseList = ({ courses }) => {
   return (
     <div className="container">

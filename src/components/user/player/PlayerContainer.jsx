@@ -4,6 +4,7 @@ import NavbarUI from './navbar/NavbarUI';
 import IndexUI from './index/IndexUI';
 import './PlayerContainer.css';
 
+
 const PlayerContainer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressValue, setProgressValue] = useState(0);

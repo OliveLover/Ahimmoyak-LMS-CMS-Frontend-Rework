@@ -4,6 +4,7 @@ import axios from "axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import AddSessionForm from "../../components/admin/course/AddSessionForm";
 
+
 function CreateCourses() {
   const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
   const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
