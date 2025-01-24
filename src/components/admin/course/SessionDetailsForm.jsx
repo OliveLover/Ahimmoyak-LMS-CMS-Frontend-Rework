@@ -95,10 +95,40 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
     }
   };
 
-  const handleEditSession = () => {
-    setIsEditing(true);
-    setIsSessionCreated(false);
+  const updateSession = async (updatedField) => {
+    if (!sessionId || !courseId) {
+      return;
+    }
+
+    const payload = {
+      courseId,
+      sessionId,
+      sessionTitle: updatedField.title || sessionTitle,
+    };
+
+    try {
+      const response = await axios.put('/api/v1/admin/courses/sessions', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status != 200) {
+        alert(`차시 업데이트 실패: ${response.data.message}`);
+      }
+    } catch {
+      console.error('Error updating session:', error);
+      alert('차시 업데이트 중 오류가 발생했습니다.');
+    }
   };
+
+  const handleSessionTitleBlur = () => {
+    updateSession({ sessionTitle });
+  }
+
+  const handleSessionTitleChange = (e) => {
+    setSessionTitle(e.target.value);
+  }
 
   const toggleContentVisibility = () => {
     setIsContentVisible(!isContentVisible);
@@ -128,8 +158,9 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           className="session-details-form-input-field"
           placeholder="차시 제목을 입력하세요"
           value={sessionTitle}
-          onChange={handleInputChange}
-          disabled={isSessionCreated}
+          onChange={handleSessionTitleChange}
+          onBlur={handleSessionTitleBlur}
+        // disabled={isSessionCreated}
         />
       </div>
 

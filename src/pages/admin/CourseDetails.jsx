@@ -21,7 +21,6 @@ function CourseDetails() {
     cardType: [],
     sessions: [],
   });
-  // const [sessions, setSessions] = useState([{ formId: 1, index: 1 }]);
 
   const navigate = useNavigate();
   const { courseId } = useParams();
@@ -40,19 +39,13 @@ function CourseDetails() {
   }, [courseId]);
 
   const addSessionForm = () => {
-    // 새로운 sessionId는 기존 세션들의 최대값 + 1
     const newSessionId = courseData.sessions.length > 0 ? Math.max(...courseData.sessions.map((session) => session.sessionId)) + 1 : 1;
-
-    // 새로운 세션의 인덱스는 기존 세션의 길이 + 1
     const newSessionIndex = courseData.sessions.length + 1;
-
-    // 새로 추가할 세션 객체
     const newSession = { sessionId: newSessionId, sessionIndex: newSessionIndex, sessionTitle: "", contents: [] };
 
-    // courseData의 sessions 배열에 새로운 세션 추가
     setCourseData((prevData) => ({
       ...prevData,
-      sessions: [...prevData.sessions, newSession], // 기존 sessions 배열에 새로운 세션 추가
+      sessions: [...prevData.sessions, newSession],
     }));
   };
 

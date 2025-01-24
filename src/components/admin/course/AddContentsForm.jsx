@@ -46,7 +46,7 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
         },
       });
 
-      if (response.status !== 200)  {
+      if (response.status !== 200) {
         alert(`콘텐츠 업데이트 실패: ${response.data.message}`);
       }
     } catch (error) {
