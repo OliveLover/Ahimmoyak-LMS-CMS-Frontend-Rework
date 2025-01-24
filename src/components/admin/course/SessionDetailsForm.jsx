@@ -132,7 +132,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           disabled={isSessionCreated}
         />
       </div>
-      
+
       {!isSessionCreated && (
         <button className="add-session-btn add-session-btn-primary" onClick={handleCreateSession}>
           확인
