@@ -29,7 +29,6 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
 
   const updateContent = async (updatedField) => {
     if (!contentId || !courseId) {
-      console.error('콘텐츠 업데이트가 중단되었습니다.');
       return;
     }
 

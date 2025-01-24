@@ -7,12 +7,14 @@ import './ContentsDetailsForm.css';
 
 
 const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
-  const [contentId, setContentId] = useState(propContentId || null);
+  const [contentId, setContentId] = useState(
+    propContentId && String(propContentId).includes('content_') ? propContentId : null
+  );
   const [title, setTitle] = useState(propContentTitle || '');
   const [file, setFile] = useState(null);
   const [type, setType] = useState(propContentType || 'VIDEO');
   const [quizzes, setQuizzes] = useState(propQuizzes || []);
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(contentId === null ? false : true);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -26,6 +28,48 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
     if (confirmRemove) {
       onRemove(contentId);
     }
+  };
+
+  const updateContent = async (updatedField) => {
+    if (!contentId || !courseId) {
+      return;
+    }
+
+    const payload = {
+      courseId,
+      contentId,
+      contentTitle: updatedField.title || title,
+      contentType: updatedField.type || type,
+    };
+
+    try {
+      const response = await axios.put('/api/v1/admin/courses/sessions/contents', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status !== 200) {
+        alert(`콘텐츠 업데이트 실패: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error('Error updating content:', error);
+      alert('콘텐츠 업데이트 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleTitleBlur = () => {
+    updateContent({ title });
+  };
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleTypeChange = (e) => {
+    const newType = e.target.value;
+    setType(newType);
+    updateContent({ type: newType });
   };
 
   const handleAddQuiz = () => {
@@ -175,35 +219,30 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
             type="text"
             id={`title-${contentId}`}
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={handleTitleChange}
+            onBlur={handleTitleBlur}
             placeholder="인덱스의 제목을 입력하세요"
             required
           />
-          {isEditing ? (
-            <button
-              className="details-content-btn details-content-btn-primary"
-              onClick={handleEditContent}
-            >
-              수정
-            </button>
-          ) : (
-            <button
-              className="details-content-btn details-content-btn-primary"
-              onClick={handleCreateContent}
-            >
-              확인
-            </button>
-          )}
         </div>
       </div>
-
+      {!isEditing && (
+        <div className="details-content-btn-wrap">
+          <button
+            className="details-content-btn details-content-btn-primary"
+            onClick={handleCreateContent}
+          >
+            확인
+          </button>
+        </div>
+      )}
       {isEditing && (
         <div className="content-input-group-file-and-type">
           <div className="content-input-group">
             <select
               id={`type-${contentId}`}
               value={type}
-              onChange={(e) => setType(e.target.value)}
+              onChange={handleTypeChange}
               required
             >
               <option value="VIDEO">영상</option>

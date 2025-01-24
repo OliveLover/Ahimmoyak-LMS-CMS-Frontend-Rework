@@ -7,9 +7,9 @@ import { useState, useRef, useEffect } from 'react';
 import axios from '../../../axios';
 
 
-const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRemoveSession, propContents }) => {
+const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitle, onRemoveSession, propContents }) => {
   const [contents, setContents] = useState(propContents || []);
-  const [sessionId, setSessionId] = useState(null);
+  const [sessionId, setSessionId] = useState(propSessionId || null);
   const [nextContentId, setNextContentId] = useState(1);
   const [localSessionTitle, setLocalSessionTitle] = useState(sessionTitle || '');
   const [isSessionCreated, setIsSessionCreated] = useState(true);
@@ -53,7 +53,7 @@ const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRe
   const removeSession = () => {
     const confirmRemove = window.confirm('현재 차시를 제거하시겠습니까?');
     if (confirmRemove) {
-      onRemoveSession(formId);
+      onRemoveSession(sessionId);
     }
   };
 
@@ -120,7 +120,7 @@ const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRe
       <div className="session-details-btn-wrap">
         <input
           type="text"
-          id={`sessionTitle-${formId}`}
+          id={`sessionTitle-${sessionId}`}
           className="session-details-form-input-field"
           placeholder="차시 제목을 입력하세요"
           value={localSessionTitle}
@@ -144,7 +144,9 @@ const SessionDetailsForm = ({ formId, courseId, sessionIndex, sessionTitle, onRe
             className={`session-details-contents ${isContentVisible ? 'visible' : 'hidden'}`}
             ref={contentRef}
           >
-            {contents.map((content) => (
+            {contents
+            .sort((a, b) => a.contentIndex - b.contentIndex)
+            .map((content) => (
               <ContentsDetailsForm
                 key={content.contentId}
                 sessionId={sessionId}

@@ -93,7 +93,7 @@ function CourseDetails() {
             .map((session) => (
               <SessionDetailsForm
                 key={session.sessionId}
-                formId={session.sessionId}
+                propSessionId={session.sessionId}
                 courseId={courseId}
                 sessionIndex={session.sessionIndex}
                 sessionTitle={session.sessionTitle}
