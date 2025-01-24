@@ -15,12 +15,13 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitl
   const [isSessionCreated, setIsSessionCreated] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(true);
+  const [contentHeight, setContentHeight] = useState(0);
 
   const contentRef = useRef(null);
 
   useEffect(() => {
     if (contentRef.current) {
-      contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
+      setContentHeight(contentRef.current.scrollHeight);
     }
   }, [contents, isContentVisible]);
 
@@ -145,20 +146,20 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitl
             ref={contentRef}
           >
             {contents
-            .sort((a, b) => a.contentIndex - b.contentIndex)
-            .map((content) => (
-              <ContentsDetailsForm
-                key={content.contentId}
-                sessionId={sessionId}
-                courseId={courseId}
-                contentIndex={content.contentIndex}
-                propContentId={content.contentId}
-                propContentTitle={content.contentTitle}
-                propContentType={content.contentType}
-                propQuizzes={content.quizzes}
-                onRemove={removeContent}
-              />
-            ))}
+              .sort((a, b) => a.contentIndex - b.contentIndex)
+              .map((content) => (
+                <ContentsDetailsForm
+                  key={content.contentId}
+                  sessionId={sessionId}
+                  courseId={courseId}
+                  contentIndex={content.contentIndex}
+                  propContentId={content.contentId}
+                  propContentTitle={content.contentTitle}
+                  propContentType={content.contentType}
+                  propQuizzes={content.quizzes}
+                  onRemove={removeContent}
+                />
+              ))}
           </div>
 
           <button className="session-details-btn session-details-btn-primary" onClick={addContent}>
