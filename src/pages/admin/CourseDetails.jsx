@@ -44,6 +44,14 @@ function CourseDetails() {
     const newIndex = forms.length + 1;
     const newForm = { formId: newFormId, index: newIndex };
     setForms([...forms, newForm]);
+
+    setCourseData((prevData) => ({
+      ...prevData,
+      sessions: [
+        ...prevData.sessions,
+        { sessionId: newFormId, sessionIndex: newIndex, sessionTitle: "", contents: [] },
+      ],
+    }));
   };
 
   const removeSessionForm = (formId) => {
@@ -96,7 +104,7 @@ function CourseDetails() {
                 propSessionId={session.sessionId}
                 courseId={courseId}
                 sessionIndex={session.sessionIndex}
-                sessionTitle={session.sessionTitle}
+                propSessionTitle={session.sessionTitle}
                 propContents={session.contents}
                 onRemoveSession={removeSessionForm}
               />

@@ -112,6 +112,7 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
           <button className="add-session-btn add-session-btn-toggle" onClick={toggleContentVisibility}>
             {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </button>
+          <h2>{sessionIndex} 차시</h2>
         </div>
         <button className="add-session-remove-button" onClick={removeSession}>
           <IoClose />

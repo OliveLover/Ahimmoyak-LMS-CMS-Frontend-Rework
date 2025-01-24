@@ -7,12 +7,14 @@ import { useState, useRef, useEffect } from 'react';
 import axios from '../../../axios';
 
 
-const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitle, onRemoveSession, propContents }) => {
+const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSessionTitle, onRemoveSession, propContents }) => {
   const [contents, setContents] = useState(propContents || []);
-  const [sessionId, setSessionId] = useState(propSessionId || null);
+  const [sessionId, setSessionId] = useState(
+    propSessionId && String(propSessionId).includes('session_') ? propSessionId : null
+  );
   const [nextContentId, setNextContentId] = useState(1);
-  const [localSessionTitle, setLocalSessionTitle] = useState(sessionTitle || '');
-  const [isSessionCreated, setIsSessionCreated] = useState(true);
+  const [sessionTitle, setSessionTitle] = useState(propSessionTitle || '');
+  const [isSessionCreated, setIsSessionCreated] = useState(sessionId === null ? false : true);
   const [isEditing, setIsEditing] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(true);
   const [contentHeight, setContentHeight] = useState(0);
@@ -59,11 +61,11 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitl
   };
 
   const handleInputChange = (event) => {
-    setLocalSessionTitle(event.target.value);
+    setSessionTitle(event.target.value);
   };
 
   const handleCreateSession = async () => {
-    if (!localSessionTitle.trim()) {
+    if (!sessionTitle.trim()) {
       alert('차시 제목을 입력해주세요.');
       return;
     }
@@ -71,7 +73,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitl
     const sessionData = {
       courseId,
       sessionId,
-      sessionTitle: localSessionTitle,
+      sessionTitle: sessionTitle,
       sessionIndex,
     };
 
@@ -112,6 +114,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitl
           <button className="session-details-btn session-details-btn-toggle" onClick={toggleContentVisibility}>
             {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </button>
+          <h2>{sessionIndex} 차시</h2>
         </div>
         <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />
@@ -124,7 +127,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, sessionTitl
           id={`sessionTitle-${sessionId}`}
           className="session-details-form-input-field"
           placeholder="차시 제목을 입력하세요"
-          value={localSessionTitle}
+          value={sessionTitle}
           onChange={handleInputChange}
           disabled={isSessionCreated}
         />
