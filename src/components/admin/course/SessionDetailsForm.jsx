@@ -131,16 +131,13 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           onChange={handleInputChange}
           disabled={isSessionCreated}
         />
-        {!isSessionCreated ? (
-          <button className="session-details-btn session-details-btn-primary" onClick={handleCreateSession}>
-            확인
-          </button>
-        ) : (
-          <button className="session-details-btn session-details-btn-primary" onClick={handleEditSession}>
-            수정
-          </button>
-        )}
       </div>
+      
+      {!isSessionCreated && (
+        <button className="add-session-btn add-session-btn-primary" onClick={handleCreateSession}>
+          확인
+        </button>
+      )}
 
       {isSessionCreated && (
         <>
