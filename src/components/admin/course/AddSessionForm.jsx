@@ -112,6 +112,7 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
           <button className="add-session-btn add-session-btn-toggle" onClick={toggleContentVisibility}>
             {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </button>
+          <h2>{sessionIndex} 차시</h2>
         </div>
         <button className="add-session-remove-button" onClick={removeSession}>
           <IoClose />
@@ -127,16 +128,13 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
           onChange={handleInputChange}
           disabled={isSessionCreated}
         />
-        {!isSessionCreated ? (
-          <button className="add-session-btn add-session-btn-primary" onClick={handleCreateSession}>
-            확인
-          </button>
-        ) : (
-          <button className="add-session-btn add-session-btn-primary" onClick={handleEditSession}>
-            수정
-          </button>
-        )}
       </div>
+
+      {!isSessionCreated && (
+        <button className="add-session-btn add-session-btn-primary" onClick={handleCreateSession}>
+          확인
+        </button>
+      )}
 
       {isSessionCreated && (
         <>

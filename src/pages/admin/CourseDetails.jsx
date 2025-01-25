@@ -6,7 +6,6 @@ import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm
 
 
 function CourseDetails() {
-  const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
@@ -40,11 +39,16 @@ function CourseDetails() {
   }, [courseId]);
 
   const addSessionForm = () => {
-    const newFormId = forms.length > 0 ? Math.max(...forms.map((form) => form.formId)) + 1 : 1;
-    const newIndex = forms.length + 1;
-    const newForm = { formId: newFormId, index: newIndex };
-    setForms([...forms, newForm]);
+    const newSessionId = courseData.sessions.length > 0 ? Math.max(...courseData.sessions.map((session) => session.sessionId)) + 1 : 1;
+    const newSessionIndex = courseData.sessions.length + 1;
+    const newSession = { sessionId: newSessionId, sessionIndex: newSessionIndex, sessionTitle: "", contents: [] };
+
+    setCourseData((prevData) => ({
+      ...prevData,
+      sessions: [...prevData.sessions, newSession],
+    }));
   };
+
 
   const removeSessionForm = (formId) => {
     const updatedForms = forms.filter((form) => form.formId !== formId);
@@ -92,11 +96,11 @@ function CourseDetails() {
             .sort((a, b) => a.sessionIndex - b.sessionIndex)
             .map((session) => (
               <SessionDetailsForm
-                key={session.sessionId}
-                formId={session.sessionId}
+                key={session.sessionId || courseData.sessions.length}
+                propSessionId={session.sessionId}
                 courseId={courseId}
                 sessionIndex={session.sessionIndex}
-                sessionTitle={session.sessionTitle}
+                propSessionTitle={session.sessionTitle}
                 propContents={session.contents}
                 onRemoveSession={removeSessionForm}
               />
