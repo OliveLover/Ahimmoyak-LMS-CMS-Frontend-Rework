@@ -7,6 +7,7 @@ const ContentsUploadForm = ({ courseId }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
 
   const initiateMultipartUpload = async (fileExtension) => {
     try {
@@ -59,6 +60,7 @@ const ContentsUploadForm = ({ courseId }) => {
 
       if (response.status === 200) {
         alert("파일 업로드 완료!");
+        setProgress(100); // 진행률을 100%로 설정
       } else {
         alert("멀티파트 업로드 완료 실패");
       }
@@ -91,7 +93,7 @@ const ContentsUploadForm = ({ courseId }) => {
       const presignedUrls = await getPresignedUrls(newUploadId, newFileKey, fileSize);
       if (presignedUrls) {
         const completedParts = [];
-        const partSize = 5 * 1024 * 1024; // 5MB
+        const partSize = 5 * 1024 * 1024;
         const totalParts = Math.ceil(fileSize / partSize);
 
         for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
@@ -102,6 +104,11 @@ const ContentsUploadForm = ({ courseId }) => {
           try {
             const response = await axios.put(presignedUrls[partNumber - 1], partData, {
               headers: { "Content-Type": "application/octet-stream" },
+              onUploadProgress: (progressEvent) => {
+                const partProgress = (progressEvent.loaded / progressEvent.total) * 100;
+                const overallProgress = ((partNumber - 1) / totalParts) * 100 + (partProgress / totalParts);
+                setProgress(overallProgress.toFixed(2));
+              },
             });
 
             if (response.status === 200) {
@@ -129,8 +136,11 @@ const ContentsUploadForm = ({ courseId }) => {
   };
 
   return (
-    <div className="contnets-upload-form">
+    <div className="contents-upload-form">
       <input type="file" onChange={handleFileChange} />
+      <div className="upload-progress">
+        <p>업로드 진행률: {progress}%</p>
+      </div>
     </div>
   );
 };
