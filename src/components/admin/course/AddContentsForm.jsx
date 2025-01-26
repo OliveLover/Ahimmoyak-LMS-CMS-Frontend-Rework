@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
+import ContentsUploadForm from './ContentsUploadForm';
 import AddQuizForm from './AddQuizForm';
 import axios from '../../../axios';
 import './AddContentsForm.css';
 
+
 const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
   const [contentId, setContentId] = useState(propContentId || null);
   const [title, setTitle] = useState(propContentTitle || '');
-  const [file, setFile] = useState(null);
   const [type, setType] = useState(propContentType || 'VIDEO');
   const [quizzes, setQuizzes] = useState(propQuizzes || []);
   const [isEditing, setIsEditing] = useState(false);
-  const [upload, setUploadId] = useState(null);
-  const [presignedUrls, setPresignedUrls] = useState([]);
-  const [fileKey, setFileKey] = useState(null);
 
   const handleRemove = () => {
     const confirmRemove = window.confirm('현재 콘텐츠 구성내용을 삭제하시겠습니까?');
@@ -115,129 +113,6 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
     } catch (error) {
       console.error('Error creating content:', error);
       alert('콘텐츠 추가 중 오류가 발생했습니다.');
-    }
-  };
-
-  const initiateMultipartUpload = async (file, fileExtension) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await axios.post('/api/v1/s3/initiate', {
-        fileKeyPrefix: courseId + '/' + 'VIDEO/',
-        fileKeyPostfix: `.${fileExtension}`
-      });
-
-      if (response.status === 200) {
-        const { uploadId, fileKey } = response.data;
-        return { uploadId, fileKey };
-      } else {
-        alert('업로드가 실패하였습니다.');
-      }
-    } catch (error) {
-      console.error('업로드 시작 중 오류 발생:', error);
-      alert('업로드 시작 중 오류가 발생했습니다.');
-    }
-  };
-
-  const getPresignedUrls = async (uploadId, fileKey, fileSize) => {
-    try {
-      const response = await axios.post('/api/v1/s3/presigned-url', {
-        uploadId,
-        fileKey,
-        fileSize,
-      });
-
-      if (response.status === 200) {
-        const { presignedUrls } = response.data;
-        return presignedUrls;
-      } else {
-        alert('Presigned URL 생성 실패');
-      }
-    } catch (error) {
-      console.error('Presigned URL 생성 중 오류 발생:', error);
-      alert('Presigned URL 생성 중 오류가 발생했습니다.');
-    }
-  };
-
-  const completeMultipartUpload = async (fileKey, uploadId, completedParts) => {
-    try {
-      const response = await axios.put("/api/v1/s3/complete", {
-        fileKey,
-        uploadId,
-        completedParts,
-      });
-
-      if (response.status !== 200) {
-        alert('멀티파트 업로드 완료 실패');
-      }
-    } catch (error) {
-      console.error('멀티파트 업로드 완료 중 오류 발생:', error);
-      alert('멀티파트 업로드 완료 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleFileChange = async (e) => {
-    const selectedFile = e.target.files[0];
-    const fileSize = selectedFile.size;
-
-    if (selectedFile) {
-      setFile(selectedFile);
-
-      const fileExtension = selectedFile.name.split('.').pop().toLowerCase();
-
-      if (!['mp4'].includes(fileExtension)) {
-        alert('MP4 파일만 업로드 가능합니다.');
-        return;
-      }
-
-      const { uploadId, fileKey } = await initiateMultipartUpload(selectedFile, fileExtension);
-      if (uploadId) {
-        setUploadId(uploadId);
-        setFileKey(fileKey);
-
-        const presignedUrls = await getPresignedUrls(uploadId, fileKey, fileSize);
-        if (presignedUrls) {
-          setPresignedUrls(presignedUrls);
-
-          const completedParts = [];
-          const partSize = 5 * 1024 * 1024;
-          const totalParts = Math.ceil(fileSize / partSize);
-
-          for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
-            const startByte = (partNumber - 1) * partSize;
-            const endByte = Math.min(partNumber * partSize, fileSize);
-            const partData = selectedFile.slice(startByte, endByte);
-            const partUrl = presignedUrls[partNumber - 1];
-
-            try {
-              const response = await axios.put(partUrl, partData, {
-                headers: {
-                  'Content-Type': "application/octet-stream",
-                }
-              });
-
-              if (response.status === 200) {
-                const eTag = response.headers.etag.replace(/"/g, "");
-                completedParts.push({
-                  partNumber,
-                  eTag,
-                });
-              } else {
-                console.error(`파트 업로드 실패: ${partNumber}`);
-              }
-            } catch (error) {
-              console.error(`파트 업로드 중 오류 발생: ${error}`);
-            }
-          }
-
-          if (completedParts.length === presignedUrls.length) {
-            await completeMultipartUpload(fileKey, uploadId, completedParts);
-          } else {
-            alert('모든 파트가 업로드되지 않았습니다.');
-          }
-        }
-      }
     }
   };
 
@@ -365,13 +240,8 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
 
       {isEditing && type === 'VIDEO' && (
         <div className="content-input-group">
-          <input
-            type="file"
-            id={`file-${contentId}`}
-            accept="video/*"
-            onChange={handleFileChange}
-          />
-          {file && <p>업로드된 파일: {file.name}</p>}
+          <ContentsUploadForm courseId={courseId} />
+
         </div>
       )}
 
