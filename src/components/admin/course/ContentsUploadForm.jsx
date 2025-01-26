@@ -1,13 +1,19 @@
 import { useState } from "react";
-import './ContentsUploadForm.css';
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import axios from "../../../axios";
-
+import { PiUploadFill } from "react-icons/pi";
+import { CiRedo } from "react-icons/ci";
+import "./ContentsUploadForm.css";
 
 const ContentsUploadForm = ({ courseId }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
   const initiateMultipartUpload = async (fileExtension) => {
     try {
@@ -60,7 +66,8 @@ const ContentsUploadForm = ({ courseId }) => {
 
       if (response.status === 200) {
         alert("파일 업로드 완료!");
-        setProgress(100); // 진행률을 100%로 설정
+        setProgress(100);
+        setUploadComplete(true);  // 업로드 완료 처리
       } else {
         alert("멀티파트 업로드 완료 실패");
       }
@@ -70,8 +77,7 @@ const ContentsUploadForm = ({ courseId }) => {
     }
   };
 
-  const handleFileChange = async (e) => {
-    const selectedFile = e.target.files[0];
+  const handleFileChange = async (selectedFile) => {
     if (!selectedFile) return;
 
     const fileSize = selectedFile.size;
@@ -83,6 +89,8 @@ const ContentsUploadForm = ({ courseId }) => {
     }
 
     setFile(selectedFile);
+    setIsUploading(true);
+    setUploadComplete(false);
 
     const initData = await initiateMultipartUpload(fileExtension);
     if (initData) {
@@ -128,19 +136,90 @@ const ContentsUploadForm = ({ courseId }) => {
 
         if (completedParts.length === totalParts) {
           await completeMultipartUpload(newFileKey, newUploadId, completedParts);
+          setIsUploading(false);
         } else {
           alert("모든 파트를 업로드하지 못했습니다.");
+          setIsUploading(false);
         }
       }
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const droppedFile = e.dataTransfer.files[0];
+    handleFileChange(droppedFile);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleClick = () => {
+    document.getElementById("file-input").click();
+  };
+
+  const handleRetryUpload = () => {
+    setUploadComplete(false);
+    setIsUploading(false);
+    setProgress(0);
+    setFile(null);
+    setUploadId(null);
+    setFileKey(null);
+  };
+
   return (
-    <div className="contents-upload-form">
-      <input type="file" onChange={handleFileChange} />
-      <div className="upload-progress">
-        <p>업로드 진행률: {progress}%</p>
-      </div>
+    <div
+      className={`contents-upload-form ${isDragging ? "dragging" : ""}`}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+    >
+      {!isUploading && !uploadComplete && (
+        <div className="contents-drop-zone" onClick={handleClick}>
+          <div className="contents-upload-button">
+            <PiUploadFill className="contents-upload-square-plus-icon" />
+            <h6>파일을 여기에 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</h6>
+          </div>
+          <input
+            id="file-input"
+            type="file"
+            onChange={(e) => handleFileChange(e.target.files[0])}
+            style={{ display: "none" }}
+          />
+        </div>
+      )}
+
+      {isUploading && (
+        <div className="upload-progress">
+          <CircularProgressbar
+            value={progress}
+            text={`${progress}%`}
+            styles={buildStyles({
+              textColor: "#f88",
+              pathColor: "#4caf50",
+              trailColor: "#d6d6d6",
+            })}
+          />
+        </div>
+      )}
+
+      {uploadComplete && (
+        <div className="upload-complete">
+          <h6>업로드가 완료되었습니다!</h6>
+          <div className="contents-upload-complete-button" onClick={handleRetryUpload}>
+            <CiRedo className="contents-upload-complete-plus-icon" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

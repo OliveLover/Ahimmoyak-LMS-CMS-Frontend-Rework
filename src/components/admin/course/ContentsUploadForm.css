@@ -1,3 +1,64 @@
 .contents-upload-form {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 10rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: border-color 0.3s;
+  background-color: white;
+}
+
+.contents-upload-form.dragging {
+  border-color: #4caf50;
+  background-color: #f9fff9;
+}
+
+.contents-drop-zone {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+}
+
+.upload-progress {
+  margin-top: 20px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contents-upload-form h6 {
+  font-size: 18px;
+  color: #555;
+  margin: 0;
+  padding: 0;
+}
+
+.contents-upload-button{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.contents-upload-square-plus-icon {
+  font-size: 5rem;
+}
+
+.contents-upload-complete-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.contents-upload-complete-plus-icon {
+  font-size: 2rem;
 }
