@@ -6,10 +6,14 @@ import { PiUploadFill } from "react-icons/pi";
 import { CiRedo } from "react-icons/ci";
 import "./ContentsUploadForm.css";
 
-const ContentsUploadForm = ({ courseId }) => {
+const ContentsUploadForm = ({ courseId, contentId }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
+  const [fileId, setFileId] = useState(null);
   const [file, setFile] = useState(null);
+  const [fileSize, setFileSize] = useState(null);
+  const [fileName, setFileName] = useState(null);
+  const [videoDuration, setVideoDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -56,11 +60,18 @@ const ContentsUploadForm = ({ courseId }) => {
     }
   };
 
-  const completeMultipartUpload = async (fileKey, uploadId, completedParts) => {
+  const completeMultipartUpload = async (fileKey, uploadId, fileId, fileSize, fileName, videoDuration, completedParts) => {
     try {
       const response = await axios.put("/api/v1/s3/complete", {
+        courseId,
+        contentId,
         fileKey,
         uploadId,
+        fileId,
+        fileSize,
+        fileName,
+        fileType: "VIDEO",
+        videoDuration,
         completedParts,
       });
 
@@ -79,72 +90,87 @@ const ContentsUploadForm = ({ courseId }) => {
 
   const handleFileChange = async (selectedFile) => {
     if (!selectedFile) return;
-
+  
     const fileSize = selectedFile.size;
+    const fileName = selectedFile.name;
     const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
-
+  
     if (!["mp4"].includes(fileExtension)) {
       alert("MP4 파일만 업로드 가능합니다.");
       return;
     }
-
+  
     setFile(selectedFile);
+    setFileName(fileName);
+    setFileSize(fileSize);
     setIsUploading(true);
     setUploadComplete(false);
-
-    const initData = await initiateMultipartUpload(fileExtension);
-    if (initData) {
-      const { uploadId: newUploadId, fileKey: newFileKey } = initData;
-      setUploadId(newUploadId);
-      setFileKey(newFileKey);
-
-      const presignedUrls = await getPresignedUrls(newUploadId, newFileKey, fileSize);
-      if (presignedUrls) {
-        const completedParts = [];
-        const partSize = 5 * 1024 * 1024;
-        const totalParts = Math.ceil(fileSize / partSize);
-
-        for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
-          const startByte = (partNumber - 1) * partSize;
-          const endByte = Math.min(partNumber * partSize, fileSize);
-          const partData = selectedFile.slice(startByte, endByte);
-
-          try {
-            const response = await axios.put(presignedUrls[partNumber - 1], partData, {
-              headers: { "Content-Type": "application/octet-stream" },
-              onUploadProgress: (progressEvent) => {
-                const partProgress = (progressEvent.loaded / progressEvent.total) * 100;
-                const overallProgress = ((partNumber - 1) / totalParts) * 100 + (partProgress / totalParts);
-                setProgress(overallProgress.toFixed(2));
-              },
-            });
-
-            if (response.status === 200) {
-              completedParts.push({
-                partNumber,
-                eTag: response.headers.etag.replace(/"/g, ""),
+  
+    const videoElement = document.createElement("video");
+    videoElement.preload = "metadata";
+  
+    videoElement.onloadedmetadata = async () => {
+      window.URL.revokeObjectURL(videoElement.src);
+      const duration = Math.floor(videoElement.duration);
+      setVideoDuration(duration);
+  
+      const initData = await initiateMultipartUpload(fileExtension);
+      if (initData) {
+        const { uploadId: newUploadId, fileKey: newFileKey, fileId: newFileId } = initData;
+        setUploadId(newUploadId);
+        setFileKey(newFileKey);
+        setFileId(newFileId);
+  
+        const presignedUrls = await getPresignedUrls(newUploadId, newFileKey, fileSize);
+        if (presignedUrls) {
+          const completedParts = [];
+          const partSize = 5 * 1024 * 1024;
+          const totalParts = Math.ceil(fileSize / partSize);
+  
+          for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+            const startByte = (partNumber - 1) * partSize;
+            const endByte = Math.min(partNumber * partSize, fileSize);
+            const partData = selectedFile.slice(startByte, endByte);
+  
+            try {
+              const response = await axios.put(presignedUrls[partNumber - 1], partData, {
+                headers: { "Content-Type": "application/octet-stream" },
+                onUploadProgress: (progressEvent) => {
+                  const partProgress = (progressEvent.loaded / progressEvent.total) * 100;
+                  const overallProgress = ((partNumber - 1) / totalParts) * 100 + (partProgress / totalParts);
+                  setProgress(overallProgress.toFixed(2));
+                },
               });
-            } else {
-              console.error(`파트 ${partNumber} 업로드 실패`);
+  
+              if (response.status === 200) {
+                completedParts.push({
+                  partNumber,
+                  eTag: response.headers.etag.replace(/"/g, ""),
+                });
+              } else {
+                console.error(`파트 ${partNumber} 업로드 실패`);
+                break;
+              }
+            } catch (error) {
+              console.error(`파트 ${partNumber} 업로드 중 오류 발생`, error);
               break;
             }
-          } catch (error) {
-            console.error(`파트 ${partNumber} 업로드 중 오류 발생`, error);
-            break;
+          }
+  
+          if (completedParts.length === totalParts) {
+            await completeMultipartUpload(newFileKey, newUploadId, newFileId, fileSize, fileName, duration, completedParts);
+            setIsUploading(false);
+          } else {
+            alert("모든 파트를 업로드하지 못했습니다.");
+            setIsUploading(false);
           }
         }
-
-        if (completedParts.length === totalParts) {
-          await completeMultipartUpload(newFileKey, newUploadId, completedParts);
-          setIsUploading(false);
-        } else {
-          alert("모든 파트를 업로드하지 못했습니다.");
-          setIsUploading(false);
-        }
       }
-    }
+    };
+  
+    videoElement.src = URL.createObjectURL(selectedFile);
   };
-
+  
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
