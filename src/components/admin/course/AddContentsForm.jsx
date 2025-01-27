@@ -240,7 +240,10 @@ const AddContentsForm = ({ contentIndex, onRemove, courseId, sessionId, propCont
 
       {isEditing && type === 'VIDEO' && (
         <div className="content-input-group">
-          <ContentsUploadForm courseId={courseId} />
+          <ContentsUploadForm 
+          courseId={courseId}
+          contentId={contentId}
+          />
         </div>
       )}
 

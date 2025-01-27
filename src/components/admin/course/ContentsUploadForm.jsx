@@ -76,9 +76,8 @@ const ContentsUploadForm = ({ courseId, contentId }) => {
       });
 
       if (response.status === 200) {
-        alert("파일 업로드 완료!");
         setProgress(100);
-        setUploadComplete(true);  // 업로드 완료 처리
+        setUploadComplete(true);
       } else {
         alert("멀티파트 업로드 완료 실패");
       }
