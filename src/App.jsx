@@ -6,6 +6,7 @@ import Courses from './pages/admin/Courses';
 import Applications from './pages/admin/Applications';
 import CreateCourses from './pages/admin/CreateCourses';
 import CourseDetails from './pages/admin/CourseDetails';
+import CoursePreview from './pages/admin/CoursePreview';
 
 import UserSidebar from './components/user/sidebar/UserSidebar';
 import Header from './components/user/header/Header';
@@ -62,11 +63,13 @@ function App() {
               <AdminSidebar />
               <div className="admin-content">
                 <Routes>
+                  <Route index element={<Dashboards />} />
                   <Route path="dashboards" element={<Dashboards />} />
                   <Route path="courses" element={<Courses />} />
                   <Route path="applications" element={<Applications />} />
                   <Route path="create-courses" element={<CreateCourses />} />
                   <Route path="course-info/:courseId" element={<CourseDetails />} />
+                  <Route path="course-info/:courseId/preview" element={<CoursePreview />} />
                 </Routes>
               </div>
             </div>
