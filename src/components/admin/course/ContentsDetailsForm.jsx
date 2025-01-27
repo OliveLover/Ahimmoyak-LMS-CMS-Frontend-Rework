@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
+import ContentsUploadForm from './ContentsUploadForm';
 import AddQuizForm from './AddQuizForm';
 import axios from '../../../axios';
 import './ContentsDetailsForm.css';
@@ -199,11 +200,6 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
     }
   };
 
-  const handleEditContent = () => {
-    setIsEditing(true);
-  };
-
-
   return (
     <div className="details-contents-form">
       <button className="details-course-remove-button" onClick={handleRemove}>
@@ -254,13 +250,7 @@ const ContentsDetailsForm = ({ contentIndex, onRemove, courseId, sessionId, prop
 
       {isEditing && type === 'VIDEO' && (
         <div className="content-input-group">
-          <input
-            type="file"
-            id={`file-${contentId}`}
-            accept="video/*"
-            onChange={handleFileChange}
-          />
-          {file && <p>업로드된 파일: {file.name}</p>}
+          <ContentsUploadForm courseId={courseId} />
         </div>
       )}
 
