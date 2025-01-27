@@ -27,7 +27,7 @@ const CourseLifecycleStatus = ({ courses }) => {
       field: "fundingType",
       headerName: "환급 유형",
       valueGetter: (params) => {
-        return params.data.fundingType === "PENDING" ? "미지정" : params.data.fundingType;
+        return fundingTypeMapping[params.data.fundingType] || "미지정"
       },
       sortable: true,
       filter: 'agTextColumnFilter'
@@ -143,3 +143,8 @@ const ncsMapping = {
   ENVIRONMENT_ENERGY_SAFETY: "23. 환경·에너지·안전",
   AGRICULTURE_FORESTRY_FISHERIES: "24. 농림어업"
 };
+
+const fundingTypeMapping = {
+  REFUNDABLE: "환급 과정",
+  NON_REFUNDABLE: "비환급 과정"
+}
