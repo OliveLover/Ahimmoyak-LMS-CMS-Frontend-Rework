@@ -4,6 +4,7 @@ import NavbarUI from './navbar/NavbarUI';
 import IndexUI from './index/IndexUI';
 import './PlayerContainer.css';
 
+
 const PlayerContainer = ({ propSession }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
@@ -13,15 +14,20 @@ const PlayerContainer = ({ propSession }) => {
   const [showIndex, setShowIndex] = useState(false);
   const [contentsIndex, setContentIndex] = useState(1);
   const [contentsLength, setContentsLength] = useState(1);
-  
+  const [videoUrl, setVideoUrl] = useState('');
+
   const playerRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
     if (propSession?.contents) {
       setContentsLength(propSession.contents.length);
+      const currentContent = propSession.contents.find(content => content.contentIndex === contentsIndex);
+      if (currentContent?.videoPath) {
+        setVideoUrl(currentContent.videoPath);
+      }
     }
-  }, [propSession]);
+  }, [propSession, contentsIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -96,10 +102,11 @@ const PlayerContainer = ({ propSession }) => {
             handleDuration={handleDuration}
             isMuted={isMuted}
             volume={volume}
+            videoUrl={videoUrl}
           />
           {showIndex && <IndexUI onClose={() => setShowIndex(false)} />}
         </div>
-        
+
         <div className="navbar-container">
           <NavbarUI
             isPlaying={isPlaying}

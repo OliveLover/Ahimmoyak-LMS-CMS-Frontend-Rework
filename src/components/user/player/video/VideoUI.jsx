@@ -1,11 +1,12 @@
 import ReactPlayer from 'react-player';
 
 
-const VideoUI = ({ isPlaying, playerRef, handleProgress, handleDuration, isMuted, volume }) => {
+const VideoUI = ({ isPlaying, playerRef, handleProgress, handleDuration, isMuted, volume, videoUrl }) => {
+  console.log(videoUrl);
   return (
     <ReactPlayer
       ref={playerRef}
-      url="https://raw.githubusercontent.com/OliveLover/quizVideoPlayer/main/video/01.mp4"
+      url={videoUrl}
       playing={isPlaying}
       controls={false}
       width="100%"
