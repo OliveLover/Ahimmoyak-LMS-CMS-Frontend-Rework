@@ -18,7 +18,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
   const [sessionTitle, setSessionTitle] = useState(propSessionTitle || '');
   const [isSessionCreated, setIsSessionCreated] = useState(sessionId === null ? false : true);
   const [isEditing, setIsEditing] = useState(false);
-  const [isContentVisible, setIsContentVisible] = useState(true);
+  const [isContentVisible, setIsContentVisible] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
 
   const contentRef = useRef(null);
@@ -146,7 +146,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
             <MdDragIndicator />
           </button>
           <button className="session-details-btn session-details-btn-toggle" onClick={toggleContentVisibility}>
-            {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
+            {isContentVisible ? <IoIosArrowDown title="접기" /> : <IoIosArrowUp title="펼치기" />}
           </button>
           <h2>{sessionIndex} 차시</h2>
         </div>
@@ -204,11 +204,10 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
                   onRemove={removeContent}
                 />
               ))}
+            <button className="session-details-btn session-details-btn-primary" onClick={addContent}>
+              + 콘텐츠 추가
+            </button>
           </div>
-
-          <button className="session-details-btn session-details-btn-primary" onClick={addContent}>
-            + 콘텐츠 추가
-          </button>
         </>
       )}
     </div>

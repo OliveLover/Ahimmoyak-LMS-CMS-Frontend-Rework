@@ -91,6 +91,10 @@ const PlayerContainer = ({ propSession }) => {
     }
   };
 
+  const onSelectContent = (index) => {
+    setContentIndex(index);
+  };
+
   return (
     <div className="custom-player-container" ref={containerRef}>
       <div className="player-wrapper">
@@ -104,7 +108,14 @@ const PlayerContainer = ({ propSession }) => {
             volume={volume}
             videoUrl={videoUrl}
           />
-          {showIndex && <IndexUI onClose={() => setShowIndex(false)} />}
+          {showIndex && (
+            <IndexUI
+              onClose={() => setShowIndex(false)}
+              contents={propSession.contents}
+              sessionTitle={propSession.sessionTitle}
+              onSelectContent={onSelectContent}
+            />
+          )}
         </div>
 
         <div className="navbar-container">
