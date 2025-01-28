@@ -2,6 +2,7 @@ import './SessionDetailsForm.css';
 import { IoClose } from "react-icons/io5";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { MdDragIndicator } from "react-icons/md";
+import { VscOpenPreview } from "react-icons/vsc";
 import ContentsDetailsForm from './ContentsDetailsForm';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -148,10 +149,10 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
             {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </button>
           <h2>{sessionIndex} 차시</h2>
-          <button className="btn btn-secondary mt-3" onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}>
-            미리보기
-          </button>
         </div>
+        <button className="session-details-preview-button" title="미리보기" onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}>
+          <VscOpenPreview />
+        </button>
         <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />
         </button>
@@ -166,7 +167,6 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           value={sessionTitle}
           onChange={handleSessionTitleChange}
           onBlur={handleSessionTitleBlur}
-        // disabled={isSessionCreated}
         />
       </div>
 

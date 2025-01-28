@@ -39,6 +39,22 @@
   color: #007bff;
 }
 
+.session-details-preview-button {
+  position: absolute;
+  top: 11px;
+  right: 50px;
+  background-color: transparent;
+  color: #000;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.session-details-preview-button:hover {
+  color: #007bff;
+}
+
 .session-details-btn-wrap {
   display: flex;
   align-items: center;
