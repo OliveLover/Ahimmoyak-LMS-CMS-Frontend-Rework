@@ -81,9 +81,6 @@ function CourseDetails() {
       <div style={styles.header}>
         <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
-          <button className="btn btn-secondary mt-3" onClick={() => navigate(`/admin/course-info/${courseId}/preview`)}>
-            미리보기
-          </button>
           <button className="btn btn-secondary mt-3" onClick={handleSave}>
             수정 완료
           </button>

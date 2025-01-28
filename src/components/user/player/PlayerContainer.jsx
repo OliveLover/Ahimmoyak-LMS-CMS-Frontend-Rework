@@ -4,71 +4,24 @@ import NavbarUI from './navbar/NavbarUI';
 import IndexUI from './index/IndexUI';
 import './PlayerContainer.css';
 
-
-const PlayerContainer = () => {
+const PlayerContainer = ({ propSession }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(100);
   const [showIndex, setShowIndex] = useState(false);
+  const [contentsIndex, setContentIndex] = useState(1);
+  const [contentsLength, setContentsLength] = useState(1);
+  
   const playerRef = useRef(null);
   const containerRef = useRef(null);
 
-  const togglePlay = () => {
-    setIsPlaying((prevState) => !prevState);
-  };
-
-  const handleProgress = (state) => {
-    const playedPercentage = state.played * 100;
-    setProgressValue(playedPercentage);
-  };
-
-  const handleSeek = (e) => {
-    const newTime = (e.target.value / 100) * duration;
-    playerRef.current.seekTo(newTime, 'seconds');
-    setProgressValue(e.target.value);
-  };
-
-  const handleDuration = (durationValue) => {
-    setDuration(durationValue);
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-  };
-
-  const onVolumeChange = (e) => {
-    setVolume(e.target.value);
-  };
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      if (containerRef.current.requestFullscreen) {
-        containerRef.current.requestFullscreen();
-      } else if (containerRef.current.mozRequestFullScreen) {
-        containerRef.current.mozRequestFullScreen();
-      } else if (containerRef.current.webkitRequestFullscreen) {
-        containerRef.current.webkitRequestFullscreen();
-      } else if (containerRef.current.msRequestFullscreen) {
-        containerRef.current.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
+  useEffect(() => {
+    if (propSession?.contents) {
+      setContentsLength(propSession.contents.length);
     }
-  };
-
-  const toggleIndexUI = () => {
-    setShowIndex((prev) => !prev);
-  };
+  }, [propSession]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -85,6 +38,53 @@ const PlayerContainer = () => {
     };
   }, [isPlaying]);
 
+  const togglePlay = () => setIsPlaying(prevState => !prevState);
+
+  const handleProgress = (state) => {
+    const playedPercentage = state.played * 100;
+    setProgressValue(playedPercentage);
+  };
+
+  const handleSeek = (e) => {
+    const newTime = (e.target.value / 100) * duration;
+    playerRef.current.seekTo(newTime, 'seconds');
+    setProgressValue(e.target.value);
+  };
+
+  const handleDuration = (durationValue) => setDuration(durationValue);
+
+  const toggleMute = () => setIsMuted(prev => !prev);
+
+  const onVolumeChange = (e) => setVolume(e.target.value);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen?.() ||
+        containerRef.current.mozRequestFullScreen?.() ||
+        containerRef.current.webkitRequestFullscreen?.() ||
+        containerRef.current.msRequestFullscreen?.();
+    } else {
+      document.exitFullscreen?.() ||
+        document.mozCancelFullScreen?.() ||
+        document.webkitExitFullscreen?.() ||
+        document.msExitFullscreen?.();
+    }
+  };
+
+  const toggleIndexUI = () => setShowIndex(prev => !prev);
+
+  const nextContent = () => {
+    if (contentsIndex < contentsLength) {
+      setContentIndex(contentsIndex + 1);
+    }
+  };
+
+  const prevContent = () => {
+    if (contentsIndex > 1) {
+      setContentIndex(contentsIndex - 1);
+    }
+  };
+
   return (
     <div className="custom-player-container" ref={containerRef}>
       <div className="player-wrapper">
@@ -99,7 +99,7 @@ const PlayerContainer = () => {
           />
           {showIndex && <IndexUI onClose={() => setShowIndex(false)} />}
         </div>
-
+        
         <div className="navbar-container">
           <NavbarUI
             isPlaying={isPlaying}
@@ -113,6 +113,10 @@ const PlayerContainer = () => {
             volume={volume}
             onVolumeChange={onVolumeChange}
             toggleIndexUI={toggleIndexUI}
+            contentsIndex={contentsIndex}
+            totalContents={contentsLength}
+            nextContent={nextContent}
+            prevContent={prevContent}
           />
         </div>
       </div>

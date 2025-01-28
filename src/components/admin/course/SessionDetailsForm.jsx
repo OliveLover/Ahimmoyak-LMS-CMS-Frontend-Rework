@@ -4,6 +4,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { MdDragIndicator } from "react-icons/md";
 import ContentsDetailsForm from './ContentsDetailsForm';
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../../../axios';
 
 
@@ -20,6 +21,8 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
   const [contentHeight, setContentHeight] = useState(0);
 
   const contentRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (contentRef.current) {
@@ -145,6 +148,9 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
             {isContentVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </button>
           <h2>{sessionIndex} 차시</h2>
+          <button className="btn btn-secondary mt-3" onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}>
+            미리보기
+          </button>
         </div>
         <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />

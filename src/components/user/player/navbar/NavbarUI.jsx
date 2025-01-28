@@ -4,7 +4,6 @@ import { GoScreenFull } from "react-icons/go";
 import { AiFillSound, AiOutlineSound } from "react-icons/ai";
 import './NavbarUI.css';
 
-
 const NavbarUI = ({
   isPlaying,
   togglePlay,
@@ -16,7 +15,11 @@ const NavbarUI = ({
   toggleMute,
   volume,
   onVolumeChange,
-  toggleIndexUI
+  toggleIndexUI,
+  contentsIndex,
+  totalContents,
+  nextContent,
+  prevContent
 }) => {
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -44,7 +47,6 @@ const NavbarUI = ({
             className="progress-slider"
           />
         </div>
-
         <span className="time-display">
           {formatTime((progressValue / 100) * duration)} / {formatTime(duration)}
         </span>
@@ -70,9 +72,9 @@ const NavbarUI = ({
       </div>
 
       <div className="navbar-page">
-        <IoIosArrowBack />
-        <span>09 / 10</span>
-        <IoIosArrowForward />
+        <IoIosArrowBack onClick={prevContent} />
+        <span>{contentsIndex} / {totalContents}</span>
+        <IoIosArrowForward onClick={nextContent} />
       </div>
     </div>
   );
