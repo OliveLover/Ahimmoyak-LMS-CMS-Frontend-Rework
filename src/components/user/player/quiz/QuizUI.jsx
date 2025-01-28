@@ -1,7 +1,12 @@
+import './QuizUI.css';
+
+
 const QuizUI = () => {
   return(
     <div className="player-quiz-ui">
-      퀴즈플레이어
+      <div className="player-quiz-container">
+
+      </div>
     </div>
   )
 }

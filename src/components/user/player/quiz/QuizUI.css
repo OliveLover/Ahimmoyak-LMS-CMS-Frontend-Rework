@@ -1,0 +1,14 @@
+.player-quiz-ui {
+  background-color:rgb(103, 192, 103);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.player-quiz-container {
+  width: 95%;
+  height: 90%;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+}

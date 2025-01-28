@@ -5,8 +5,6 @@ import NavbarUI from './navbar/NavbarUI';
 import IndexUI from './index/IndexUI';
 import './PlayerContainer.css';
 
-
-
 const PlayerContainer = ({ propSession }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
@@ -98,22 +96,33 @@ const PlayerContainer = ({ propSession }) => {
     setContentIndex(index);
   };
 
+  const currentContent = propSession?.contents?.find(content => content.contentIndex === contentsIndex);
+
+  useEffect(() => {
+    if (currentContent?.contentType === 'QUIZ') {
+      setDuration(0);
+      setProgressValue(0);
+    }
+  }, [currentContent]);
+
   return (
     <div className="custom-player-container" ref={containerRef}>
       <div className="player-wrapper">
         <div className="video-container">
-          <VideoUI
-            isPlaying={isPlaying}
-            playerRef={playerRef}
-            handleProgress={handleProgress}
-            handleDuration={handleDuration}
-            isMuted={isMuted}
-            volume={volume}
-            videoUrl={videoUrl}
-            onClick={() => togglePlay()}
-          />
-
-          {/* <QuizUI /> */}
+          {currentContent?.contentType === 'VIDEO' ? (
+            <VideoUI
+              isPlaying={isPlaying}
+              playerRef={playerRef}
+              handleProgress={handleProgress}
+              handleDuration={handleDuration}
+              isMuted={isMuted}
+              volume={volume}
+              videoUrl={videoUrl}
+              onClick={() => togglePlay()}
+            />
+          ) : currentContent?.contentType === 'QUIZ' ? (
+            <QuizUI quizzes={currentContent.quizzes} />
+          ) : null}
 
           {showIndex && (
             <div className="index-container" >
