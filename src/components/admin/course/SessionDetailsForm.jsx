@@ -151,14 +151,14 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           <h2>{sessionIndex} 차시</h2>
         </div>
         {contents.length > 0 && (
-  <button
-    className="session-details-preview-button"
-    title="미리보기"
-    onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
-  >
-    <VscOpenPreview />
-  </button>
-)}
+          <button
+            className="session-details-preview-button"
+            title="미리보기"
+            onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
+          >
+            <VscOpenPreview />
+          </button>
+        )}
         <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />
         </button>
@@ -196,6 +196,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
                   sessionId={sessionId}
                   courseId={courseId}
                   contentIndex={content.contentIndex}
+                  sessionIndex={sessionIndex}
                   propContentId={content.contentId}
                   propContentTitle={content.contentTitle}
                   propContentType={content.contentType}

@@ -7,7 +7,7 @@ import { CiRedo } from "react-icons/ci";
 import "./ContentsUploadForm.css";
 
 
-const ContentsUploadForm = ({ contentIndex, courseId, contentId }) => {
+const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileId, setFileId] = useState(null);
@@ -190,7 +190,7 @@ const ContentsUploadForm = ({ contentIndex, courseId, contentId }) => {
   };
 
   const handleClick = () => {
-    document.getElementById(`file-input+${contentIndex}`).click();
+    document.getElementById(`file-input-${sessionIndex}-${contentIndex}`).click();
   };
 
   const handleRetryUpload = () => {
@@ -216,7 +216,7 @@ const ContentsUploadForm = ({ contentIndex, courseId, contentId }) => {
             <h6>파일을 여기에 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</h6>
           </div>
           <input
-            id={`file-input+${contentIndex}`}
+            id={`file-input-${sessionIndex}-${contentIndex}`}
             type="file"
             onChange={(e) => handleFileChange(e.target.files[0])}
             style={{ display: "none" }}
