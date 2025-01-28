@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import VideoUI from './video/VideoUI';
+import QuizUI from './quiz/QuizUI';
 import NavbarUI from './navbar/NavbarUI';
 import IndexUI from './index/IndexUI';
 import './PlayerContainer.css';
+
 
 
 const PlayerContainer = ({ propSession }) => {
@@ -69,6 +71,7 @@ const PlayerContainer = ({ propSession }) => {
         containerRef.current.mozRequestFullScreen?.() ||
         containerRef.current.webkitRequestFullscreen?.() ||
         containerRef.current.msRequestFullscreen?.();
+      setShowIndex(false);
     } else {
       document.exitFullscreen?.() ||
         document.mozCancelFullScreen?.() ||
@@ -107,14 +110,20 @@ const PlayerContainer = ({ propSession }) => {
             isMuted={isMuted}
             volume={volume}
             videoUrl={videoUrl}
+            onClick={() => togglePlay()}
           />
+
+          {/* <QuizUI /> */}
+
           {showIndex && (
-            <IndexUI
-              onClose={() => setShowIndex(false)}
-              contents={propSession.contents}
-              sessionTitle={propSession.sessionTitle}
-              onSelectContent={onSelectContent}
-            />
+            <div className="index-container" >
+              <IndexUI
+                onClose={() => setShowIndex(false)}
+                contents={propSession.contents}
+                sessionTitle={propSession.sessionTitle}
+                onSelectContent={onSelectContent}
+              />
+            </div>
           )}
         </div>
 
