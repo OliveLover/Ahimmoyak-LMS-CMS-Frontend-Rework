@@ -150,9 +150,15 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           </button>
           <h2>{sessionIndex} 차시</h2>
         </div>
-        <button className="session-details-preview-button" title="미리보기" onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}>
-          <VscOpenPreview />
-        </button>
+        {contents.length > 0 && (
+  <button
+    className="session-details-preview-button"
+    title="미리보기"
+    onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
+  >
+    <VscOpenPreview />
+  </button>
+)}
         <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />
         </button>
