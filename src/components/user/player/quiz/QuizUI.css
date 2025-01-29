@@ -1,8 +1,9 @@
 .player-quiz-ui {
-  background-color:rgb(103, 192, 103);
+  background-color: rgb(103, 192, 103);
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
 .player-quiz-container {
@@ -11,4 +12,63 @@
   background-color: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.player-quiz-question {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.player-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.player-quiz-option {
+  background-color: lightgray;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.player-quiz-option.correct {
+  background-color: #4caf50;
+  color: white;
+}
+
+.player-quiz-option.incorrect {
+  background-color: #f44336;
+  color: white;
+}
+
+.player-quiz-option:disabled {
+  cursor: not-allowed;
+}
+
+.next-quiz-button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.next-quiz-button:hover {
+  background-color: #1976d2;
 }
