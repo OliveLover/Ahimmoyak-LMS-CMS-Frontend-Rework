@@ -20,6 +20,14 @@
   margin-bottom: 2rem;
 }
 
+.retry-quiz-button {
+  cursor: pointer;
+}
+
+.retry-quiz-button:hover {
+  color: green
+}
+
 @media (max-width: 768px) {
   .player-quiz-result-items {
     justify-content: space-evenly;

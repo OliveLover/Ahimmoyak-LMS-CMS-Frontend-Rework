@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import QuizResult from "./QuizResult";
+import {
+  TbCircleNumber1,
+  TbCircleNumber2,
+  TbCircleNumber3,
+  TbCircleNumber4,
+  TbCircleNumber5,
+} from "react-icons/tb";
 import "./QuizUI.css";
-
 
 const QuizUI = ({ quizzes }) => {
   const sortedQuizzes = [...quizzes].sort((a, b) => parseInt(a.quizIndex) - parseInt(b.quizIndex));
@@ -17,6 +23,14 @@ const QuizUI = ({ quizzes }) => {
 
   const currentQuiz = sortedQuizzes[currentQuizIndex];
 
+  const numberIcons = [
+    <TbCircleNumber1 key={1} />,
+    <TbCircleNumber2 key={2} />,
+    <TbCircleNumber3 key={3} />,
+    <TbCircleNumber4 key={4} />,
+    <TbCircleNumber5 key={5} />,
+  ];
+
   const handleOptionClick = (index) => {
     setSelectedOption(index);
     if (index === currentQuiz.answer) {
@@ -24,8 +38,10 @@ const QuizUI = ({ quizzes }) => {
       setCorrectCount(correctCount + 1);
       setShowExplanation(true);
     } else {
-      setAttemptsLeft(attemptsLeft - 1);
-      if (attemptsLeft - 1 === 0) {
+      const newAttemptsLeft = attemptsLeft - 1;
+      setAttemptsLeft(newAttemptsLeft);
+      alert(`틀렸습니다! 남은 기회: ${newAttemptsLeft}번`);
+      if (newAttemptsLeft === 0) {
         setShowExplanation(true);
       }
       setIsCorrect(false);
@@ -38,6 +54,7 @@ const QuizUI = ({ quizzes }) => {
       }
     }
   };
+
 
   const handleNextQuiz = () => {
     setSelectedOption(null);
@@ -77,40 +94,46 @@ const QuizUI = ({ quizzes }) => {
   return (
     <div className="player-quiz-ui">
       <div className="player-quiz-container">
-        <div className="player-quiz-question">
-          <h2>Q{currentQuizIndex + 1}</h2>
-          <p>{currentQuiz.question}</p>
+        <div className="player-quiz-question-wrap">
+          <div className="player-quiz-index">
+            <p>Q{currentQuizIndex + 1}.</p>
+          </div>
+          <div className="player-quiz-question">
+            <p>{currentQuiz.question}</p>
+          </div>
         </div>
         <div className="player-quiz-options">
           {currentQuiz.options.map((option, index) => (
-            <button
-              key={index}
-              className={`player-quiz-option ${selectedOption === index && isCorrect === true
+            <div className="player-quiz-option-wrap" key={index} onClick={() => !showExplanation && handleOptionClick(index)} >
+              <div className="player-quiz-option-index" >{numberIcons[index]}</div>
+              <div
+                className={`player-quiz-option ${selectedOption === index && isCorrect === true
                   ? "correct"
                   : selectedOption === index && isCorrect === false
                     ? "incorrect"
                     : ""
-                }`}
-              onClick={() => handleOptionClick(index)}
-              disabled={showExplanation}
-            >
-              {option}
-            </button>
+                  }`}
+                style={{ pointerEvents: showExplanation ? "none" : "auto" }}
+              >
+                {option}
+              </div>
+            </div>
           ))}
         </div>
-        {selectedOption !== null && !showExplanation && (
-          <p className="attempts-left">남은 기회: {attemptsLeft}번</p>
-        )}
-        {showExplanation && (
-          <div className="player-quiz-explanation">
-            <p>해설: {currentQuiz.explanation}</p>
-          </div>
-        )}
-        {showExplanation && (
-          <button className="next-quiz-button" onClick={handleNextQuiz}>
-            다음 퀴즈
-          </button>
-        )}
+        <div className="player-quiz-explanation-wrap">
+          {showExplanation && (
+            <div className="player-quiz-explanation">
+              <p>{currentQuiz.explanation}</p>
+            </div>
+          )}
+        </div>
+        <div className="player-quiz-button-wrap">
+          {showExplanation && (
+            <button className="next-quiz-button" onClick={handleNextQuiz}>
+              다음 퀴즈
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

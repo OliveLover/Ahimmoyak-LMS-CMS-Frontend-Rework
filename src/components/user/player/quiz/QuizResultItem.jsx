@@ -3,6 +3,7 @@ import { IoIosClose } from "react-icons/io";
 import { LiaCircle } from "react-icons/lia";
 import './QuizResultItem.css';
 
+
 const QuizResultItem = ({ quizIndex, isCorrect }) => {
   return (
     <div className="player-quiz-result-item">
