@@ -1,0 +1,27 @@
+.player-quiz-result-ui {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.player-quiz-result-container {
+  text-align: center;
+}
+
+.player-quiz-result-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .player-quiz-result-items {
+    justify-content: space-evenly;
+  }
+}

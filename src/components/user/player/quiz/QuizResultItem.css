@@ -1,0 +1,36 @@
+.player-quiz-result-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 9rem;
+  height: 12rem;
+  background-color: white;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+}
+
+.player-quiz-result-item-index {
+  width: 100%;
+  border-bottom: solid 1px black;
+  flex: 1;
+}
+
+.player-quiz-result-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 3;
+}
+
+.player-quiz-result-sign {
+  color: red;
+}
+
+.o {
+  font-size: 5rem;
+}
+
+.x {
+  font-size: 7rem;
+}

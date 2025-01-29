@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import QuizResult from "./QuizResult";
 import "./QuizUI.css";
 
+
 const QuizUI = ({ quizzes }) => {
   const sortedQuizzes = [...quizzes].sort((a, b) => parseInt(a.quizIndex) - parseInt(b.quizIndex));
 
@@ -9,6 +10,7 @@ const QuizUI = ({ quizzes }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectQuestions, setIncorrectQuestions] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
   const [attemptsLeft, setAttemptsLeft] = useState(3);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -27,6 +29,13 @@ const QuizUI = ({ quizzes }) => {
         setShowExplanation(true);
       }
       setIsCorrect(false);
+
+      if (!incorrectQuestions.includes(currentQuizIndex + 1)) {
+        setIncorrectQuestions((prevIncorrectQuestions) => [
+          ...prevIncorrectQuestions,
+          currentQuizIndex + 1,
+        ]);
+      }
     }
   };
 
@@ -42,8 +51,27 @@ const QuizUI = ({ quizzes }) => {
     }
   };
 
+  const handleRetryQuiz = () => {
+    setCorrectCount(0);
+    setIncorrectQuestions([]);
+    setIsFinished(false);
+    setAttemptsLeft(3);
+    setCurrentQuizIndex(0);
+  };
+
   if (isFinished) {
-    return <QuizResult correctCount={correctCount} total={sortedQuizzes.length} />;
+    return (
+      <div className="player-quiz-ui">
+        <div className="player-quiz-container">
+          <QuizResult
+            correctCount={correctCount}
+            total={sortedQuizzes.length}
+            incorrectQuestions={incorrectQuestions}
+            onRetry={handleRetryQuiz}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
