@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
-import AddSessionForm from "../../components/admin/course/AddSessionForm";
-
 
 function CreateCourses() {
-  const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
-  const [isCourseMetaVisible, setIsCourseMetaVisible] = useState(true);
-  const [courseId, setCourseId] = useState(null);
   const [courseData, setCourseData] = useState({
     courseTitle: "",
     courseIntroduce: "",
@@ -26,22 +21,6 @@ function CreateCourses() {
 
   const navigate = useNavigate();
 
-  const addSessionForm = () => {
-    const newFormId = forms.length > 0 ? Math.max(...forms.map((form) => form.formId)) + 1 : 1;
-    const newIndex = forms.length + 1;
-    const newForm = { formId: newFormId, index: newIndex };
-    setForms([...forms, newForm]);
-  };
-
-  const removeSessionForm = (formId) => {
-    const updatedForms = forms.filter((form) => form.formId !== formId);
-    const reorderedForms = updatedForms.map((form, idx) => ({
-      ...form,
-      index: idx + 1,
-    }));
-    setForms(reorderedForms);
-  };
-
   const handleBack = () => {
     navigate(-1);
   };
@@ -56,8 +35,7 @@ function CreateCourses() {
       .post('/api/v1/admin/courses', courseData)
       .then((response) => {
         if (response.data && response.data.courseId) {
-          setCourseId(response.data.courseId);
-          setIsCourseMetaVisible(false);
+          navigate(`/admin/create-courses/${response.data.courseId}/sessions`);
         }
       })
       .catch((error) => {
@@ -78,29 +56,12 @@ function CreateCourses() {
       </div>
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
-        {isCourseMetaVisible ? (
-          <div>
-            <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
-            <button className="btn btn-primary mt-3" onClick={handleSubmitCourse}>
-              과정 생성
-            </button>
-          </div>
-        ) : (
-          <>
-            {forms.map((form) => (
-              <AddSessionForm
-                key={form.formId}
-                formId={form.formId}
-                courseId={courseId}
-                sessionIndex={form.index}
-                onRemoveSession={removeSessionForm}
-              />
-            ))}
-            <button className="btn btn-primary mt-3" onClick={addSessionForm}>
-              + 차시 추가
-            </button>
-          </>
-        )}
+        <div>
+          <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
+          <button className="btn btn-primary mt-3" onClick={handleSubmitCourse}>
+            과정 생성
+          </button>
+        </div>
       </div>
     </div>
   );

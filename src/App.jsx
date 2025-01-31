@@ -5,6 +5,7 @@ import Dashboards from './pages/admin/Dashboards';
 import Courses from './pages/admin/Courses';
 import Applications from './pages/admin/Applications';
 import CreateCourses from './pages/admin/CreateCourses';
+import CreateSessions from './pages/admin/CreateSessions';
 import CourseDetails from './pages/admin/CourseDetails';
 import CoursePreview from './pages/admin/CoursePreview';
 
@@ -68,6 +69,7 @@ function App() {
                   <Route path="courses" element={<Courses />} />
                   <Route path="applications" element={<Applications />} />
                   <Route path="create-courses" element={<CreateCourses />} />
+                  <Route path="create-courses/:courseId/sessions" element={<CreateSessions />} />
                   <Route path="course-info/:courseId" element={<CourseDetails />} />
                   <Route path="course-info/:courseId/sessions/:sessionId/preview" element={<CoursePreview />} />
                 </Routes>

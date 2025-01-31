@@ -2,13 +2,16 @@ import './AddSessionForm.css';
 import { IoClose } from "react-icons/io5";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { MdDragIndicator } from "react-icons/md";
+import { VscOpenPreview } from "react-icons/vsc";
 import AddContentsForm from './AddContentsForm';
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../../../axios';
 
 
 const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => {
   const [contents, setContents] = useState([]);
+  const [sessions, setSessions] = useState([]);
   const [sessionId, setSessionId] = useState(null);
   const [nextContentId, setNextContentId] = useState(1);
   const [sessionTitle, setSessionTitle] = useState('');
@@ -18,6 +21,8 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
   const [contentHeight, setContentHeight] = useState(0);
 
   const contentRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (contentRef.current) {
@@ -102,6 +107,21 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
     setIsContentVisible(!isContentVisible);
   };
 
+  useEffect(() => {
+    if (courseId) {
+      axios
+        .get(`/api/v1/admin/courses/${courseId}`)
+        .then((response) => {
+          console.log("Course Data:", response.data);
+          setSessions(response.data.sessions || []);
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the course details:", error);
+        });
+    }
+  }, [courseId]);
+  
+
   return (
     <div className="add-session-form">
       <div className="add-session-header-wrap">
@@ -114,6 +134,15 @@ const AddSessionForm = ({ formId, courseId, sessionIndex, onRemoveSession }) => 
           </button>
           <h2>{sessionIndex} 차시</h2>
         </div>
+        {contents.length > 0 && (
+          <button
+            className="session-details-preview-button"
+            title="미리보기"
+            onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
+          >
+            <VscOpenPreview />
+          </button>
+        )}
         <button className="add-session-remove-button" onClick={removeSession}>
           <IoClose />
         </button>
