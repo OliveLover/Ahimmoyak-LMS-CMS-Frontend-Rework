@@ -1,0 +1,101 @@
+.thumbnail-upload-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 2px dashed #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.thumbnail-upload-form.dragging {
+  border-color: #4caf50;
+}
+
+.thumbnail-upload-form h6 {
+  color: #333;
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.thumbnail-upload-form .thumbnail-drop-zone {
+  text-align: center;
+  cursor: pointer;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.thumbnail-upload-form .thumbnail-drop-zone:hover {
+  background-color: #e8e8e8;
+}
+
+.thumbnail-upload-form .thumbnail-upload-icon {
+  font-size: 50px;
+  color: #4caf50;
+  transition: transform 0.3s ease;
+}
+
+.thumbnail-upload-form .thumbnail-upload-icon:hover {
+  transform: scale(1.1);
+}
+
+.thumbnail-upload-form input[type="file"] {
+  display: none;
+}
+
+.upload-progress {
+  margin-top: 20px;
+  width: 100px;
+  height: 100px;
+}
+
+.upload-complete {
+  text-align: center;
+  padding: 20px;
+}
+
+.upload-complete h6 {
+  color: #4caf50;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.thumbnail-upload-complete-button {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #4caf50;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.thumbnail-upload-complete-button:hover {
+  background-color: #45a049;
+}
+
+.thumbnail-upload-complete-icon {
+  font-size: 24px;
+  color: white;
+}
+
+.thumbnail-preview {
+  max-width: 100%;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.react-circular-progressbar {
+  display: block;
+  margin: 0 auto;
+}

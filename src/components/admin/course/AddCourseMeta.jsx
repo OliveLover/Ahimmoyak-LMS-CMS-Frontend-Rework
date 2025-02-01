@@ -3,12 +3,6 @@ import './AddCourseMeta.css';
 
 
 const AddCourseMeta = ({ courseData, setCourseData }) => {
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setCourseData({ ...courseData, thumbnailPath: URL.createObjectURL(file) });
-    }
-  };
 
   const isCourseTitleValid = courseData.courseTitle.trim() !== '';
 
@@ -116,17 +110,6 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             placeholder="과정 소개를 입력하세요"
             required
           />
-        </div>
-
-        <div className="course-meta-input-group">
-          <label htmlFor="thumbnail">썸네일 업로드</label>
-          <input
-            type="file"
-            id="thumbnail"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {courseData.thumbnailPath && <img src={courseData.thumbnailPath} alt="썸네일 미리보기" />}
         </div>
 
         <div className="course-meta-input-group-file-and-type">

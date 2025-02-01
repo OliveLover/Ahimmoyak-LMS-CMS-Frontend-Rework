@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
+import ThumbnailUploadForm from "../../components/admin/course/ThumbnailUploadForm";
 
 
 function CourseDetails() {
@@ -90,6 +91,9 @@ function CourseDetails() {
       <div className="accordion" id="accordionPanelsStayOpenExample">
         <div>
           <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
+        </div>
+        <div>
+          <ThumbnailUploadForm courseId={courseId} />
         </div>
         <>
           {courseData.sessions

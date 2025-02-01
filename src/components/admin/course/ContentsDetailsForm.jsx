@@ -17,13 +17,6 @@ const ContentsDetailsForm = ({ contentIndex, sessionIndex, onRemove, courseId, s
   const [quizzes, setQuizzes] = useState(propQuizzes || []);
   const [isEditing, setIsEditing] = useState(contentId === null ? false : true);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-    }
-  };
-
   const handleRemove = () => {
     const confirmRemove = window.confirm('현재 콘텐츠 구성내용을 삭제하시겠습니까?');
     if (confirmRemove) {

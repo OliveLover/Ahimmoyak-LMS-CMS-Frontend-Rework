@@ -146,7 +146,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
             <MdDragIndicator />
           </button>
           <button className="session-details-btn session-details-btn-toggle" onClick={toggleContentVisibility}>
-            {isContentVisible ? <IoIosArrowDown title="접기" /> : <IoIosArrowUp title="펼치기" />}
+            {isContentVisible ? <><IoIosArrowDown title="접기" /> 접기</> : <><IoIosArrowUp title="펼치기" /> 펼치기</>}
           </button>
           <h2>{sessionIndex} 차시</h2>
         </div>

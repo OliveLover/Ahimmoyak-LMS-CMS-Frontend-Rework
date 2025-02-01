@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
+import ThumbnailUploadForm from "../../components/admin/course/ThumbnailUploadForm";
 
 
 function CreateSessions() {
@@ -84,6 +85,8 @@ function CreateSessions() {
           </button>
         </div>
       </div>
+
+      <ThumbnailUploadForm courseId={courseId} />
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
         <>
