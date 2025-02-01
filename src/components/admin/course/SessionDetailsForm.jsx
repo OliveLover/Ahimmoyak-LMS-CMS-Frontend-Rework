@@ -18,7 +18,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
   const [sessionTitle, setSessionTitle] = useState(propSessionTitle || '');
   const [isSessionCreated, setIsSessionCreated] = useState(sessionId === null ? false : true);
   const [isEditing, setIsEditing] = useState(false);
-  const [isContentVisible, setIsContentVisible] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(true);
   const [contentHeight, setContentHeight] = useState(0);
 
   const contentRef = useRef(null);
@@ -177,7 +177,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
       </div>
 
       {!isSessionCreated && (
-        <button className="add-session-btn add-session-btn-primary" onClick={handleCreateSession}>
+        <button className="session-details-btn session-details-btn-primary" onClick={handleCreateSession}>
           확인
         </button>
       )}

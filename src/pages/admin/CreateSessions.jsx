@@ -1,22 +1,53 @@
-import React, { useState } from "react";
-import AddSessionForm from "../../components/admin/course/AddSessionForm";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../../axios";
+import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
+
 
 function CreateSessions() {
-  const [forms, setForms] = useState([{ formId: 1, index: 1 }]);
-  const { courseId } = useParams();
-  const navigate = useNavigate();
+  const [courseData, setCourseData] = useState({
+    courseTitle: "",
+    courseIntroduce: "",
+    status: "INACTIVE",
+    activeStartDate: "",
+    activeEndDate: "",
+    instructor: "",
+    thumbnailPath: "",
+    grade: "PENDING",
+    ncsClassification: "UNDEFINED",
+    setDuration: 30,
+    fundingType: "PENDING",
+    cardType: [],
+    sessions: [],
+  });
 
-  const handleBack = () => {
-    navigate(`/admin/courses`);
-  };
+  const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  useEffect(() => {
+    if (courseId) {
+      axios
+        .get(`/api/v1/admin/courses/${courseId}`)
+        .then((response) => {
+          setCourseData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching course data:", error);
+        });
+    }
+  }, [courseId]);
 
   const addSessionForm = () => {
-    const newFormId = forms.length > 0 ? Math.max(...forms.map((form) => form.formId)) + 1 : 1;
-    const newIndex = forms.length + 1;
-    const newForm = { formId: newFormId, index: newIndex };
-    setForms([...forms, newForm]);
+    const newSessionId = courseData.sessions.length > 0 ? Math.max(...courseData.sessions.map((session) => session.sessionId)) + 1 : 1;
+    const newSessionIndex = courseData.sessions.length + 1;
+    const newSession = { sessionId: newSessionId, sessionIndex: newSessionIndex, sessionTitle: "", contents: [] };
+
+    setCourseData((prevData) => ({
+      ...prevData,
+      sessions: [...prevData.sessions, newSession],
+    }));
   };
+
 
   const removeSessionForm = (formId) => {
     const updatedForms = forms.filter((form) => form.formId !== formId);
@@ -27,36 +58,56 @@ function CreateSessions() {
     setForms(reorderedForms);
   };
 
+  const handleSave = () => {
+    const modifiedData = {
+      ...courseData,
+    };
+
+    axios
+      .put(`/api/v1/admin/courses`, modifiedData)
+      .then((response) => {
+        navigate(`/admin/courses`);
+      })
+      .catch((error) => {
+        console.error("Error updating course:", error);
+        alert("수정 중 오류가 발생했습니다.");
+      });
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
-          <button style={styles.buttonSecondary} onClick={handleBack}>
+          <button className="btn btn-secondary mt-3" onClick={handleSave}>
             돌아가기
           </button>
         </div>
       </div>
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
-        {forms.map((form) => (
-          <AddSessionForm
-            key={form.formId}
-            formId={form.formId}
-            courseId={courseId}
-            sessionIndex={form.index}
-            onRemoveSession={removeSessionForm}
-          />
-        ))}
-        <button className="btn btn-primary mt-3" onClick={addSessionForm}>
-          + 차시 추가
-        </button>
+        <>
+          {courseData.sessions
+            .sort((a, b) => a.sessionIndex - b.sessionIndex)
+            .map((session) => (
+              <SessionDetailsForm
+                key={session.sessionId || courseData.sessions.length}
+                propSessionId={session.sessionId}
+                courseId={courseId}
+                sessionIndex={session.sessionIndex}
+                propSessionTitle={session.sessionTitle}
+                propContents={session.contents}
+                onRemoveSession={removeSessionForm}
+              />
+            ))}
+          <button className="btn btn-primary mt-3" onClick={addSessionForm}>
+            + 차시 추가
+          </button>
+        </>
       </div>
     </div>
   );
-};
-
-export default CreateSessions;
+}
 
 const styles = {
   container: {
@@ -88,3 +139,5 @@ const styles = {
     color: "#333",
   },
 };
+
+export default CreateSessions;
