@@ -21,6 +21,7 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
   const [uploadComplete, setUploadComplete] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [showToast, setShowToast] = useState(false);
+  const [videoPath, setVideoPath] = useState(propVideoPath);
 
   useEffect(() => {
     if (progress > 0 && progress < 100) {
@@ -34,6 +35,12 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
       }, 3000);
     }
   }, [progress]);
+
+  useEffect(() => {
+    if (propVideoPath) {
+      setVideoPath(propVideoPath);
+    }
+  }, [propVideoPath]);
 
   const initiateMultipartUpload = useCallback(async (fileExtension) => {
     try {
@@ -94,6 +101,7 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
       if (response.status === 200) {
         setProgress(100);
         setUploadComplete(true);
+        setVideoPath(response.data.filePath);
       } else {
         alert("멀티파트 업로드 완료 실패");
       }
@@ -221,7 +229,7 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
   ];
 
   const rowData = [
-    { fileName: fileName || propFileName, fileSize: fileSize || propFileSize, videoDuration: videoDuration || propVideoDuration, filePath: propVideoPath },
+    { fileName: fileName || propFileName, fileSize: fileSize || propFileSize, videoDuration: videoDuration || propVideoDuration, filePath: videoPath },
   ];
 
   return (
@@ -237,9 +245,9 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
 
       <div className="contents-upload-info-wrap">
         <div className="contents-upload-preview">
-          {propVideoPath ? (
+          {videoPath ? (
             <ReactPlayer
-              url={propVideoPath}
+              url={videoPath}
               controls={true}
               width="100%"
               height="100%"
