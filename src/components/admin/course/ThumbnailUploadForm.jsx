@@ -22,12 +22,6 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    if (uploadId) {
-      console.log("업로드 ID:", uploadId);
-    }
-  }, [uploadId]);
-
-  useEffect(() => {
     if (progress > 0 && progress < 100) {
       setToastMessage(`업로드 중... ${progress}%`);
       setShowToast(true);
@@ -138,7 +132,6 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
 
     if (initData) {
       const { uploadId: newUploadId, fileKey: newFileKey, fileId: newFileId } = initData;
-      console.log("initData:", initData);
       setUploadId(newUploadId);
       setFileKey(newFileKey);
       setFileId(newFileId);
