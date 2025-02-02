@@ -15,6 +15,9 @@ function CourseDetails() {
     activeEndDate: "",
     instructor: "",
     thumbnailPath: "",
+    thumbnailId: "",
+    thumbnailSize: 0,
+    thumbnailName: "",
     grade: "PENDING",
     ncsClassification: "UNDEFINED",
     setDuration: 30,
@@ -93,7 +96,7 @@ function CourseDetails() {
           <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
         </div>
         <div>
-          <ThumbnailUploadForm courseId={courseId} />
+          <ThumbnailUploadForm courseId={courseId} propThumbnailPath={courseData.thumbnailPath} />
         </div>
         <>
           {courseData.sessions

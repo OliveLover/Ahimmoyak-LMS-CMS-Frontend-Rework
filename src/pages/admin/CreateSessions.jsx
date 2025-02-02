@@ -14,12 +14,15 @@ function CreateSessions() {
     activeEndDate: "",
     instructor: "",
     thumbnailPath: "",
+    thumbnailId: "",
+    thumbnailSize: 0,
+    thumbnailName: "",
     grade: "PENDING",
     ncsClassification: "UNDEFINED",
     setDuration: 30,
     fundingType: "PENDING",
-    cardType: [],
     sessions: [],
+    cardType: [],
   });
 
   const navigate = useNavigate();
@@ -86,23 +89,39 @@ function CreateSessions() {
         </div>
       </div>
 
-      <ThumbnailUploadForm courseId={courseId} />
+      <ThumbnailUploadForm
+        courseId={courseData.courseId}
+        propThumbnailPath={courseData.thumbnailPath}
+        propThumbnailSize={courseData.thumbnailSize}
+        propThumbnailName={courseData.thumbnailName}
+        updateCourseThumbnail={(uploadedFileInfo) => {
+          setCourseData((prevData) => ({
+            ...prevData,
+            thumbnailPath: uploadedFileInfo.filePath,
+            thumbnailId: uploadedFileInfo.fileId,
+            thumbnailSize: uploadedFileInfo.fileSize,
+            thumbnailName: uploadedFileInfo.fileName,
+          }));
+        }}
+      />
 
       <div className="accordion" id="accordionPanelsStayOpenExample">
         <>
-          {courseData.sessions
-            .sort((a, b) => a.sessionIndex - b.sessionIndex)
-            .map((session) => (
-              <SessionDetailsForm
-                key={session.sessionId || courseData.sessions.length}
-                propSessionId={session.sessionId}
-                courseId={courseId}
-                sessionIndex={session.sessionIndex}
-                propSessionTitle={session.sessionTitle}
-                propContents={session.contents}
-                onRemoveSession={removeSessionForm}
-              />
-            ))}
+          {
+            (courseData.sessions || [])
+              .sort((a, b) => a.sessionIndex - b.sessionIndex)
+              .map((session) => (
+                <SessionDetailsForm
+                  key={session.sessionId || courseData.sessions.length}
+                  propSessionId={session.sessionId}
+                  courseId={courseId}
+                  sessionIndex={session.sessionIndex}
+                  propSessionTitle={session.sessionTitle}
+                  propContents={session.contents}
+                  onRemoveSession={removeSessionForm}
+                />
+              ))
+          }
           <button className="btn btn-primary mt-3" onClick={addSessionForm}>
             + 차시 추가
           </button>

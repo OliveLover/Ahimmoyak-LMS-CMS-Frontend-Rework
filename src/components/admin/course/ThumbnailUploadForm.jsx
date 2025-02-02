@@ -6,8 +6,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "./ThumbnailUploadForm.css";
 
-const ThumbnailUploadForm = ({ courseId, thumbnailUrl, setThumbnailUrl }) => {
-  const [preview, setPreview] = useState(thumbnailUrl || "");
+const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, propThumbnailName, updateCourseThumbnail }) => {
   const [uploadId, setUploadId] = useState(null);
   const [file, setFile] = useState(null);
   const [fileKey, setFileKey] = useState(null);
@@ -18,6 +17,7 @@ const ThumbnailUploadForm = ({ courseId, thumbnailUrl, setThumbnailUrl }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [uploadedFileInfo, setUploadedFileInfo] = useState(null);
 
   useEffect(() => {
     if (uploadId) {
@@ -66,30 +66,38 @@ const ThumbnailUploadForm = ({ courseId, thumbnailUrl, setThumbnailUrl }) => {
     }
   }, []);
 
-  const completeMultipartUpload = useCallback(async (fileKey, uploadId, fileId, fileSize, fileName, completedParts) => {
-    try {
-      const response = await axios.put("/api/v1/s3/complete", {
-        courseId,
-        fileKey,
-        uploadId,
-        fileId,
-        fileSize,
-        fileName,
-        fileType: "IMAGE",
-        completedParts,
-      });
+  const completeMultipartUpload = useCallback(
+    async (fileKey, uploadId, fileId, fileSize, fileName, completedParts) => {
+      try {
+        const response = await axios.put("/api/v1/s3/complete", {
+          courseId,
+          fileKey,
+          uploadId,
+          fileId,
+          fileSize,
+          fileName,
+          fileType: "IMAGE",
+          completedParts,
+        });
 
-      if (response.status === 200) {
-        setProgress(100);
-        setUploadComplete(true);
-      } else {
-        alert("멀티파트 업로드 완료 실패");
+        if (response.status === 200) {
+          setProgress(100);
+          setUploadComplete(true);
+          setUploadedFileInfo(response.data);
+
+          if (updateCourseThumbnail) {
+            updateCourseThumbnail(response.data);
+          }
+        } else {
+          alert("멀티파트 업로드 완료 실패");
+        }
+      } catch (error) {
+        console.error("Error completing upload:", error);
+        alert("멀티파트 업로드 완료 중 오류가 발생했습니다.");
       }
-    } catch (error) {
-      console.error("Error completing upload:", error);
-      alert("멀티파트 업로드 완료 중 오류가 발생했습니다.");
-    }
-  }, [courseId]);
+    },
+    [courseId, updateCourseThumbnail]
+  );
 
   const handleFileChange = async (selectedFile) => {
     if (!selectedFile) return;
@@ -189,48 +197,109 @@ const ThumbnailUploadForm = ({ courseId, thumbnailUrl, setThumbnailUrl }) => {
 
   return (
     <div
-      className={`thumbnail-upload-form ${isDragging ? "dragging" : ""}`}
+      className={`card mb-3 ${isDragging ? "dragging" : ""}`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
-      {!isUploading && !uploadComplete && (
-        <div className="thumbnail-drop-zone" onClick={handleClick}>
-          <PiUploadFill className="thumbnail-upload-icon" />
-          <h6>이미지를 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</h6>
-          <input
-            id="thumbnail-input"
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleFileChange(e.target.files[0])}
-            style={{ display: "none" }}
-          />
-        </div>
-      )}
-
-      {isUploading && (
-        <div className="upload-progress">
-          <CircularProgressbar
-            value={progress}
-            text={`${progress}%`}
-            styles={buildStyles({
-              textColor: "#f88",
-              pathColor: "#4caf50",
-              trailColor: "#d6d6d6",
-            })}
-          />
-        </div>
-      )}
-
-      {uploadComplete && (
-        <div className="upload-complete">
-          <h6>업로드가 완료되었습니다!</h6>
-          <div className="thumbnail-upload-complete-button" onClick={() => setUploadComplete(false)}>
-            <CiRedo className="thumbnail-upload-complete-icon" />
+      <div className="row g-0">
+        <div className="col-md-4">
+          <div className="thumbnail-upload-zone" onClick={handleClick}>
+            {(!propThumbnailPath || propThumbnailPath === "") && !isUploading && !uploadComplete && (
+              <div className="thumbnail-drop-zone">
+                <PiUploadFill className="thumbnail-upload-icon" />
+                <h6>이미지를 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</h6>
+                <input
+                  id="thumbnail-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e.target.files[0])}
+                  style={{ display: "none" }}
+                />
+              </div>
+            )}
+            {propThumbnailPath && propThumbnailPath !== "" && !isUploading && !uploadComplete && (
+              <div className="upload-complete">
+                <div className="thumbnail-preview">
+                  <img
+                    src={propThumbnailPath}
+                    alt="업로드된 썸네일"
+                    className="thumbnail-preview-img"
+                  />
+                </div>
+              </div>
+            )}
+            {isUploading && (
+              <div className="upload-progress">
+                <CircularProgressbar
+                  value={progress}
+                  text={`${progress}%`}
+                  styles={buildStyles({
+                    textColor: "#f88",
+                    pathColor: "#4caf50",
+                    trailColor: "#d6d6d6",
+                  })}
+                />
+              </div>
+            )}
+            {uploadComplete && uploadedFileInfo && (
+              <div className="upload-complete">
+                <div className="thumbnail-preview">
+                  <img
+                    src={uploadedFileInfo.filePath}
+                    alt="업로드된 썸네일"
+                    className="thumbnail-preview-img"
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          {preview && <img src={preview} alt="Thumbnail Preview" className="thumbnail-preview" />}
         </div>
-      )}
+        <div className="col-md-8">
+          <div className="card-body">
+            {!isUploading && !uploadComplete && !propThumbnailPath && (
+              <h5 className="card-title">이미지 업로드</h5>
+            )}
+            {propThumbnailPath && propThumbnailPath !== "" && !isUploading && !uploadComplete && (
+              <>
+                <h6 className="card-title">파일 정보</h6>
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <th>파일명</th>
+                      <td>{propThumbnailName}</td>
+                    </tr>
+                    <tr>
+                      <th>파일 크기</th>
+                      <td>{propThumbnailSize} bytes</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </>
+            )}
+            {uploadComplete && uploadedFileInfo && (
+              <>
+                <h6 className="card-title">파일 정보</h6>
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <th>파일명</th>
+                      <td>{uploadedFileInfo.fileName}</td>
+                    </tr>
+                    <tr>
+                      <th>파일 크기</th>
+                      <td>{uploadedFileInfo.fileSize} bytes</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </>
+            )}
+            <div className="thumbnail-upload-complete-button" onClick={() => setUploadComplete(false)}>
+              <CiRedo className="thumbnail-upload-complete-icon" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
