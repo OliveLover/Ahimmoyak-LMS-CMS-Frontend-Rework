@@ -81,7 +81,6 @@ function CreateSessions() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <div style={styles.headerText}>훈련 과정 구성</div>
         <div style={styles.headerButtons}>
           <button className="btn btn-secondary mt-3" onClick={handleSave}>
             돌아가기
@@ -138,7 +137,7 @@ const styles = {
   },
   header: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     marginBottom: "20px",
   },
@@ -154,11 +153,6 @@ const styles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
-  },
-  headerText: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#333",
   },
 };
 
