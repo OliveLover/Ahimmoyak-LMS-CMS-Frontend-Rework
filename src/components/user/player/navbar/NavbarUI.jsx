@@ -37,7 +37,7 @@ const NavbarUI = ({
         <button className="play-button" onClick={togglePlay}>
           {isPlaying ? <IoPause /> : <IoPlay />}
         </button>
-        <div className="progress-bar">
+        <div className="navbar-progress-bar">
           <input
             type="range"
             min="0"

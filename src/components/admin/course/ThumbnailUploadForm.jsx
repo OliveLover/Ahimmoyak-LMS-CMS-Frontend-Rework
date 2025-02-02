@@ -23,7 +23,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
 
   useEffect(() => {
     if (progress > 0 && progress < 100) {
-      setToastMessage(`업로드 중... ${progress}%`);
+      setToastMessage(`업로드 중...%`);
       setShowToast(true);
     } else if (progress === 100) {
       setToastMessage("업로드 완료!");
@@ -153,7 +153,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
               onUploadProgress: (progressEvent) => {
                 const partProgress = (progressEvent.loaded / progressEvent.total) * 100;
                 const overallProgress = ((partNumber - 1) / totalParts) * 100 + (partProgress / totalParts);
-                setProgress(overallProgress.toFixed(2));
+                setProgress(overallProgress.toFixed(0));
               },
             });
 
@@ -190,7 +190,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
 
   const columns = [
     { headerName: "파일 명", field: "fileName", cellStyle: { textAlign: "left" }, flex: 1 },
-    { headerName: "파일 크기", field: "fileSize", valueFormatter: (params) => `${(params.value / 1024).toFixed(2)} KB`, cellStyle: { textAlign: "left" }, flex: 1 },
+    { headerName: "파일 크기", field: "fileSize", valueFormatter: (params) => `${(params.value / 1048576).toFixed(2)} MB`, cellStyle: { textAlign: "left" }, flex: 1 },
     {
       headerName: "다운로드",
       field: "download",
@@ -243,12 +243,13 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
               <button type="button" className="btn-close" onClick={() => setShowToast(false)}></button>
             </div>
             <div className="toast-body">
+              {toastMessage}
               {isUploading && (
                 <div className="progress" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
-                  <div className="progress-bar progress-bar-striped" style={{ width: `${progress}%` }}></div>
+                  <div className="progress-bar progress-bar-striped" style={{ width: `${progress}%` }}>{progress} %</div>
                 </div>
               )}
-              {toastMessage}</div>
+            </div>
           </div>
         </div>
       )}

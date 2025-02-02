@@ -24,7 +24,7 @@
   justify-content: center;
 }
 
-.progress-bar {
+.navbar-progress-bar {
   flex: 1;
   padding: 0 0.75rem;
 }
