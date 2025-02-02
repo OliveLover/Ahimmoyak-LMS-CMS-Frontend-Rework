@@ -1,13 +1,14 @@
-import { useState, useCallback } from "react";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import { useState, useCallback, useEffect } from "react";
 import axios from "../../../axios";
-import { PiUploadFill } from "react-icons/pi";
-import { CiRedo } from "react-icons/ci";
 import "./ContentsUploadForm.css";
+import ReactPlayer from 'react-player';
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+import { AgGridReact } from "ag-grid-react";
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId }) => {
+const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, propVideoPath, propFileName, propFileSize, propVideoDuration }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileId, setFileId] = useState(null);
@@ -16,9 +17,23 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId })
   const [fileName, setFileName] = useState(null);
   const [videoDuration, setVideoDuration] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (progress > 0 && progress < 100) {
+      setToastMessage(`업로드 중... ${progress}%`);
+      setShowToast(true);
+    } else if (progress === 100) {
+      setToastMessage("업로드 완료!");
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    }
+  }, [progress]);
 
   const initiateMultipartUpload = useCallback(async (fileExtension) => {
     try {
@@ -171,78 +186,94 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId })
     videoElement.src = URL.createObjectURL(selectedFile);
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const droppedFile = e.dataTransfer.files[0];
-    handleFileChange(droppedFile);
+  const handleDownload = (propVideoPath) => {
+    const downloadUrl = `${propVideoPath}`;
+    window.location.href = downloadUrl;
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+  const columns = [
+    { headerName: "파일 명", field: "fileName", cellStyle: { textAlign: "left" }, flex: 1 },
+    { headerName: "파일 크기", field: "fileSize", valueFormatter: (params) => `${(params.value / 1024).toFixed(2)} KB`, cellStyle: { textAlign: "left" }, flex: 1 },
+    {
+      headerName: "영상 길이",
+      field: "videoDuration",
+      valueFormatter: (params) => {
+        const totalSeconds = params.value || 0;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      },
+      cellStyle: { textAlign: "left" },
+      flex: 1,
+    },
+    {
+      headerName: "다운로드",
+      field: "download",
+      cellRenderer: (params) => (
+        <button onClick={() => handleDownload(params.data.filePath)} className="btn btn-primary download">
+          다운로드
+        </button>
+      ),
+      cellStyle: { textAlign: "left" },
+      flex: 1,
+    },
+  ];
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleClick = () => {
-    document.getElementById(`file-input-${sessionIndex}-${contentIndex}`).click();
-  };
-
-  const handleRetryUpload = () => {
-    setUploadComplete(false);
-    setIsUploading(false);
-    setProgress(0);
-    setFile(null);
-    setUploadId(null);
-    setFileKey(null);
-  };
+  const rowData = [
+    { fileName: fileName || propFileName, fileSize: fileSize || propFileSize, videoDuration: videoDuration || propVideoDuration, filePath: propVideoPath },
+  ];
 
   return (
-    <div
-      className={`contents-upload-form ${isDragging ? "dragging" : ""}`}
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-    >
-      {!isUploading && !uploadComplete && (
-        <div className="contents-drop-zone" onClick={handleClick}>
-          <div className="contents-upload-button">
-            <PiUploadFill className="contents-upload-square-plus-icon" />
-            <h6>파일을 여기에 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</h6>
-          </div>
-          <input
-            id={`file-input-${sessionIndex}-${contentIndex}`}
-            type="file"
-            onChange={(e) => handleFileChange(e.target.files[0])}
-            style={{ display: "none" }}
+    <div className="contents-upload-form">
+      <div className="input-group mb-3">
+        <input
+          id={`file-input-${sessionIndex}-${contentIndex}`}
+          type="file"
+          className="form-control"
+          onChange={(e) => handleFileChange(e.target.files[0])}
+        />
+      </div>
+
+      <div className="contents-upload-info-wrap">
+        <div className="contents-upload-preview">
+          {propVideoPath ? (
+            <ReactPlayer
+              url={propVideoPath}
+              controls={true}
+              width="100%"
+              height="100%"
+            />
+          ) : (
+            <div className="contents-upload-placeholder">
+              영상이 존재하지 않습니다.
+            </div>
+          )}
+        </div>
+        <div className="contents-upload-info">
+          <AgGridReact
+            columnDefs={columns}
+            rowData={rowData}
+            domLayout="autoHeight"
+            pagination={false}
           />
         </div>
-      )}
+      </div>
 
-      {isUploading && (
-        <div className="upload-progress">
-          <CircularProgressbar
-            value={progress}
-            text={`${progress}%`}
-            styles={buildStyles({
-              textColor: "#f88",
-              pathColor: "#4caf50",
-              trailColor: "#d6d6d6",
-            })}
-          />
-        </div>
-      )}
-
-      {uploadComplete && (
-        <div className="upload-complete">
-          <h6>업로드가 완료되었습니다!</h6>
-          <div className="contents-upload-complete-button" onClick={handleRetryUpload}>
-            <CiRedo className="contents-upload-complete-plus-icon" />
+      {showToast && (
+        <div className={`toast-container ${!showToast ? "hide" : ""}`}>
+          <div className="toast show">
+            <div className="toast-header">
+              <strong className="me-auto">업로드 상태</strong>
+              <button type="button" className="btn-close" onClick={() => setShowToast(false)}></button>
+            </div>
+            <div className="toast-body">
+              {isUploading && (
+                <div className="progress" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
+                  <div className="progress-bar progress-bar-striped" style={{ width: `${progress}%` }}></div>
+                </div>
+              )}
+              {toastMessage}</div>
           </div>
         </div>
       )}

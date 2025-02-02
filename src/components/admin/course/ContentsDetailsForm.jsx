@@ -7,7 +7,21 @@ import axios from '../../../axios';
 import './ContentsDetailsForm.css';
 
 
-const ContentsDetailsForm = ({ contentIndex, sessionIndex, onRemove, courseId, sessionId, propContentId, propContentTitle, propContentType, propQuizzes }) => {
+const ContentsDetailsForm = ({
+  contentIndex,
+  sessionIndex,
+  onRemove,
+  courseId,
+  sessionId,
+  propContentId,
+  propContentTitle,
+  propContentType,
+  propVideoPath,
+  propVideoDuration,
+  propFileName,
+  propFileSize,
+  propQuizzes
+}) => {
   const [contentId, setContentId] = useState(
     propContentId && String(propContentId).includes('content_') ? propContentId : null
   );
@@ -247,7 +261,11 @@ const ContentsDetailsForm = ({ contentIndex, sessionIndex, onRemove, courseId, s
             contentIndex={contentIndex}
             sessionIndex={sessionIndex}
             courseId={courseId}
-            contentId={contentId} />
+            contentId={contentId}
+            propVideoPath={propVideoPath}
+            propFileName={propFileName}
+            propFileSize={propFileSize}
+            propVideoDuration={propVideoDuration} />
         </div>
       )}
 

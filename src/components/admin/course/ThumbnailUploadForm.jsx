@@ -195,7 +195,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
       headerName: "다운로드",
       field: "download",
       cellRenderer: (params) => (
-        <button onClick={() => handleDownload(params.data.fileKey)} className="btn btn-primary download">
+        <button onClick={() => handleDownload(params.data.filePath)} className="btn btn-primary download">
           다운로드
         </button>
       ),
@@ -205,7 +205,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
   ];
 
   const rowData = [
-    { fileName: fileName || propThumbnailName, fileSize: fileSize || propThumbnailSize, fileKey: propThumbnailPath },
+    { fileName: fileName || propThumbnailName, fileSize: fileSize || propThumbnailSize, filePath: propThumbnailPath },
   ];
 
   return (

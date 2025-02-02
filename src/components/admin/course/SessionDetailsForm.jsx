@@ -200,6 +200,10 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
                   propContentId={content.contentId}
                   propContentTitle={content.contentTitle}
                   propContentType={content.contentType}
+                  propVideoPath={content.videoPath}
+                  propFileName={content.fileName}
+                  propFileSize={content.fileSize}
+                  propVideoDuration={content.videoDuration}
                   propQuizzes={content.quizzes}
                   onRemove={removeContent}
                 />
