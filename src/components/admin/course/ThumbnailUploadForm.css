@@ -1,67 +1,78 @@
-.upload-progress {
-  margin-top: 20px;
-  width: 100px;
-  height: 100px;
+.thumbnail-upload-form {
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.upload-complete {
-  text-align: center;
-  padding: 20px;
-}
-
-.upload-complete h6 {
-  color: #4caf50;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.thumbnail-upload-complete-button {
-  display: inline-block;
-  cursor: pointer;
-  background-color: #4caf50;
-  padding: 10px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.thumbnail-upload-complete-button:hover {
-  background-color: #45a049;
-}
-
-.thumbnail-upload-complete-icon {
+.thumbnail-form-title-header {
+  width: 100%;
   font-size: 24px;
-  color: white;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.thumbnail-info-wrap {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 
 .thumbnail-preview {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
+  flex: 1;
+  max-width: 20rem;
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.thumbnail-preview-img {
+.thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.thumbnail-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-
-.react-circular-progressbar {
-  display: block;
-  margin: 0 auto;
+.thumbnail-info {
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-@media (max-width: 480px) {
-  .thumbnail-upload-form {
-    padding: 10px;
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
 
-  .upload-progress {
-    width: 80px;
-    height: 80px;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+  animation: slideIn 0.5s ease-out;
+}
+
+.btn.btn-primary.download {
+  padding: 5px 10px;
+  font-size: 12px;
 }

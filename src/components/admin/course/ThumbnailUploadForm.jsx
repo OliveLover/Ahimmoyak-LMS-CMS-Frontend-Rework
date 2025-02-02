@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import axios from "../../../axios";
-import { PiUploadFill } from "react-icons/pi";
-import { CiRedo } from "react-icons/ci";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
 import "./ThumbnailUploadForm.css";
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+import { AgGridReact } from "ag-grid-react";
+
+ModuleRegistry.registerModules([AllCommunityModule]);
+
 
 const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, propThumbnailName, updateCourseThumbnail }) => {
   const [uploadId, setUploadId] = useState(null);
@@ -13,17 +14,32 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
   const [fileId, setFileId] = useState(null);
   const [fileSize, setFileSize] = useState(null);
   const [fileName, setFileName] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
   const [uploadedFileInfo, setUploadedFileInfo] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (uploadId) {
       console.log("업로드 ID:", uploadId);
     }
   }, [uploadId]);
+
+  useEffect(() => {
+    if (progress > 0 && progress < 100) {
+      setToastMessage(`업로드 중... ${progress}%`);
+      setShowToast(true);
+    } else if (progress === 100) {
+      setToastMessage("업로드 완료!");
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    }
+  }, [progress]);
+
 
   const initiateMultipartUpload = useCallback(async (fileExtension) => {
     try {
@@ -174,132 +190,76 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
     }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const droppedFile = e.dataTransfer.files[0];
-    handleFileChange(droppedFile);
+  const handleDownload = (propThumbnailPath) => {
+    const downloadUrl = `${propThumbnailPath}`;
+    window.location.href = downloadUrl;
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+  const columns = [
+    { headerName: "파일 명", field: "fileName", cellStyle: { textAlign: "left" }, flex: 1 },
+    { headerName: "파일 크기", field: "fileSize", valueFormatter: (params) => `${(params.value / 1024).toFixed(2)} KB`, cellStyle: { textAlign: "left" }, flex: 1 },
+    {
+      headerName: "다운로드",
+      field: "download",
+      cellRenderer: (params) => (
+        <button onClick={() => handleDownload(params.data.fileKey)} className="btn btn-primary download">
+          다운로드
+        </button>
+      ),
+      cellStyle: { textAlign: "left" },
+      flex: 1,
+    },
+  ];
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleClick = () => {
-    document.getElementById("thumbnail-input").click();
-  };
+  const rowData = [
+    { fileName: fileName || propThumbnailName, fileSize: fileSize || propThumbnailSize, fileKey: propThumbnailPath },
+  ];
 
   return (
-    <div
-      className={`card mb-3 ${isDragging ? "dragging" : ""}`}
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-    >
-      <div className="row g-0">
-        <div className="col-md-4">
-          <div className="thumbnail-upload-zone" onClick={handleClick}>
-            {(!propThumbnailPath || propThumbnailPath === "") && !isUploading && !uploadComplete && (
-              <div className="thumbnail-drop-zone">
-                <PiUploadFill className="thumbnail-upload-icon" />
-                <h6>이미지를 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</h6>
-                <input
-                  id="thumbnail-input"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e.target.files[0])}
-                  style={{ display: "none" }}
-                />
-              </div>
-            )}
-            {propThumbnailPath && propThumbnailPath !== "" && !isUploading && !uploadComplete && (
-              <div className="upload-complete">
-                <div className="thumbnail-preview">
-                  <img
-                    src={propThumbnailPath}
-                    alt="업로드된 썸네일"
-                    className="thumbnail-preview-img"
-                  />
-                </div>
-              </div>
-            )}
-            {isUploading && (
-              <div className="upload-progress">
-                <CircularProgressbar
-                  value={progress}
-                  text={`${progress}%`}
-                  styles={buildStyles({
-                    textColor: "#f88",
-                    pathColor: "#4caf50",
-                    trailColor: "#d6d6d6",
-                  })}
-                />
-              </div>
-            )}
-            {uploadComplete && uploadedFileInfo && (
-              <div className="upload-complete">
-                <div className="thumbnail-preview">
-                  <img
-                    src={uploadedFileInfo.filePath}
-                    alt="업로드된 썸네일"
-                    className="thumbnail-preview-img"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="col-md-8">
-          <div className="card-body">
-            {!isUploading && !uploadComplete && !propThumbnailPath && (
-              <h5 className="card-title">이미지 업로드</h5>
-            )}
-            {propThumbnailPath && propThumbnailPath !== "" && !isUploading && !uploadComplete && (
-              <>
-                <h6 className="card-title">파일 정보</h6>
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>파일명</th>
-                      <td>{propThumbnailName}</td>
-                    </tr>
-                    <tr>
-                      <th>파일 크기</th>
-                      <td>{propThumbnailSize} bytes</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </>
-            )}
-            {uploadComplete && uploadedFileInfo && (
-              <>
-                <h6 className="card-title">파일 정보</h6>
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>파일명</th>
-                      <td>{uploadedFileInfo.fileName}</td>
-                    </tr>
-                    <tr>
-                      <th>파일 크기</th>
-                      <td>{uploadedFileInfo.fileSize} bytes</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </>
-            )}
-            <div className="thumbnail-upload-complete-button" onClick={() => setUploadComplete(false)}>
-              <CiRedo className="thumbnail-upload-complete-icon" />
+    <div className="thumbnail-upload-form" >
+      <div className="thumbnail-form-title-header">썸네일 구성</div>
+      <div className="input-group mb-3">
+        <input type="file" id="thumbnail-input" className="form-control" onChange={(e) => handleFileChange(e.target.files[0])} />
+      </div>
+
+      <div className="thumbnail-info-wrap">
+        <div className="thumbnail-preview">
+          {propThumbnailPath ? (
+            <img src={propThumbnailPath} alt="썸네일 미리보기" />
+          ) : (
+            <div className="thumbnail-placeholder">
+              썸네일이 존재하지 않습니다.
             </div>
-          </div>
+          )}
+        </div>
+        <div className="thumbnail-info">
+          <AgGridReact
+            columnDefs={columns}
+            rowData={rowData}
+            domLayout="autoHeight"
+            pagination={false}
+          />
         </div>
       </div>
+
+      {showToast && (
+        <div className={`toast-container ${!showToast ? "hide" : ""}`}>
+          <div className="toast show">
+            <div className="toast-header">
+              <strong className="me-auto">업로드 상태</strong>
+              <button type="button" className="btn-close" onClick={() => setShowToast(false)}></button>
+            </div>
+            <div className="toast-body">
+              {isUploading && (
+                <div className="progress" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
+                  <div className="progress-bar progress-bar-striped" style={{ width: `${progress}%` }}></div>
+                </div>
+              )}
+              {toastMessage}</div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

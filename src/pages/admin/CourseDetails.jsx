@@ -96,7 +96,21 @@ function CourseDetails() {
           <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
         </div>
         <div>
-          <ThumbnailUploadForm courseId={courseId} propThumbnailPath={courseData.thumbnailPath} />
+        <ThumbnailUploadForm
+        courseId={courseData.courseId}
+        propThumbnailPath={courseData.thumbnailPath}
+        propThumbnailSize={courseData.thumbnailSize}
+        propThumbnailName={courseData.thumbnailName}
+        updateCourseThumbnail={(uploadedFileInfo) => {
+          setCourseData((prevData) => ({
+            ...prevData,
+            thumbnailPath: uploadedFileInfo.filePath,
+            thumbnailId: uploadedFileInfo.fileId,
+            thumbnailSize: uploadedFileInfo.fileSize,
+            thumbnailName: uploadedFileInfo.fileName,
+          }));
+        }}
+      />
         </div>
         <>
           {courseData.sessions
