@@ -196,7 +196,10 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
 
   const handleDownload = (propVideoPath) => {
     const downloadUrl = `${propVideoPath}`;
-    window.location.href = downloadUrl;
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = downloadUrl.split('/').pop();
+    a.click();
   };
 
   const columns = [

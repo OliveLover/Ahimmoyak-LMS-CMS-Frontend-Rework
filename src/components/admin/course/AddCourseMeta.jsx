@@ -132,6 +132,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
               {['NATIONAL_EMPLOYMENT_SUPPORT_CARD', 'CORPORATE_TRAINING_SUPPORT_CARD'].map((type) => (
                 <button
                   key={type}
+                  id="cardType"
                   type="button"
                   value={type}
                   onClick={handleCardTypeChange}
