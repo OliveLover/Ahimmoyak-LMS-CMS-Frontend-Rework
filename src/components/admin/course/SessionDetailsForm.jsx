@@ -6,6 +6,7 @@ import { VscOpenPreview } from "react-icons/vsc";
 import ContentsDetailsForm from './ContentsDetailsForm';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from "react-tooltip";
 import axios from '../../../axios';
 
 
@@ -154,6 +155,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
           <button
             className="session-details-preview-button"
             title="미리보기"
+            data-tooltip-id="preview-tooltip"
             onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
           >
             <VscOpenPreview />
@@ -162,6 +164,7 @@ const SessionDetailsForm = ({ propSessionId, courseId, sessionIndex, propSession
         <button className="session-details-remove-button" onClick={removeSession}>
           <IoClose />
         </button>
+        <Tooltip id="preview-tooltip" place="top" isOpen={true} >미리보기 </ Tooltip> 
       </div>
 
       <div className="session-details-btn-wrap">
