@@ -1,15 +1,28 @@
-import { IoClose } from "react-icons/io5";
+import { useEffect, useRef } from "react";
 import './IndexUI.css';
 
 const IndexUI = ({ onClose, contents, sessionTitle, onSelectContent }) => {
+  const indexRef = useRef(null);
+
   const sortedContents = [...contents].sort((a, b) => a.contentIndex - b.contentIndex);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (indexRef.current && !indexRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   return (
-    <div className="player-index-ui">
+    <div className="player-index-ui" ref={indexRef}>
       <div className="index-button-wrap">
-        <button className="index-close-button" onClick={onClose}>
-          <IoClose />
-        </button>
       </div>
       <span className="index-title">{sessionTitle}</span>
       <h3 />
