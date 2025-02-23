@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useReducer, useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 import ThumbnailUploadForm from "../../components/admin/course/ThumbnailUploadForm";
-
+import { sessionReducer } from "../../reducers/SessionReducer";
 
 function CourseDetails() {
   const [courseData, setCourseData] = useState({
@@ -23,117 +23,72 @@ function CourseDetails() {
     setDuration: 30,
     fundingType: "PENDING",
     cardType: [],
-    sessions: [],
   });
 
-  const navigate = useNavigate();
-  const { courseId } = useParams();
+  const [sessions, dispatch] = useReducer(sessionReducer, []);
 
-  useEffect(() => {
-    if (courseId) {
-      axios
-        .get(`/api/v1/admin/courses/${courseId}`)
-        .then((response) => {
-          setCourseData(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching course data:", error);
-        });
-    }
-  }, [courseId]);
+  const handleAddSession = () => {
+    dispatch({ type: "ADD_SESSION" });
+  }
 
-  const addSessionForm = () => {
-    const newSessionId = courseData.sessions.length > 0 ? Math.max(...courseData.sessions.map((session) => session.sessionId)) + 1 : 1;
-    const newSessionIndex = courseData.sessions.length + 1;
-    const newSession = { sessionId: newSessionId, sessionIndex: newSessionIndex, sessionTitle: "", contents: [] };
-
-    setCourseData((prevData) => ({
-      ...prevData,
-      sessions: [...prevData.sessions, newSession],
-    }));
+  const handleUpdateSession = (sessionFormIndex, sessionTitle) => {
+    dispatch({
+      type: "UPDATE_SESSION",
+      payload: {
+        sessionFormIndex: sessionFormIndex,
+        sessionTitle: sessionTitle,
+      },
+    });
   };
+  
 
-
-  const removeSessionForm = (formId) => {
-    const updatedForms = forms.filter((form) => form.formId !== formId);
-    const reorderedForms = updatedForms.map((form, idx) => ({
-      ...form,
-      index: idx + 1,
-    }));
-    setForms(reorderedForms);
-  };
-
-  const handleSave = () => {
-    const modifiedData = {
-      ...courseData,
-    };
-
-    axios
-      .put(`/api/v1/admin/courses`, modifiedData)
-      .then((response) => {
-        alert("수정이 완료되었습니다.");
-        navigate(-1);
-      })
-      .catch((error) => {
-        console.error("Error updating course:", error);
-        alert("수정 중 오류가 발생했습니다.");
-      });
+  const handleDeleteSession = (sessionFormIndex) => {
+    dispatch({ type: "DELETE_SESSION", sessionFormIndex: sessionFormIndex });
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerText}>훈련 과정 구성</div>
-        <div style={styles.headerButtons}>
-          <button className="btn btn-secondary mt-3" onClick={handleSave}>
-            수정 완료
-          </button>
-        </div>
+    <div className="course-container">
+      <div className="course-header">
+        <h2>훈련 과정 구성</h2>
+        <button className="btn btn-secondary">
+          수정 완료
+        </button>
       </div>
 
-      <div className="accordion" id="accordionPanelsStayOpenExample">
-        <div>
-          <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
-        </div>
-        <div>
+      <div className="accordion">
+        <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
         <ThumbnailUploadForm
-        courseId={courseData.courseId}
-        propThumbnailPath={courseData.thumbnailPath}
-        propThumbnailSize={courseData.thumbnailSize}
-        propThumbnailName={courseData.thumbnailName}
-        updateCourseThumbnail={(uploadedFileInfo) => {
-          setCourseData((prevData) => ({
-            ...prevData,
-            thumbnailPath: uploadedFileInfo.filePath,
-            thumbnailId: uploadedFileInfo.fileId,
-            thumbnailSize: uploadedFileInfo.fileSize,
-            thumbnailName: uploadedFileInfo.fileName,
-          }));
-        }}
-      />
-        </div>
-        <>
-          {courseData.sessions
-            .sort((a, b) => a.sessionIndex - b.sessionIndex)
-            .map((session) => (
-              <SessionDetailsForm
-                key={session.sessionId || courseData.sessions.length}
-                propSessionId={session.sessionId}
-                courseId={courseId}
-                sessionIndex={session.sessionIndex}
-                propSessionTitle={session.sessionTitle}
-                propContents={session.contents}
-                onRemoveSession={removeSessionForm}
-              />
-            ))}
-          <button className="btn btn-primary mt-3" onClick={addSessionForm}>
-            + 차시 추가
-          </button>
-        </>
+          updateCourseThumbnail={(uploadedFileInfo) =>
+            setCourseData((prevData) => ({
+              ...prevData,
+              thumbnailPath: uploadedFileInfo.filePath,
+              thumbnailId: uploadedFileInfo.fileId,
+              thumbnailSize: uploadedFileInfo.fileSize,
+              thumbnailName: uploadedFileInfo.fileName,
+            }))
+          }
+        />
+
+        {sessions
+          .sort((a, b) => a.sessionFormIndex - b.sessionFormIndex)
+          .map((session, sessionFormIndex) => (
+            <SessionDetailsForm
+              key={sessionFormIndex + 1}
+              session={session}
+              onUpdateSession={(sessionFormIndex, sessionTitle) => handleUpdateSession(sessionFormIndex, sessionTitle)}
+              onRemoveSession={(sessionFormIndex) => handleDeleteSession(sessionFormIndex)}
+            />
+          ))}
+
+        <button className="btn btn-primary mt-3" onClick={handleAddSession}>
+          + 차시 추가
+        </button>
       </div>
     </div>
   );
 }
+
+export default CourseDetails;
 
 const styles = {
   container: {
@@ -150,20 +105,9 @@ const styles = {
     display: "flex",
     gap: "20px",
   },
-  buttonSecondary: {
-    fontSize: "14px",
-    padding: "10px 15px",
-    backgroundColor: "#6c757d",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
   headerText: {
     fontSize: "24px",
     fontWeight: "bold",
     color: "#333",
   },
 };
-
-export default CourseDetails;
