@@ -8,12 +8,20 @@ export const sessionReducer = (state, action) => {
       return [
         ...state,
         {
-          sessionId: state.length + 1,
+          sessionId: null,
           sessionIndex: state.length + 1,
           sessionFormIndex: newSessionFormIndex,
           sessionTitle: "",
+          contents: [],
         }
       ];
+
+    case "SET_SESSION_ID":
+      return state.map((session) =>
+        session.sessionFormIndex === action.payload.sessionFormIndex
+          ? { ...session, sessionId: action.payload.sessionId }
+          : session
+      );
 
     case "UPDATE_SESSION":
       return state.map((session) =>
@@ -22,9 +30,21 @@ export const sessionReducer = (state, action) => {
           : session
       );
 
+    case "REORDER_SESSION":
+      const { fromSessionIndex, toSessionIndex } = action.payload;
+      const reorderedSessions = [...state];
+
+      const [movedSession] = reorderedSessions.splice(fromSessionIndex, 1);
+      reorderedSessions.splice(toSessionIndex, 0, movedSession);
+
+      return reorderedSessions.map((session, index) => ({
+        ...session,
+        sessionFormIndex: index + 1,
+      }));
+
     case "DELETE_SESSION":
       const updatedSessions = state.filter(
-        (session) => session.sessionFormIndex !== action.sessionFormIndex
+        (session) => session.sessionFormIndex !== action.payload.sessionFormIndex
       );
 
       return updatedSessions.map((session, index) => ({

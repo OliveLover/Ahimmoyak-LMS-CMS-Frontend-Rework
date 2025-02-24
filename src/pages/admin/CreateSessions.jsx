@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 import ThumbnailUploadForm from "../../components/admin/course/ThumbnailUploadForm";
+import { sessionReducer } from "../../reducers/SessionReducer";
 
 
 function CreateSessions() {
@@ -21,68 +22,51 @@ function CreateSessions() {
     ncsClassification: "UNDEFINED",
     setDuration: 30,
     fundingType: "PENDING",
-    sessions: [],
     cardType: [],
   });
 
-  const navigate = useNavigate();
-  const { courseId } = useParams();
+  const [sessions, dispatch] = useReducer(sessionReducer, []);
 
-  useEffect(() => {
-    if (courseId) {
-      axios
-        .get(`/api/v1/admin/courses/${courseId}`)
-        .then((response) => {
-          setCourseData(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching course data:", error);
-        });
-    }
-  }, [courseId]);
-
-  const addSessionForm = () => {
-    const newSessionId = courseData.sessions.length > 0 ? Math.max(...courseData.sessions.map((session) => session.sessionId)) + 1 : 1;
-    const newSessionIndex = courseData.sessions.length + 1;
-    const newSession = { sessionId: newSessionId, sessionIndex: newSessionIndex, sessionTitle: "", contents: [] };
-
-    setCourseData((prevData) => ({
-      ...prevData,
-      sessions: [...prevData.sessions, newSession],
-    }));
+  const handleAddSession = () => {
+    dispatch({ type: "ADD_SESSION" });
   };
 
-
-  const removeSessionForm = (formId) => {
-    const updatedForms = forms.filter((form) => form.formId !== formId);
-    const reorderedForms = updatedForms.map((form, idx) => ({
-      ...form,
-      index: idx + 1,
-    }));
-    setForms(reorderedForms);
+  const handleSetSessionId = (sessionFormIndex, sessionId) => {
+    dispatch({
+      type: "SET_SESSION_ID",
+      payload: { sessionFormIndex, sessionId },
+    });
   };
 
-  const handleSave = () => {
-    const modifiedData = {
-      ...courseData,
-    };
+  const handleUpdateSession = (sessionFormIndex, sessionTitle) => {
+    dispatch({
+      type: "UPDATE_SESSION",
+      payload: {
+        sessionFormIndex: sessionFormIndex,
+        sessionTitle: sessionTitle,
+      },
+    });
+  };
 
-    axios
-      .put(`/api/v1/admin/courses`, modifiedData)
-      .then((response) => {
-        navigate(`/admin/courses`);
-      })
-      .catch((error) => {
-        console.error("Error updating course:", error);
-        alert("수정 중 오류가 발생했습니다.");
-      });
+  const handleReorderSession = (fromSessionIndex, toSessionIndex) => {
+    dispatch({
+      type: "REORDER_SESSION",
+      payload: { fromSessionIndex, toSessionIndex },
+    });
+  };
+
+  const handleDeleteSession = (sessionFormIndex) => {
+    dispatch({
+      type: "DELETE_SESSION",
+      payload: { sessionFormIndex },
+    });
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={styles.headerButtons}>
-          <button className="btn btn-secondary mt-3" onClick={handleSave}>
+          <button className="btn btn-secondary mt-3">
             돌아가기
           </button>
         </div>
@@ -107,21 +91,20 @@ function CreateSessions() {
       <div className="accordion" id="accordionPanelsStayOpenExample">
         <>
           {
-            (courseData.sessions || [])
-              .sort((a, b) => a.sessionIndex - b.sessionIndex)
-              .map((session) => (
+            (sessions || [])
+              .sort((a, b) => a.sessionFormIndex - b.sessionFormIndex)
+              .map((session, sessionFormIndex) => (
                 <SessionDetailsForm
-                  key={session.sessionId || courseData.sessions.length}
-                  propSessionId={session.sessionId}
-                  courseId={courseId}
-                  sessionIndex={session.sessionIndex}
-                  propSessionTitle={session.sessionTitle}
-                  propContents={session.contents}
-                  onRemoveSession={removeSessionForm}
+                  key={sessionFormIndex + 1}
+                  session={session}
+                  onSetSessionId={handleSetSessionId}
+                  onUpdateSession={(sessionFormIndex, sessionTitle) => handleUpdateSession(sessionFormIndex, sessionTitle)}
+                  onReorderSession={handleReorderSession}
+                  onRemoveSession={(sessionFormIndex) => handleDeleteSession(sessionFormIndex)}
                 />
               ))
           }
-          <button className="btn btn-primary mt-3" onClick={addSessionForm}>
+          <button className="btn btn-primary mt-3" onClick={handleAddSession}>
             + 차시 추가
           </button>
         </>

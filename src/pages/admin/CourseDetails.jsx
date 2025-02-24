@@ -6,6 +6,7 @@ import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm
 import ThumbnailUploadForm from "../../components/admin/course/ThumbnailUploadForm";
 import { sessionReducer } from "../../reducers/SessionReducer";
 
+
 function CourseDetails() {
   const [courseData, setCourseData] = useState({
     courseTitle: "",
@@ -29,7 +30,14 @@ function CourseDetails() {
 
   const handleAddSession = () => {
     dispatch({ type: "ADD_SESSION" });
-  }
+  };
+
+  const handleSetSessionId = (sessionFormIndex, sessionId) => {
+    dispatch({
+      type: "SET_SESSION_ID",
+      payload: { sessionFormIndex, sessionId },
+    });
+  };
 
   const handleUpdateSession = (sessionFormIndex, sessionTitle) => {
     dispatch({
@@ -40,19 +48,30 @@ function CourseDetails() {
       },
     });
   };
-  
+
+  const handleReorderSession = (fromSessionIndex, toSessionIndex) => {
+    dispatch({
+      type: "REORDER_SESSION",
+      payload: { fromSessionIndex, toSessionIndex },
+    });
+  };
 
   const handleDeleteSession = (sessionFormIndex) => {
-    dispatch({ type: "DELETE_SESSION", sessionFormIndex: sessionFormIndex });
+    dispatch({
+      type: "DELETE_SESSION",
+      payload: { sessionFormIndex },
+    });
   };
 
   return (
-    <div className="course-container">
-      <div className="course-header">
-        <h2>훈련 과정 구성</h2>
-        <button className="btn btn-secondary">
-          수정 완료
-        </button>
+    <div className="course-container" style={styles.container}>
+      <div className="course-header" style={styles.header}>
+        <h2 style={styles.headerText}>훈련 과정 구성</h2>
+        <div style={styles.headerButtons}>
+          <button className="btn btn-secondary">
+            수정 완료
+          </button>
+        </div>
       </div>
 
       <div className="accordion">
@@ -75,7 +94,9 @@ function CourseDetails() {
             <SessionDetailsForm
               key={sessionFormIndex + 1}
               session={session}
+              onSetSessionId={handleSetSessionId}
               onUpdateSession={(sessionFormIndex, sessionTitle) => handleUpdateSession(sessionFormIndex, sessionTitle)}
+              onReorderSession={handleReorderSession}
               onRemoveSession={(sessionFormIndex) => handleDeleteSession(sessionFormIndex)}
             />
           ))}

@@ -9,22 +9,57 @@ import { useNavigate } from 'react-router-dom';
 import { Tooltip } from "react-tooltip";
 import axios from '../../../axios';
 
-const SessionDetailsForm = ({ session, onUpdateSession, onRemoveSession }) => {
+const SessionDetailsForm = ({ session, onSetSessionId, onUpdateSession, onReorderSession, onRemoveSession }) => {
+  const [isDraggable, setIsDraggable] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(true);
+  const [isSessionCreated, setIsSessionCreated] = useState(session.sessionId === null ? false : true);
+
+  const contentRef = useRef(null);
 
   const handleTitleChange = (e) => {
     onUpdateSession(session.sessionFormIndex, e.target.value);
   };
 
+  const handleSessionDragStart = (e) => {
+    e.dataTransfer.setData("sessionFormIndex", session.sessionFormIndex - 1);
+  }
+
+  const handleSessionDrop = (e) => {
+    const fromSessionIndex = Number(e.dataTransfer.getData("sessionFormIndex"));
+    const toSessionIndex = session.sessionFormIndex - 1;
+
+    if (fromSessionIndex !== toSessionIndex) {
+      onReorderSession(fromSessionIndex, toSessionIndex);
+    }
+  };
+
+  const handleCreateSession = async () => {
+    setIsSessionCreated(true);
+    onSetSessionId(session.sessionFormIndex, 1);
+  }
+
+  const toggleContentVisibility = () => {
+    setIsContentVisible(!isContentVisible);
+  };
+
   return (
-    <div className="session-details-form">
+    <div className="session-details-form"
+      draggable={isDraggable}
+      onDragStart={handleSessionDragStart}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={handleSessionDrop}
+    >
       <div className="session-details-header-wrap">
         <div className="session-details-left-group">
-          <button className="session-details-drag-indicator">
+          <button className="session-details-drag-indicator"
+            onMouseEnter={() => setIsDraggable(true)}
+            onMouseLeave={() => setIsDraggable(false)}
+          >
             <MdDragIndicator />
           </button>
-          {/* <button className="session-details-btn session-details-btn-toggle">
+          <button className="session-details-btn session-details-btn-toggle" onClick={toggleContentVisibility}>
             {isContentVisible ? <><IoIosArrowDown title="접기" /> 접기</> : <><IoIosArrowUp title="펼치기" /> 펼치기</>}
-          </button> */}
+          </button>
           <h2>{session.sessionFormIndex} 차시</h2>
         </div>
         {/* {contents.length > 0 && (
@@ -54,25 +89,24 @@ const SessionDetailsForm = ({ session, onUpdateSession, onRemoveSession }) => {
         />
       </div>
 
-      {/* {!isSessionCreated && (
-        <button className="session-details-btn session-details-btn-primary">
+      {!isSessionCreated && (
+        <button className="session-details-btn session-details-btn-primary" onClick={handleCreateSession}>
           확인
         </button>
-      )} */}
+      )}
 
-      {/* {isSessionCreated && (
+      {isSessionCreated && (
         <>
           <div
             className={`session-details-contents ${isContentVisible ? 'visible' : 'hidden'}`}
             ref={contentRef}
           >
-            {contents
-              .sort((a, b) => a.contentIndex - b.contentIndex)
-              .map((content, contentIndex) => (
+            {session.contents
+              .sort((a, b) => a.contentFormIndex - b.contentFormIndex)
+              .map((content, contentFormIndex) => (
                 <ContentsDetailsForm
-                  key={contentIndex + 1}
-                  sessionId={sessionId}
-                  courseId={courseId}
+                  key={contentFormIndex + 1}
+                  sessionId={session.sessionId}
                 />
               ))}
             <button className="session-details-btn session-details-btn-primary">
@@ -80,7 +114,7 @@ const SessionDetailsForm = ({ session, onUpdateSession, onRemoveSession }) => {
             </button>
           </div>
         </>
-      )} */}
+      )}
     </div>
   );
 };

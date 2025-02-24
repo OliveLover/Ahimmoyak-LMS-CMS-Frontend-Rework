@@ -8,6 +8,11 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  pointer-events: none;
+}
+
+.session-details-form {
+  pointer-events: auto;
 }
 
 .session-details-header-wrap {
@@ -79,6 +84,7 @@
   cursor: pointer;
   text-align: left;
   padding: 0;
+  width: 7rem;
 }
 
 .session-details-btn-toggle:hover {
