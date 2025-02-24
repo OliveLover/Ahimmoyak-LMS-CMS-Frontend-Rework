@@ -63,6 +63,38 @@ function CourseDetails() {
     });
   };
 
+  const handleAddContent = (sessionFormIndex) => {
+    dispatch({
+      type: "ADD_CONTENT",
+      payload: { sessionFormIndex },
+    });
+  };
+
+  const handleSetContentId = (sessionFormIndex, contentFormIndex, contentId) => {
+    dispatch({
+      type: "SET_CONTENT_ID",
+      payload: { sessionFormIndex, contentFormIndex, contentId },
+    });
+  };
+
+  const handleUpdateContent = (sessionFormIndex, contentIndex, updatedData) => {
+    dispatch({
+      type: "UPDATE_CONTENT",
+      payload: {
+        sessionFormIndex,
+        contentIndex,
+        updatedData,
+      },
+    });
+  };
+
+  const handleDeleteContent = (sessionFormIndex, contentFormIndex) => {
+    dispatch({
+      type: "DELETE_CONTENT",
+      payload: { sessionFormIndex, contentFormIndex },
+    });
+  };
+
   return (
     <div className="course-container" style={styles.container}>
       <div className="course-header" style={styles.header}>
@@ -95,9 +127,13 @@ function CourseDetails() {
               key={sessionFormIndex + 1}
               session={session}
               onSetSessionId={handleSetSessionId}
-              onUpdateSession={(sessionFormIndex, sessionTitle) => handleUpdateSession(sessionFormIndex, sessionTitle)}
+              onUpdateSession={handleUpdateSession}
               onReorderSession={handleReorderSession}
-              onRemoveSession={(sessionFormIndex) => handleDeleteSession(sessionFormIndex)}
+              onRemoveSession={handleDeleteSession}
+              onAddContent={handleAddContent}
+              onSetContentId={handleSetContentId}
+              onUpdateContent={handleUpdateContent}
+              onRemoveContent={handleDeleteContent}
             />
           ))}
 

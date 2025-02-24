@@ -8,7 +8,7 @@ import { AgGridReact } from "ag-grid-react";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, propVideoPath, propFileName, propFileSize, propVideoDuration }) => {
+const ContentsUploadForm = ({ contentFormIndex, sessionFormIndex, courseId, contentId, propVideoPath, propFileName, propFileSize, propVideoDuration }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileId, setFileId] = useState(null);
@@ -239,7 +239,7 @@ const ContentsUploadForm = ({ contentIndex, sessionIndex, courseId, contentId, p
     <div className="contents-upload-form">
       <div className="input-group mb-3">
         <input
-          id={`file-input-${sessionIndex}-${contentIndex}`}
+          id={`file-input-${sessionFormIndex}-${contentFormIndex}`}
           type="file"
           className="form-control"
           onChange={(e) => handleFileChange(e.target.files[0])}

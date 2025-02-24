@@ -7,37 +7,60 @@ import axios from '../../../axios';
 import './ContentsDetailsForm.css';
 
 
-const ContentsDetailsForm = ({
-  contentIndex,
-  sessionIndex,
-  courseId,
-  sessionId,
-  propContent,
-}) => {
+const ContentsDetailsForm = ({ sessionFormIndex, content, onSetContentId, onUpdateContent, onRemoveContent }) => {
+  const [isContentCreated, setIsContentCreated] = useState(content.contentId === null ? false : true);
+
+  const handleCreateContent = () => {
+    setIsContentCreated(true);
+    onSetContentId(sessionFormIndex, content.contentFormIndex, 1);
+  }
+
+  const handleContentTitleChange = (e) => {
+    onUpdateContent(sessionFormIndex, content.contentIndex, {
+      ...content,
+      contentTitle: e.target.value,
+    });
+  };
+
+  const handleDeleteContent = () => {
+    onRemoveContent(sessionFormIndex, content.contentFormIndex);
+  };
+
+  const handleContentTypeChange = (e) => {
+    const newType = e.target.value;
+    onUpdateContent(sessionFormIndex, content.contentFormIndex, {
+      ...content,
+       contentType: newType 
+      });
+  };
 
   return (
     <div className="details-contents-form">
-      <button className="details-course-remove-button" onClick={handleRemoveContent}>
+      <button
+        className="details-course-remove-button"
+        onClick={handleDeleteContent}
+      >
         <IoClose />
       </button>
       <button className="details-course-drag-indicator">
         <MdDragIndicator />
       </button>
-      <h2>{contentIndex} 페이지</h2>
+      <h2>{content.contentFormIndex} 페이지</h2>
       <div className="content-input-group">
         <div className="input-with-button">
           <input
             type="text"
-            id={`title-${contentId}`}
-            value={title}
-            onChange={handleTitleChange}
-            onBlur={handleTitleBlur}
+            id={`title-${content.contentId}`}
+            value={content.contentTitle}
+            onChange={handleContentTitleChange}
+            // onBlur={handleTitleBlur}
             placeholder="인덱스의 제목을 입력하세요"
             required
           />
         </div>
       </div>
-      {!isEditing && (
+
+      {!isContentCreated && (
         <div className="details-content-btn-wrap">
           <button
             className="details-content-btn details-content-btn-primary"
@@ -47,13 +70,14 @@ const ContentsDetailsForm = ({
           </button>
         </div>
       )}
-      {isEditing && (
+
+      {isContentCreated && (
         <div className="content-input-group-file-and-type">
           <div className="content-input-group">
             <select
-              id={`type-${contentId}`}
-              value={type}
-              onChange={handleTypeChange}
+              id={`type-${content.contentId}`}
+              value={content.contentType}
+              onChange={handleContentTypeChange}
               required
             >
               <option value="VIDEO">영상</option>
@@ -63,17 +87,17 @@ const ContentsDetailsForm = ({
         </div>
       )}
 
-      {isEditing && type === 'VIDEO' && (
+      {isContentCreated && content.contentType === 'VIDEO' && (
         <div className="content-input-group">
           <ContentsUploadForm
-            contentIndex={contentIndex}
-            sessionIndex={sessionIndex}
-            courseId={courseId}
+            contentFormIndex={content.contentFormIndex}
+            sessionFormIndex={sessionFormIndex}
+            // courseId={courseId}
            />
         </div>
       )}
 
-      {isEditing && type === 'QUIZ' && (
+      {/* {isEditing && type === 'QUIZ' && (
         <div className="quiz-section">
           {quizzes
             .slice()
@@ -100,7 +124,7 @@ const ContentsDetailsForm = ({
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -9,7 +9,17 @@ import { useNavigate } from 'react-router-dom';
 import { Tooltip } from "react-tooltip";
 import axios from '../../../axios';
 
-const SessionDetailsForm = ({ session, onSetSessionId, onUpdateSession, onReorderSession, onRemoveSession }) => {
+const SessionDetailsForm = ({
+  session,
+  onSetSessionId,
+  onUpdateSession,
+  onReorderSession,
+  onRemoveSession,
+  onAddContent,
+  onSetContentId,
+  onUpdateContent,
+  onRemoveContent
+}) => {
   const [isDraggable, setIsDraggable] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(true);
   const [isSessionCreated, setIsSessionCreated] = useState(session.sessionId === null ? false : true);
@@ -62,16 +72,16 @@ const SessionDetailsForm = ({ session, onSetSessionId, onUpdateSession, onReorde
           </button>
           <h2>{session.sessionFormIndex} 차시</h2>
         </div>
-        {/* {contents.length > 0 && (
+        {session.contents.length > 0 && (
           <button
             className="session-details-preview-button"
             title="미리보기"
             data-tooltip-id="preview-tooltip"
-            onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
+          // onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
           >
             <VscOpenPreview />
           </button>
-        )} */}
+        )}
         <button className="session-details-remove-button" onClick={() => onRemoveSession(session.sessionFormIndex)}>
           <IoClose />
         </button>
@@ -106,10 +116,16 @@ const SessionDetailsForm = ({ session, onSetSessionId, onUpdateSession, onReorde
               .map((content, contentFormIndex) => (
                 <ContentsDetailsForm
                   key={contentFormIndex + 1}
-                  sessionId={session.sessionId}
+                  sessionFormIndex={session.sessionFormIndex}
+                  content={content}
+                  onSetContentId={onSetContentId}
+                  onUpdateContent={onUpdateContent}
+                  onRemoveContent={onRemoveContent}
                 />
               ))}
-            <button className="session-details-btn session-details-btn-primary">
+            <button className="session-details-btn session-details-btn-primary"
+              onClick={() => onAddContent(session.sessionFormIndex)}
+            >
               + 콘텐츠 추가
             </button>
           </div>
