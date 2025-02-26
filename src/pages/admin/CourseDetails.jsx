@@ -57,6 +57,23 @@ function CourseDetails() {
     fetchSessionData();
   }, [courseId]);
 
+  const handleUpdateCourseData = () => {
+    const modifiedData = {
+      ...courseData,
+    };
+
+    axios
+      .put(`/api/v1/admin/courses`, modifiedData)
+      .then((response) => {
+        alert("수정이 완료되었습니다.");
+        navigate(-1);
+      })
+      .catch((error) => {
+        console.error("Error updating course:", error);
+        alert("수정 중 오류가 발생했습니다.");
+      });
+  };
+
   const handleAddSession = () => {
     dispatch({ type: "ADD_SESSION" });
   };
@@ -182,7 +199,7 @@ function CourseDetails() {
       <div className="course-header" style={styles.header}>
         <h2 style={styles.headerText}>훈련 과정 구성</h2>
         <div style={styles.headerButtons}>
-          <button className="btn btn-secondary">
+          <button className="btn btn-secondary" onClick={handleUpdateCourseData}>
             수정 완료
           </button>
         </div>

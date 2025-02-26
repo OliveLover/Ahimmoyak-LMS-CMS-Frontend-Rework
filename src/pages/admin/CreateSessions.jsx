@@ -56,6 +56,23 @@ function CreateSessions() {
     fetchSessionData();
   }, [courseId]);
 
+  const handleUpdateCourseData = () => {
+    const modifiedData = {
+      ...courseData,
+    };
+
+    axios
+      .put(`/api/v1/admin/courses`, modifiedData)
+      .then((response) => {
+        alert("과정이 생성되었습니다.");
+        navigate(-2);
+      })
+      .catch((error) => {
+        console.error("Error updating course:", error);
+        alert("과정 생성중 오류가 발생했습니다.");
+      });
+  };
+
   const handleAddSession = () => {
     dispatch({ type: "ADD_SESSION" });
   };
@@ -180,7 +197,7 @@ function CreateSessions() {
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={styles.headerButtons}>
-          <button className="btn btn-secondary mt-3">
+          <button className="btn btn-secondary mt-3" onClick={handleUpdateCourseData}>
             돌아가기
           </button>
         </div>
