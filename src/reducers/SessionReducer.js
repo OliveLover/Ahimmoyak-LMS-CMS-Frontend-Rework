@@ -1,5 +1,17 @@
 export const sessionReducer = (state, action) => {
   switch (action.type) {
+    case "SET_SESSIONS":
+      return action.payload.sessions.map((session) => ({
+        ...session,
+        sessionFormIndex: session.sessionIndex,
+        contents: session.contents
+          .sort((a, b) => a.contentIndex - b.contentIndex)
+          .map((content) => ({
+            ...content,
+            contentFormIndex: content.contentIndex,
+          })),
+      }));
+
     case "ADD_SESSION":
       const newSessionFormIndex = state.length > 0
         ? Math.max(...state.map(session => session.sessionFormIndex)) + 1

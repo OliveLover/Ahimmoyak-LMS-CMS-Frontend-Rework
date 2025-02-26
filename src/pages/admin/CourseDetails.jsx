@@ -27,6 +27,35 @@ function CourseDetails() {
   });
 
   const [sessions, dispatch] = useReducer(sessionReducer, []);
+  const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  const fetchCourseData = async () => {
+    if (!courseId) return;
+
+    try {
+      const response = await axios.get(`/api/v1/admin/courses/${courseId}`);
+      setCourseData(response.data);
+    } catch (error) {
+      console.error("Error fetching course data:", error);
+    }
+  };
+
+  const fetchSessionData = async () => {
+    if (!courseId) return;
+
+    try {
+      const response = await axios.get(`/api/v1/admin/courses/${courseId}/sessions`);
+      dispatch({ type: "SET_SESSIONS", payload: response.data });
+    } catch (error) {
+      console.error("Error fetching session data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourseData();
+    fetchSessionData();
+  }, [courseId]);
 
   const handleAddSession = () => {
     dispatch({ type: "ADD_SESSION" });
