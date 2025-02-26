@@ -191,6 +191,10 @@ function CourseDetails() {
       <div className="accordion">
         <AddCourseMeta courseData={courseData} setCourseData={setCourseData} />
         <ThumbnailUploadForm
+          courseId={courseData.courseId}
+          propThumbnailPath={courseData.thumbnailPath}
+          propThumbnailSize={courseData.thumbnailSize}
+          propThumbnailName={courseData.thumbnailName}
           updateCourseThumbnail={(uploadedFileInfo) =>
             setCourseData((prevData) => ({
               ...prevData,
