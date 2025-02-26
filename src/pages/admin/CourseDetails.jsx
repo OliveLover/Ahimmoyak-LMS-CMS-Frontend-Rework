@@ -211,6 +211,7 @@ function CourseDetails() {
           .map((session, sessionFormIndex) => (
             <SessionDetailsForm
               key={sessionFormIndex + 1}
+              courseId={courseId}
               session={session}
               onSetSessionId={handleSetSessionId}
               onUpdateSession={handleUpdateSession}

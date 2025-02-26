@@ -8,6 +8,7 @@ import './ContentsDetailsForm.css';
 
 
 const ContentsDetailsForm = ({
+  courseId,
   sessionFormIndex,
   content,
   onSetContentId,
@@ -52,10 +53,10 @@ const ContentsDetailsForm = ({
 
   const handleContentDrop = (e) => {
     e.preventDefault();
-  
+
     const fromContentIndex = Number(e.dataTransfer.getData("contentFormIndex"));
     const toContentIndex = content.contentFormIndex;
-  
+
     if (fromContentIndex !== toContentIndex) {
       onReorderContent(fromContentIndex, toContentIndex, sessionFormIndex);
     }
@@ -134,10 +135,14 @@ const ContentsDetailsForm = ({
       {isContentCreated && content.contentType === 'VIDEO' && (
         <div className="content-input-group">
           <ContentsUploadForm
-            contentFormIndex={content.contentFormIndex}
+            courseId={courseId}
             sessionFormIndex={sessionFormIndex}
-          // courseId={courseId}
-          />
+            contentFormIndex={content.contentFormIndex}
+            contentId={content.contentId}
+            propVideoPath={content.videoPath}
+            propFileName={content.fileName}
+            propFileSize={content.fileSize}
+            propVideoDuration={content.videoDuration} />
         </div>
       )}
 

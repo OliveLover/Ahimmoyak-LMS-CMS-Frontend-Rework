@@ -10,6 +10,7 @@ import { Tooltip } from "react-tooltip";
 import axios from '../../../axios';
 
 const SessionDetailsForm = ({
+  courseId,
   session,
   onSetSessionId,
   onUpdateSession,
@@ -121,6 +122,7 @@ const SessionDetailsForm = ({
               .map((content, contentFormIndex) => (
                 <ContentsDetailsForm
                   key={contentFormIndex + 1}
+                  courseId={courseId}
                   sessionFormIndex={session.sessionFormIndex}
                   content={content}
                   onSetContentId={onSetContentId}

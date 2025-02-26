@@ -8,7 +8,7 @@ import { AgGridReact } from "ag-grid-react";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-const ContentsUploadForm = ({ contentFormIndex, sessionFormIndex, courseId, contentId, propVideoPath, propFileName, propFileSize, propVideoDuration }) => {
+const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, contentId, propVideoPath, propFileName, propFileSize, propVideoDuration }) => {
   const [uploadId, setUploadId] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileId, setFileId] = useState(null);
