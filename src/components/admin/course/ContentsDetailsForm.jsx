@@ -7,7 +7,19 @@ import axios from '../../../axios';
 import './ContentsDetailsForm.css';
 
 
-const ContentsDetailsForm = ({ sessionFormIndex, content, onSetContentId, onUpdateContent, onRemoveContent }) => {
+const ContentsDetailsForm = ({
+  sessionFormIndex,
+  content,
+  onSetContentId,
+  onUpdateContent,
+  onReorderContent,
+  onRemoveContent,
+  onAddQuiz,
+  onSetQuizId,
+  onUpdateQuiz,
+  onRemoveQuiz
+}) => {
+  const [isDraggable, setIsDraggable] = useState(false);
   const [isContentCreated, setIsContentCreated] = useState(content.contentId === null ? false : true);
 
   const handleCreateContent = () => {
@@ -30,19 +42,51 @@ const ContentsDetailsForm = ({ sessionFormIndex, content, onSetContentId, onUpda
     const newType = e.target.value;
     onUpdateContent(sessionFormIndex, content.contentFormIndex, {
       ...content,
-       contentType: newType 
-      });
+      contentType: newType
+    });
+  };
+
+  const handleContentDragStart = (e) => {
+    e.dataTransfer.setData("contentFormIndex", content.contentFormIndex);
+  }
+
+  const handleContentDrop = (e) => {
+    e.preventDefault();
+  
+    const fromContentIndex = Number(e.dataTransfer.getData("contentFormIndex"));
+    const toContentIndex = content.contentFormIndex;
+  
+    if (fromContentIndex !== toContentIndex) {
+      onReorderContent(fromContentIndex, toContentIndex, sessionFormIndex);
+    }
+  };
+
+  const handleAddQuiz = () => {
+    const currentQuizCount = content.quizzes.length;
+
+    if (currentQuizCount < 5) {
+      onAddQuiz(sessionFormIndex, content.contentFormIndex);
+    } else {
+      alert('최대 5개의 퀴즈만 추가할 수 있습니다.');
+    }
   };
 
   return (
-    <div className="details-contents-form">
+    <div className="details-contents-form"
+      draggable={isDraggable}
+      onDragStart={handleContentDragStart}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={handleContentDrop}>
       <button
         className="details-course-remove-button"
         onClick={handleDeleteContent}
       >
         <IoClose />
       </button>
-      <button className="details-course-drag-indicator">
+      <button className="details-course-drag-indicator"
+        onMouseEnter={() => setIsDraggable(true)}
+        onMouseLeave={() => setIsDraggable(false)}
+      >
         <MdDragIndicator />
       </button>
       <h2>{content.contentFormIndex} 페이지</h2>
@@ -51,7 +95,7 @@ const ContentsDetailsForm = ({ sessionFormIndex, content, onSetContentId, onUpda
           <input
             type="text"
             id={`title-${content.contentId}`}
-            value={content.contentTitle}
+            value={content.contentTitle || ""}
             onChange={handleContentTitleChange}
             // onBlur={handleTitleBlur}
             placeholder="인덱스의 제목을 입력하세요"
@@ -92,26 +136,25 @@ const ContentsDetailsForm = ({ sessionFormIndex, content, onSetContentId, onUpda
           <ContentsUploadForm
             contentFormIndex={content.contentFormIndex}
             sessionFormIndex={sessionFormIndex}
-            // courseId={courseId}
-           />
+          // courseId={courseId}
+          />
         </div>
       )}
 
-      {/* {isEditing && type === 'QUIZ' && (
+      {isContentCreated && content.contentType === 'QUIZ' && (
         <div className="quiz-section">
-          {quizzes
+          {content.quizzes
             .slice()
-            .sort((a, b) => a.quizIndex - b.quizIndex)
-            .map((quiz) => (
-              <div key={quiz.quizIndex} className="quiz-form-wrapper">
+            .sort((a, b) => a.quizFormIndex - b.quizFormIndex)
+            .map((quiz, quizFormIndex) => (
+              <div key={quizFormIndex + 1} className="quiz-form-wrapper">
                 <AddQuizForm
-                  quizIndex={quiz.quizIndex}
-                  propQuizId={quiz.quizId}
-                  propQuestion={quiz.question}
-                  propAnswer={quiz.answer}
-                  propOptions={quiz.options}
-                  propExplanation={quiz.explanation}
-                  onRemoveQuiz={() => handleRemoveQuiz(quiz.quizIndex)}
+                  quizFormIndex={quiz.quizFormIndex}
+                  sessionFormIndex={sessionFormIndex}
+                  contentFormIndex={content.contentFormIndex}
+                  quiz={quiz}
+                  onUpdateQuiz={onUpdateQuiz}
+                  onRemoveQuiz={onRemoveQuiz}
                 />
               </div>
             ))}
@@ -119,12 +162,12 @@ const ContentsDetailsForm = ({ sessionFormIndex, content, onSetContentId, onUpda
             <button type="button" onClick={handleAddQuiz}>
               퀴즈 추가
             </button>
-            <button type="button" onClick={handleSaveQuizzes}>
+            <button type="button">
               퀴즈 저장
             </button>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

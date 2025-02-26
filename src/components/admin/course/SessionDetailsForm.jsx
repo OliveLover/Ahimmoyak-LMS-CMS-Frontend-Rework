@@ -18,7 +18,12 @@ const SessionDetailsForm = ({
   onAddContent,
   onSetContentId,
   onUpdateContent,
-  onRemoveContent
+  onReorderContent,
+  onRemoveContent,
+  onAddQuiz,
+  onSetQuizId,
+  onUpdateQuiz,
+  onRemoveQuiz,
 }) => {
   const [isDraggable, setIsDraggable] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(true);
@@ -120,7 +125,12 @@ const SessionDetailsForm = ({
                   content={content}
                   onSetContentId={onSetContentId}
                   onUpdateContent={onUpdateContent}
+                  onReorderContent={onReorderContent}
                   onRemoveContent={onRemoveContent}
+                  onAddQuiz={onAddQuiz}
+                  onSetQuizId={onSetQuizId}
+                  onUpdateQuiz={onUpdateQuiz}
+                  onRemoveQuiz={onRemoveQuiz}
                 />
               ))}
             <button className="session-details-btn session-details-btn-primary"

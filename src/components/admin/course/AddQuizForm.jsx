@@ -2,18 +2,32 @@ import { useState } from 'react';
 import './AddQuizForm.css';
 
 
-const AddQuizForm = ({ quizIndex, onRemoveQuiz, propQuizId, propQuestion, propAnswer, propOptions, propExplanation }) => {
-  const [question, setQuestion] = useState(propQuestion || '');
-  const [answer, setAnswer] = useState(propAnswer ?? '');
-  const [options, setOptions] = useState(propOptions || ['', '']);
+const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quizFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
+  const [options, setOptions] = useState(quiz.options || ['', '']);
   const [numOptions, setNumOptions] = useState(options.length);
-  const [explanation, setExplanation] = useState(propExplanation || '');
 
   const handleChoiceChange = (index, value) => {
     const updatedOptions = [...options];
     updatedOptions[index] = value;
+
+    const updatedQuiz = {
+      ...quiz,
+      options: updatedOptions
+    };
+
     setOptions(updatedOptions);
+    onUpdateQuiz(sessionFormIndex, contentFormIndex, quizFormIndex, updatedQuiz);
   };
+
+  const handleQuestionChange = (e) => {
+    const updatedQuiz = { ...quiz, question: e.target.value };
+    onUpdateQuiz(sessionFormIndex, contentFormIndex, quizFormIndex, updatedQuiz);
+  };
+
+  const handleAnswerChange = (e) => {
+    const updateQuiz = { ...quiz, answer: e.target.value };
+    onUpdateQuiz(sessionFormIndex, contentFormIndex, quizFormIndex, updateQuiz);
+  }
 
   const handleNumOptionsChange = (e) => {
     const newNum = parseInt(e.target.value, 10);
@@ -27,27 +41,40 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz, propQuizId, propQuestion, propAn
 
     setOptions(updatedOptions);
     setNumOptions(newNum);
+
+    const updatedQuiz = { ...quiz, options: updatedOptions };
+    onUpdateQuiz(sessionFormIndex, contentFormIndex, quizFormIndex, updatedQuiz);
   };
 
+
+  const handleExplanationChange = (e) => {
+    const updateQuiz = { ...quiz, explanation: e.target.value };
+    onUpdateQuiz(sessionFormIndex, contentFormIndex, quizFormIndex, updateQuiz);
+  }
+
+  const handleDeleteQuiz = () => {
+    onRemoveQuiz(sessionFormIndex, contentFormIndex, quizFormIndex);
+  }
+
   return (
-    <div className="add-quiz-form" id={`quiz-form-${quizIndex}`}>
-      <button className="add-quiz-remove-button" onClick={onRemoveQuiz}>×</button>
-      <h3>퀴즈 {quizIndex}</h3>
+    <div className="add-quiz-form" id={`quiz-form-${quizFormIndex}`}>
+      <button className="add-quiz-remove-button" onClick={handleDeleteQuiz}>×</button>
+      <h3>퀴즈 {quizFormIndex}</h3>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-question-${quizIndex}`}>질문</label>
+        <label htmlFor={`quiz-question-${quizFormIndex}`}>질문</label>
         <input
           type="text"
-          id={`quiz-question-${quizIndex}`}
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
+          id={`quiz-question-${quizFormIndex}`}
+          value={quiz.question}
+          onChange={handleQuestionChange}
           placeholder="질문을 입력하세요"
           required
         />
       </div>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-num-choices-${quizIndex}`}>선택지 개수</label>
+        <label htmlFor={`quiz-num-choices-${quizFormIndex}`}>선택지 개수</label>
         <select
-          id={`quiz-num-choices-${quizIndex}`}
+          id={`quiz-num-choices-${quizFormIndex}`}
           value={numOptions}
           onChange={handleNumOptionsChange}
         >
@@ -57,12 +84,12 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz, propQuizId, propQuestion, propAn
         </select>
       </div>
       <div className="quiz-input-group">
-        {options.map((choice, index) => (
-          <div key={index} className={`quiz-choice-${quizIndex}`}>
-            <label htmlFor={`choice-${quizIndex}-${index}`}>선택지 {index + 1}</label>
+        {quiz.options.map((choice, index) => (
+          <div key={index} className={`quiz-choice-${quizFormIndex}`}>
+            <label htmlFor={`choice-${quizFormIndex}-${index}`}>선택지 {index + 1}</label>
             <input
               type="text"
-              id={`choice-${quizIndex}-${index}`}
+              id={`choice-${quizFormIndex}-${index}`}
               value={choice}
               onChange={(e) => handleChoiceChange(index, e.target.value)}
               placeholder={`선택지 ${index + 1}를 입력하세요`}
@@ -72,25 +99,25 @@ const AddQuizForm = ({ quizIndex, onRemoveQuiz, propQuizId, propQuestion, propAn
         ))}
       </div>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-answer-${quizIndex}`}>정답</label>
+        <label htmlFor={`quiz-answer-${quizFormIndex}`}>정답</label>
         <select
-          id={`quiz-answer-${quizIndex}`}
-          value={answer}
-          onChange={(e) => setAnswer(parseInt(e.target.value, 10))}
+          id={`quiz-answer-${quizFormIndex}`}
+          value={quiz.answer}
+          onChange={handleAnswerChange}
           required
         >
           <option value="" disabled>정답을 선택하세요</option>
-          {options.map((choice, index) => (
+          {quiz.options.map((choice, index) => (
             <option key={index} value={index}>{index + 1} : {choice}</option>
           ))}
         </select>
       </div>
       <div className="quiz-input-group">
-        <label htmlFor={`quiz-explanation-${quizIndex}`}>해설</label>
+        <label htmlFor={`quiz-explanation-${quizFormIndex}`}>해설</label>
         <textarea
-          id={`quiz-explanation-${quizIndex}`}
-          value={explanation}
-          onChange={(e) => setExplanation(e.target.value)}
+          id={`quiz-explanation-${quizFormIndex}`}
+          value={quiz.explanation}
+          onChange={handleExplanationChange}
           placeholder="해설을 입력하세요"
           rows={4}
           required

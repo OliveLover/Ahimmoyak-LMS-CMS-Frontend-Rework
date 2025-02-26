@@ -88,12 +88,65 @@ function CourseDetails() {
     });
   };
 
+  const handleReorderContent = (fromContentIndex, toContentIndex, sessionFormIndex) => {
+    dispatch({
+      type: "REORDER_CONTENT",
+      payload: {
+        fromContentIndex,
+        toContentIndex,
+        sessionFormIndex,
+      },
+    });
+  };
+
   const handleDeleteContent = (sessionFormIndex, contentFormIndex) => {
     dispatch({
       type: "DELETE_CONTENT",
       payload: { sessionFormIndex, contentFormIndex },
     });
   };
+
+  const handleAddQuiz = (sessionFormIndex, contentFormIndex) => {
+    dispatch({
+      type: "ADD_QUIZ",
+      payload: { sessionFormIndex, contentFormIndex },
+    });
+  };
+
+  const handleSetQuizId = (sessionFormIndex, contentFormIndex, quizFormIndex, quizId) => {
+    dispatch({
+      type: "SET_QUIZ_ID",
+      payload: {
+        sessionFormIndex,
+        contentFormIndex,
+        quizFormIndex,
+        quizId,
+      },
+    });
+  };
+
+  const handleUpdateQuiz = (sessionFormIndex, contentFormIndex, quizFormIndex, updatedData) => {
+    dispatch({
+      type: "UPDATE_QUIZ",
+      payload: {
+        sessionFormIndex,
+        contentFormIndex,
+        quizFormIndex,
+        updatedData,
+      },
+    });
+  };
+
+  const handleDeleteQuiz = (sessionFormIndex, contentFormIndex, quizFormIndex) => {
+    dispatch({
+      type: "DELETE_QUIZ",
+      payload: {
+        sessionFormIndex,
+        contentFormIndex,
+        quizFormIndex,
+      }
+    });
+  }
 
   return (
     <div className="course-container" style={styles.container}>
@@ -133,7 +186,12 @@ function CourseDetails() {
               onAddContent={handleAddContent}
               onSetContentId={handleSetContentId}
               onUpdateContent={handleUpdateContent}
+              onReorderContent={handleReorderContent}
               onRemoveContent={handleDeleteContent}
+              onAddQuiz={handleAddQuiz}
+              onSetQuizId={handleSetQuizId}
+              onUpdateQuiz={handleUpdateQuiz}
+              onRemoveQuiz={handleDeleteQuiz}
             />
           ))}
 

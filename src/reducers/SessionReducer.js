@@ -109,6 +109,28 @@ export const sessionReducer = (state, action) => {
           : session
       );
 
+    case "REORDER_CONTENT":
+      const { fromContentIndex, toContentIndex, sessionFormIndex } = action.payload;
+
+      return state.map((session) =>
+        session.sessionFormIndex === sessionFormIndex
+          ? {
+            ...session,
+            contents: (() => {
+              const reorderedContents = [...session.contents];
+
+              const [movedContent] = reorderedContents.splice(fromContentIndex - 1, 1);
+              reorderedContents.splice(toContentIndex - 1, 0, movedContent);
+
+              return reorderedContents.map((content, index) => ({
+                ...content,
+                contentFormIndex: index + 1,
+              }));
+            })(),
+          }
+          : session
+      );
+
     case "DELETE_CONTENT":
       return state.map((session) =>
         session.sessionFormIndex === action.payload.sessionFormIndex
@@ -120,6 +142,102 @@ export const sessionReducer = (state, action) => {
                 ...content,
                 contentFormIndex: index + 1,
               })),
+          }
+          : session
+      );
+
+    case "ADD_QUIZ":
+      return state.map((session) =>
+        session.sessionFormIndex === action.payload.sessionFormIndex
+          ? {
+            ...session,
+            contents: session.contents.map((content) =>
+              content.contentFormIndex === action.payload.contentFormIndex
+                ? {
+                  ...content,
+                  quizzes: [
+                    ...content.quizzes,
+                    {
+                      quizId: null,
+                      quizFormIndex:
+                        content.quizzes.length > 0
+                          ? Math.max(...content.quizzes.map((quiz) => quiz.quizFormIndex)) + 1
+                          : 1,
+                      quizIndex: content.quizzes.length + 1,
+                      question: "",
+                      options: [],
+                      answer: 0,
+                      explanation: "",
+                    },
+                  ],
+                }
+                : content
+            ),
+          }
+          : session
+      );
+
+    case "SET_QUIZ_ID":
+      return state.map((session) =>
+        session.sessionFormIndex === action.payload.sessionFormIndex
+          ? {
+            ...session,
+            contents: session.contents.map((content) =>
+              content.contentFormIndex === action.payload.contentFormIndex
+                ? {
+                  ...content,
+                  quizzes: content.quizzes.map((quiz) =>
+                    quiz.quizFormIndex === action.payload.quizFormIndex
+                      ? { ...quiz, quizId: action.payload.quizId }
+                      : quiz
+                  ),
+                }
+                : content
+            ),
+          }
+          : session
+      );
+
+
+    case "UPDATE_QUIZ":
+      return state.map((session) =>
+        session.sessionFormIndex === action.payload.sessionFormIndex
+          ? {
+            ...session,
+            contents: session.contents.map((content) =>
+              content.contentFormIndex === action.payload.contentFormIndex
+                ? {
+                  ...content,
+                  quizzes: content.quizzes.map((quiz) =>
+                    quiz.quizFormIndex === action.payload.quizFormIndex
+                      ? { ...quiz, ...action.payload.updatedData }
+                      : quiz
+                  ),
+                }
+                : content
+            ),
+          }
+          : session
+      );
+
+    case "DELETE_QUIZ":
+      return state.map((session) =>
+        session.sessionFormIndex === action.payload.sessionFormIndex
+          ? {
+            ...session,
+            contents: session.contents.map((content) =>
+              content.contentFormIndex === action.payload.contentFormIndex
+                ? {
+                  ...content,
+                  quizzes: content.quizzes
+                    .filter((quiz) => quiz.quizFormIndex !== action.payload.quizFormIndex)
+                    .map((quiz, index) => ({
+                      ...quiz,
+                      quizFormIndex: index + 1,
+                    })),
+                }
+                : content
+            ),
           }
           : session
       );
