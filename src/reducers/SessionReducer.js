@@ -52,8 +52,8 @@ export const sessionReducer = (state, action) => {
       const { fromSessionIndex, toSessionIndex } = action.payload;
       const reorderedSessions = [...state];
 
-      const [movedSession] = reorderedSessions.splice(fromSessionIndex, 1);
-      reorderedSessions.splice(toSessionIndex, 0, movedSession);
+      const [movedSession] = reorderedSessions.splice(fromSessionIndex - 1, 1);
+      reorderedSessions.splice(toSessionIndex - 1, 0, movedSession);
 
       return reorderedSessions.map((session, index) => ({
         ...session,

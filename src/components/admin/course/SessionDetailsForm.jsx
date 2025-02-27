@@ -56,19 +56,19 @@ const SessionDetailsForm = ({
   };
 
   const handleSessionDragStart = (e) => {
-    e.dataTransfer.setData("sessionFormIndex", session.sessionFormIndex - 1);
+    e.dataTransfer.setData("sessionFormIndex", session.sessionFormIndex);
   }
 
   const handleSessionDrop = async (e) => {
     const fromSessionIndex = Number(e.dataTransfer.getData("sessionFormIndex"));
-    const toSessionIndex = session.sessionFormIndex - 1;
+    const toSessionIndex = session.sessionFormIndex;
 
     if (fromSessionIndex !== toSessionIndex) {
       try {
         await axios.patch("/api/v1/admin/courses/sessions/reorder", {
           courseId,
-          fromSessionIndex: fromSessionIndex + 1,
-          toSessionIndex: toSessionIndex + 1,
+          fromSessionIndex: fromSessionIndex,
+          toSessionIndex: toSessionIndex,
         });
 
         onReorderSession(fromSessionIndex, toSessionIndex);

@@ -59,14 +59,24 @@ const ContentsDetailsForm = ({
     e.dataTransfer.setData("contentFormIndex", content.contentFormIndex);
   }
 
-  const handleContentDrop = (e) => {
+  const handleContentDrop = async (e) => {
     e.preventDefault();
 
     const fromContentIndex = Number(e.dataTransfer.getData("contentFormIndex"));
     const toContentIndex = content.contentFormIndex;
 
     if (fromContentIndex !== toContentIndex) {
-      onReorderContent(fromContentIndex, toContentIndex, sessionFormIndex);
+      try {
+        await axios.patch("/api/v1/admin/courses/sessions/contents/reorder", {
+          courseId,
+          fromContentIndex: fromContentIndex,
+          toContentIndex: toContentIndex,
+        });
+
+        onReorderContent(fromContentIndex, toContentIndex, sessionFormIndex);
+      } catch (error) {
+        console.error("Error reordering content:", error);
+      }
     }
   };
 
