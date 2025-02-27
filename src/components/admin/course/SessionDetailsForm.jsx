@@ -31,9 +31,28 @@ const SessionDetailsForm = ({
   const [isSessionCreated, setIsSessionCreated] = useState(session.sessionId === null ? false : true);
 
   const contentRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleTitleChange = (e) => {
     onUpdateSession(session.sessionFormIndex, e.target.value);
+  };
+
+  const handleSessionTitleBlur = async(e) => {
+    const updatedTitle = e.target.value;
+
+    onUpdateSession(session.sessionFormIndex, updatedTitle);
+
+    if (session.sessionId) {
+      try {
+        await axios.put("/api/v1/admin/courses/sessions", {
+          courseId,
+          sessionId: session.sessionId,
+          sessionTitle: updatedTitle,
+        });
+      } catch (error) {
+        console.error("Error updating session title:", error);
+      }
+    }
   };
 
   const handleSessionDragStart = (e) => {
@@ -83,7 +102,7 @@ const SessionDetailsForm = ({
             className="session-details-preview-button"
             title="미리보기"
             data-tooltip-id="preview-tooltip"
-          // onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${sessionId}/preview`)}
+            onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${session.sessionId}/preview`)}
           >
             <VscOpenPreview />
           </button>
@@ -102,6 +121,7 @@ const SessionDetailsForm = ({
           placeholder="차시 제목을 입력하세요"
           value={session.sessionTitle}
           onChange={handleTitleChange}
+          onBlur={handleSessionTitleBlur}
         />
       </div>
 
