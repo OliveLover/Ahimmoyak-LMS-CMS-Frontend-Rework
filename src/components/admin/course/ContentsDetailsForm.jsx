@@ -44,8 +44,16 @@ const ContentsDetailsForm = ({
     }
   };
 
-  const handleDeleteContent = () => {
-    onRemoveContent(sessionFormIndex, content.contentFormIndex);
+  const handleDeleteContent = async () => {
+    if (!content.contentId) return;
+
+    try {
+      await axios.delete(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/contents/${content.contentId}`);
+
+      onRemoveContent(sessionFormIndex, content.contentFormIndex);
+    } catch (error) {
+      console.error("Error deleting content:", error);
+    }
   };
 
   const handleContentTypeChange = (e) => {
