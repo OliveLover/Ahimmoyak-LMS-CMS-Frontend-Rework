@@ -3,7 +3,7 @@ import axios from '../../../axios';
 import './AddQuizForm.css';
 
 
-const AddQuizForm = ({ courseId, sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
+const AddQuizForm = ({ courseId, sessionId, contentId, sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
   const [options, setOptions] = useState(quiz.options || ['', '']);
   const [numOptions, setNumOptions] = useState(options.length);
 
@@ -69,8 +69,15 @@ const AddQuizForm = ({ courseId, sessionFormIndex, contentFormIndex, quiz, onUpd
     onUpdateQuiz(sessionFormIndex, contentFormIndex, quiz.quizFormIndex, updateQuiz);
   }
 
-  const handleDeleteQuiz = () => {
-    onRemoveQuiz(sessionFormIndex, contentFormIndex, quiz.quizFormIndex);
+  const handleDeleteQuiz = async () => {
+    if (!quiz.quizId) return;
+
+    try {
+      await axios.delete(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/contents/${contentId}/quizzes/${quiz.quizId}`);
+      onRemoveQuiz(sessionFormIndex, contentFormIndex, quiz.quizId);
+    } catch (error) {
+      console.error("Error deleting quiz:", error);
+    }
   }
 
   return (

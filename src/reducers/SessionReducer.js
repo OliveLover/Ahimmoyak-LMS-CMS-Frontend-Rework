@@ -216,7 +216,6 @@ export const sessionReducer = (state, action) => {
           : session
       );
 
-
     case "UPDATE_QUIZ":
       return state.map((session) =>
         session.sessionFormIndex === action.payload.sessionFormIndex
@@ -243,19 +242,19 @@ export const sessionReducer = (state, action) => {
         session.sessionFormIndex === action.payload.sessionFormIndex
           ? {
             ...session,
-            contents: session.contents.map((content) =>
+            contents: session.contents?.map((content) =>
               content.contentFormIndex === action.payload.contentFormIndex
                 ? {
                   ...content,
                   quizzes: content.quizzes
-                    .filter((quiz) => quiz.quizFormIndex !== action.payload.quizFormIndex)
+                    ?.filter((quiz) => quiz.quizId !== action.payload.quizId)
                     .map((quiz, index) => ({
                       ...quiz,
                       quizFormIndex: index + 1,
-                    })),
+                    })) || [],
                 }
                 : content
-            ),
+            ) || [],
           }
           : session
       );

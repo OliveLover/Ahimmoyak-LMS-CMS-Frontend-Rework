@@ -191,6 +191,7 @@ const SessionDetailsForm = ({
                 <ContentsDetailsForm
                   key={contentFormIndex + 1}
                   courseId={courseId}
+                  sessionId={session.sessionId}
                   sessionFormIndex={session.sessionFormIndex}
                   content={content}
                   onUpdateContent={onUpdateContent}

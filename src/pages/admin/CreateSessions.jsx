@@ -182,16 +182,12 @@ function CreateSessions() {
     });
   };
 
-  const handleDeleteQuiz = (sessionFormIndex, contentFormIndex, quizFormIndex) => {
+  const handleDeleteQuiz = (sessionFormIndex, contentFormIndex, quizId) => {
     dispatch({
       type: "DELETE_QUIZ",
-      payload: {
-        sessionFormIndex,
-        contentFormIndex,
-        quizFormIndex,
-      }
+      payload: { sessionFormIndex, contentFormIndex, quizId },
     });
-  }
+  };
 
   return (
     <div style={styles.container}>

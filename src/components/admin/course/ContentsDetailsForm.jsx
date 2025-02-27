@@ -9,6 +9,7 @@ import './ContentsDetailsForm.css';
 
 const ContentsDetailsForm = ({
   courseId,
+  sessionId,
   sessionFormIndex,
   content,
   onUpdateContent,
@@ -181,6 +182,8 @@ const ContentsDetailsForm = ({
               <div key={quizFormIndex + 1} className="quiz-form-wrapper">
                 <AddQuizForm
                   courseId={courseId}
+                  sessionId={sessionId}
+                  contentId={content.contentId}
                   quizFormIndex={quiz.quizFormIndex}
                   sessionFormIndex={sessionFormIndex}
                   contentFormIndex={content.contentFormIndex}
