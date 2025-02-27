@@ -69,9 +69,24 @@ const SessionDetailsForm = ({
   };
 
   const handleCreateSession = async () => {
-    setIsSessionCreated(true);
-    onSetSessionId(session.sessionFormIndex, 1);
-  }
+    try {
+      const newSessionIndex = session.sessionFormIndex;
+  
+      const response = await axios.post("/api/v1/admin/courses/sessions", {
+        courseId,
+        sessionTitle: session.sessionTitle || "새로운 차시",
+        sessionIndex: newSessionIndex,
+      });
+  
+      if (response.data && response.data.sessionId) {
+        onSetSessionId(session.sessionFormIndex, response.data.sessionId);
+      }
+  
+      setIsSessionCreated(true);
+    } catch (error) {
+      console.error("Error creating session:", error);
+    }
+  };   
 
   const toggleContentVisibility = () => {
     setIsContentVisible(!isContentVisible);
