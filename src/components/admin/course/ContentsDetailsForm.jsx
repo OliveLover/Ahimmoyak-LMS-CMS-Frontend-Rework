@@ -11,7 +11,6 @@ const ContentsDetailsForm = ({
   courseId,
   sessionFormIndex,
   content,
-  onSetContentId,
   onUpdateContent,
   onReorderContent,
   onRemoveContent,
@@ -23,16 +22,28 @@ const ContentsDetailsForm = ({
   const [isDraggable, setIsDraggable] = useState(false);
   const [isContentCreated, setIsContentCreated] = useState(content.contentId === null ? false : true);
 
-  const handleCreateContent = () => {
-    setIsContentCreated(true);
-    onSetContentId(sessionFormIndex, content.contentFormIndex, 1);
-  }
-
   const handleContentTitleChange = (e) => {
     onUpdateContent(sessionFormIndex, content.contentIndex, {
       ...content,
       contentTitle: e.target.value,
     });
+  };
+
+  const handleUpdateContentBlur = async () => {
+    if (!content.contentId) return;
+
+    try {
+      await axios.put("/api/v1/admin/courses/sessions/contents", {
+        courseId,
+        contentId: content.contentId,
+        contentTitle: content.contentTitle,
+        contentType: content.contentType,
+      });
+
+      console.log("Content title updated successfully.");
+    } catch (error) {
+      console.error("Error updating content title:", error);
+    }
   };
 
   const handleDeleteContent = () => {
@@ -98,41 +109,29 @@ const ContentsDetailsForm = ({
             id={`title-${content.contentId}`}
             value={content.contentTitle || ""}
             onChange={handleContentTitleChange}
-            // onBlur={handleTitleBlur}
+            onBlur={handleUpdateContentBlur}
             placeholder="인덱스의 제목을 입력하세요"
             required
           />
         </div>
       </div>
 
-      {!isContentCreated && (
-        <div className="details-content-btn-wrap">
-          <button
-            className="details-content-btn details-content-btn-primary"
-            onClick={handleCreateContent}
+      <div className="content-input-group-file-and-type">
+        <div className="content-input-group">
+          <select
+            id={`type-${content.contentId}`}
+            value={content.contentType}
+            onChange={handleContentTypeChange}
+            onBlur={handleUpdateContentBlur}
+            required
           >
-            확인
-          </button>
+            <option value="VIDEO">영상</option>
+            <option value="QUIZ">퀴즈</option>
+          </select>
         </div>
-      )}
+      </div>
 
-      {isContentCreated && (
-        <div className="content-input-group-file-and-type">
-          <div className="content-input-group">
-            <select
-              id={`type-${content.contentId}`}
-              value={content.contentType}
-              onChange={handleContentTypeChange}
-              required
-            >
-              <option value="VIDEO">영상</option>
-              <option value="QUIZ">퀴즈</option>
-            </select>
-          </div>
-        </div>
-      )}
-
-      {isContentCreated && content.contentType === 'VIDEO' && (
+      {content.contentType === 'VIDEO' && (
         <div className="content-input-group">
           <ContentsUploadForm
             courseId={courseId}

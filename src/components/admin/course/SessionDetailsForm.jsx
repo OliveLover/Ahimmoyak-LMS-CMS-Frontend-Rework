@@ -37,7 +37,7 @@ const SessionDetailsForm = ({
     onUpdateSession(session.sessionFormIndex, e.target.value);
   };
 
-  const handleSessionTitleBlur = async(e) => {
+  const handleSessionTitleBlur = async (e) => {
     const updatedTitle = e.target.value;
 
     onUpdateSession(session.sessionFormIndex, updatedTitle);
@@ -71,22 +71,44 @@ const SessionDetailsForm = ({
   const handleCreateSession = async () => {
     try {
       const newSessionIndex = session.sessionFormIndex;
-  
+
       const response = await axios.post("/api/v1/admin/courses/sessions", {
         courseId,
         sessionTitle: session.sessionTitle || "새로운 차시",
         sessionIndex: newSessionIndex,
       });
-  
+
       if (response.data && response.data.sessionId) {
         onSetSessionId(session.sessionFormIndex, response.data.sessionId);
       }
-  
+
       setIsSessionCreated(true);
     } catch (error) {
       console.error("Error creating session:", error);
     }
-  };   
+  };
+
+  const handleAddContent = async () => {
+    try {
+      onAddContent(session.sessionFormIndex);
+
+      const newContentIndex = session.contents.length + 1;
+
+      const response = await axios.post("/api/v1/admin/courses/sessions/contents", {
+        courseId,
+        sessionId: session.sessionId,
+        contentTitle: "새 콘텐츠",
+        contentType: "VIDEO",
+        contentIndex: newContentIndex,
+      });
+
+      if (response.data && response.data.contentId) {
+        onSetContentId(session.sessionFormIndex, newContentIndex, response.data.contentId);
+      }
+    } catch (error) {
+      console.error("Error adding content:", error);
+    }
+  };
 
   const toggleContentVisibility = () => {
     setIsContentVisible(!isContentVisible);
@@ -160,7 +182,6 @@ const SessionDetailsForm = ({
                   courseId={courseId}
                   sessionFormIndex={session.sessionFormIndex}
                   content={content}
-                  onSetContentId={onSetContentId}
                   onUpdateContent={onUpdateContent}
                   onReorderContent={onReorderContent}
                   onRemoveContent={onRemoveContent}
@@ -171,7 +192,7 @@ const SessionDetailsForm = ({
                 />
               ))}
             <button className="session-details-btn session-details-btn-primary"
-              onClick={() => onAddContent(session.sessionFormIndex)}
+              onClick={handleAddContent}
             >
               + 콘텐츠 추가
             </button>
