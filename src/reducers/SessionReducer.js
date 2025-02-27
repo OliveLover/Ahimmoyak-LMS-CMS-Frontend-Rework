@@ -9,6 +9,12 @@ export const sessionReducer = (state, action) => {
           .map((content) => ({
             ...content,
             contentFormIndex: content.contentIndex,
+            quizzes: content.quizzes
+              ? content.quizzes.map((quiz) => ({
+                ...quiz,
+                quizFormIndex: quiz.quizIndex,
+              }))
+              : [],
           })),
       }));
 

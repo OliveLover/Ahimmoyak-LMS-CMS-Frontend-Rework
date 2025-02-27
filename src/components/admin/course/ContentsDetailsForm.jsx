@@ -20,7 +20,6 @@ const ContentsDetailsForm = ({
   onRemoveQuiz
 }) => {
   const [isDraggable, setIsDraggable] = useState(false);
-  const [isContentCreated, setIsContentCreated] = useState(content.contentId === null ? false : true);
 
   const handleContentTitleChange = (e) => {
     onUpdateContent(sessionFormIndex, content.contentIndex, {
@@ -39,8 +38,6 @@ const ContentsDetailsForm = ({
         contentTitle: content.contentTitle,
         contentType: content.contentType,
       });
-
-      console.log("Content title updated successfully.");
     } catch (error) {
       console.error("Error updating content title:", error);
     }
@@ -73,13 +70,33 @@ const ContentsDetailsForm = ({
     }
   };
 
-  const handleAddQuiz = () => {
-    const currentQuizCount = content.quizzes.length;
+  const handleAddQuiz = async () => {
+    const newQuizIndex = content.quizzes.length + 1;
 
-    if (currentQuizCount < 5) {
-      onAddQuiz(sessionFormIndex, content.contentFormIndex);
-    } else {
-      alert('최대 5개의 퀴즈만 추가할 수 있습니다.');
+    if (newQuizIndex >= 6) {
+      alert("최대 5개의 퀴즈만 추가할 수 있습니다.");
+      return;
+    }
+
+    onAddQuiz(sessionFormIndex, content.contentFormIndex);
+
+    try {
+      const response = await axios.post("/api/v1/admin/courses/sessions/contents/quizzes", {
+        courseId,
+        contentId: content.contentId,
+        quizId: null,
+        quizIndex: newQuizIndex,
+        question: "",
+        options: ["", ""],
+        answer: 0,
+        explanation: "",
+      });
+
+      const quizId = response.data.quizId;
+
+      onSetQuizId(sessionFormIndex, content.contentFormIndex, newQuizIndex, quizId);
+    } catch (error) {
+      console.error("Error creating quiz:", error);
     }
   };
 
@@ -145,7 +162,7 @@ const ContentsDetailsForm = ({
         </div>
       )}
 
-      {isContentCreated && content.contentType === 'QUIZ' && (
+      {content.contentType === 'QUIZ' && (
         <div className="quiz-section">
           {content.quizzes
             .slice()
