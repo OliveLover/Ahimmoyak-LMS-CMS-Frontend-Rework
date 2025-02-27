@@ -59,12 +59,22 @@ const SessionDetailsForm = ({
     e.dataTransfer.setData("sessionFormIndex", session.sessionFormIndex - 1);
   }
 
-  const handleSessionDrop = (e) => {
+  const handleSessionDrop = async (e) => {
     const fromSessionIndex = Number(e.dataTransfer.getData("sessionFormIndex"));
     const toSessionIndex = session.sessionFormIndex - 1;
 
     if (fromSessionIndex !== toSessionIndex) {
-      onReorderSession(fromSessionIndex, toSessionIndex);
+      try {
+        await axios.patch("/api/v1/admin/courses/sessions/reorder", {
+          courseId,
+          fromSessionIndex: fromSessionIndex + 1,
+          toSessionIndex: toSessionIndex + 1,
+        });
+
+        onReorderSession(fromSessionIndex, toSessionIndex);
+      } catch (error) {
+        console.error("Error reordering session:", error);
+      }
     }
   };
 
@@ -134,16 +144,16 @@ const SessionDetailsForm = ({
           </button>
           <h2>{session.sessionFormIndex} 차시</h2>
         </div>
-        {session.contents.length > 0 && (
-          <button
-            className="session-details-preview-button"
-            title="미리보기"
-            data-tooltip-id="preview-tooltip"
-            onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${session.sessionId}/preview`)}
-          >
-            <VscOpenPreview />
-          </button>
-        )}
+
+        <button
+          className="session-details-preview-button"
+          title="미리보기"
+          data-tooltip-id="preview-tooltip"
+          onClick={() => navigate(`/admin/course-info/${courseId}/sessions/${session.sessionId}/preview`)}
+        >
+          <VscOpenPreview />
+        </button>
+
         <button className="session-details-remove-button" onClick={() => onRemoveSession(session.sessionFormIndex)}>
           <IoClose />
         </button>
@@ -174,7 +184,8 @@ const SessionDetailsForm = ({
             className={`session-details-contents ${isContentVisible ? 'visible' : 'hidden'}`}
             ref={contentRef}
           >
-            {session.contents
+            {(session.contents || [])
+              .filter(content => content.contentFormIndex !== undefined)
               .sort((a, b) => a.contentFormIndex - b.contentFormIndex)
               .map((content, contentFormIndex) => (
                 <ContentsDetailsForm
