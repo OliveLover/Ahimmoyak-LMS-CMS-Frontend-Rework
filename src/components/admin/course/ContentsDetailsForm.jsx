@@ -170,6 +170,7 @@ const ContentsDetailsForm = ({
             .map((quiz, quizFormIndex) => (
               <div key={quizFormIndex + 1} className="quiz-form-wrapper">
                 <AddQuizForm
+                  courseId={courseId}
                   quizFormIndex={quiz.quizFormIndex}
                   sessionFormIndex={sessionFormIndex}
                   contentFormIndex={content.contentFormIndex}
@@ -182,9 +183,6 @@ const ContentsDetailsForm = ({
           <div className="quiz-controls">
             <button type="button" onClick={handleAddQuiz}>
               퀴즈 추가
-            </button>
-            <button type="button">
-              퀴즈 저장
             </button>
           </div>
         </div>

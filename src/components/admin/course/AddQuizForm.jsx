@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import axios from '../../../axios';
 import './AddQuizForm.css';
 
 
-const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
+const AddQuizForm = ({ courseId, sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
   const [options, setOptions] = useState(quiz.options || ['', '']);
   const [numOptions, setNumOptions] = useState(options.length);
 
@@ -46,6 +47,22 @@ const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, o
     onUpdateQuiz(sessionFormIndex, contentFormIndex, quiz.quizFormIndex, updatedQuiz);
   };
 
+  const handleUpdateQuizBlur = async () => {
+    if (!quiz.quizId) return;
+
+    try {
+      await axios.put(`/api/v1/admin/courses/sessions/contents/quizzes/${quiz.quizId}`, {
+        courseId,
+        quizId: quiz.quizId,
+        question: quiz.question,
+        options: quiz.options,
+        answer: quiz.answer,
+        explanation: quiz.explanation,
+      });
+    } catch (error) {
+      console.error("Error updating quiz:", error);
+    }
+  };
 
   const handleExplanationChange = (e) => {
     const updateQuiz = { ...quiz, explanation: e.target.value };
@@ -67,6 +84,7 @@ const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, o
           id={`quiz-question-${quiz.quizFormIndex}`}
           value={quiz.question}
           onChange={handleQuestionChange}
+          onBlur={handleUpdateQuizBlur}
           placeholder="질문을 입력하세요"
           required
         />
@@ -77,6 +95,7 @@ const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, o
           id={`quiz-num-choices-${quiz.quizFormIndex}`}
           value={numOptions}
           onChange={handleNumOptionsChange}
+          onBlur={handleUpdateQuizBlur}
         >
           {[2, 3, 4, 5].map((num) => (
             <option key={num} value={num}>{num}</option>
@@ -92,6 +111,7 @@ const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, o
               id={`choice-${quiz.quizFormIndex}-${index}`}
               value={choice}
               onChange={(e) => handleChoiceChange(index, e.target.value)}
+              onBlur={handleUpdateQuizBlur}
               placeholder={`선택지 ${index + 1}를 입력하세요`}
               required
             />
@@ -104,6 +124,7 @@ const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, o
           id={`quiz-answer-${quiz.quizFormIndex}`}
           value={quiz.answer}
           onChange={handleAnswerChange}
+          onBlur={handleUpdateQuizBlur}
           required
         >
           <option value="" disabled>정답을 선택하세요</option>
@@ -118,6 +139,7 @@ const AddQuizForm = ({ sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, o
           id={`quiz-explanation-${quiz.quizFormIndex}`}
           value={quiz.explanation}
           onChange={handleExplanationChange}
+          onBlur={handleUpdateQuizBlur}
           placeholder="해설을 입력하세요"
           rows={4}
           required
