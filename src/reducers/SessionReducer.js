@@ -183,7 +183,7 @@ export const sessionReducer = (state, action) => {
                           : 1,
                       quizIndex: content.quizzes.length + 1,
                       question: "",
-                      options: [],
+                      options: ["", ""],
                       answer: 0,
                       explanation: "",
                     },
