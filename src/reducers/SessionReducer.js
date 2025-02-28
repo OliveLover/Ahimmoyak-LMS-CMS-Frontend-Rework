@@ -83,7 +83,10 @@ export const sessionReducer = (state, action) => {
                     ? Math.max(...session.contents.map((content) => content.contentFormIndex)) + 1
                     : 1,
                 contentId: null,
-                contentIndex: session.contents.length + 1,
+                contentIndex:
+                  session.contents.length > 0
+                    ? Math.max(...session.contents.map((content) => content.contentIndex)) + 1
+                    : 1, // ✅ 가장 큰 contentIndex + 1 로 설정
                 contentTitle: "",
                 contentType: "VIDEO",
                 videoPath: "",

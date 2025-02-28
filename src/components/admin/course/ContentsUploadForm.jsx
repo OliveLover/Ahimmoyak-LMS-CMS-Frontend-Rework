@@ -8,20 +8,18 @@ import { AgGridReact } from "ag-grid-react";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, contentId, propVideoPath, propFileName, propFileSize, propVideoDuration }) => {
-  const [uploadId, setUploadId] = useState(null);
-  const [fileKey, setFileKey] = useState(null);
-  const [fileId, setFileId] = useState(null);
+const ContentsUploadForm = ({
+  courseId,
+  sessionFormIndex,
+  content,
+  onUpdateContent
+}) => {
   const [file, setFile] = useState(null);
-  const [fileSize, setFileSize] = useState(null);
-  const [fileName, setFileName] = useState(null);
-  const [videoDuration, setVideoDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [showToast, setShowToast] = useState(false);
-  const [videoPath, setVideoPath] = useState(propVideoPath);
 
   useEffect(() => {
     if (progress > 0 && progress < 100) {
@@ -35,12 +33,6 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
       }, 3000);
     }
   }, [progress]);
-
-  useEffect(() => {
-    if (propVideoPath) {
-      setVideoPath(propVideoPath);
-    }
-  }, [propVideoPath]);
 
   const initiateMultipartUpload = useCallback(async (fileExtension) => {
     try {
@@ -87,7 +79,7 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
     try {
       const response = await axios.put("/api/v1/s3/complete", {
         courseId,
-        contentId,
+        contentId: content.contentId,
         fileKey,
         uploadId,
         fileId,
@@ -101,7 +93,15 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
       if (response.status === 200) {
         setProgress(100);
         setUploadComplete(true);
-        setVideoPath(response.data.filePath);
+
+        onUpdateContent(sessionFormIndex, content.contentIndex, {
+          fileName: fileName,
+          fileSize: fileSize,
+          videoDuration: videoDuration,
+          fileId: fileId,
+          videoPath: response.data.filePath,
+        });
+
       } else {
         alert("멀티파트 업로드 완료 실패");
       }
@@ -109,7 +109,7 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
       console.error("Error completing upload:", error);
       alert("멀티파트 업로드 완료 중 오류가 발생했습니다.");
     }
-  }, [courseId, contentId]);
+  }, [courseId, content.contentId]);
 
   const handleFileChange = async (selectedFile) => {
     if (!selectedFile) return;
@@ -124,8 +124,6 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
     }
 
     setFile(selectedFile);
-    setFileName(fileName);
-    setFileSize(fileSize);
     setIsUploading(true);
     setUploadComplete(false);
 
@@ -134,17 +132,13 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
 
     videoElement.onloadedmetadata = async () => {
       window.URL.revokeObjectURL(videoElement.src);
-      const duration = Math.floor(videoElement.duration);
-      setVideoDuration(duration);
+      const videoDuration = Math.floor(videoElement.duration);
 
       const initData = await initiateMultipartUpload(fileExtension);
       if (initData) {
-        const { uploadId: newUploadId, fileKey: newFileKey, fileId: newFileId } = initData;
-        setUploadId(newUploadId);
-        setFileKey(newFileKey);
-        setFileId(newFileId);
+        const { uploadId, fileKey, fileId } = initData;
 
-        const presignedUrls = await getPresignedUrls(newUploadId, newFileKey, fileSize);
+        const presignedUrls = await getPresignedUrls(uploadId, fileKey, fileSize);
         if (presignedUrls) {
           const completedParts = [];
           const partSize = 5 * 1024 * 1024;
@@ -181,7 +175,7 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
           }
 
           if (completedParts.length === totalParts) {
-            await completeMultipartUpload(newFileKey, newUploadId, newFileId, fileSize, fileName, duration, completedParts);
+            await completeMultipartUpload(fileKey, uploadId, fileId, fileSize, fileName, videoDuration, completedParts);
             setIsUploading(false);
           } else {
             alert("모든 파트를 업로드하지 못했습니다.");
@@ -194,8 +188,8 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
     videoElement.src = URL.createObjectURL(selectedFile);
   };
 
-  const handleDownload = (propVideoPath) => {
-    const downloadUrl = `${propVideoPath}`;
+  const handleDownload = (videoPath) => {
+    const downloadUrl = `${videoPath}`;
     const a = document.createElement('a');
     a.href = downloadUrl;
     a.download = downloadUrl.split('/').pop();
@@ -222,7 +216,9 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
       headerName: "다운로드",
       field: "download",
       cellRenderer: (params) => (
-        <button onClick={() => handleDownload(params.data.filePath)} className="btn btn-primary download">
+        <button
+          onClick={() => handleDownload(params.data.videoPath)}
+          className="btn btn-primary download">
           다운로드
         </button>
       ),
@@ -232,14 +228,14 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
   ];
 
   const rowData = [
-    { fileName: fileName || propFileName, fileSize: fileSize || propFileSize, videoDuration: videoDuration || propVideoDuration, filePath: videoPath },
+    { fileName: "" || content.fileName, fileSize: 0 || content.fileSize, videoDuration: 0 || content.videoDuration, videoPath: content.videoPath },
   ];
 
   return (
     <div className="contents-upload-form">
       <div className="input-group mb-3">
         <input
-          id={`file-input-${sessionFormIndex}-${contentFormIndex}`}
+          id={`file-input-${sessionFormIndex}-${content.contentFormIndex}`}
           type="file"
           className="form-control"
           onChange={(e) => handleFileChange(e.target.files[0])}
@@ -248,9 +244,9 @@ const ContentsUploadForm = ({ courseId, sessionFormIndex, contentFormIndex, cont
 
       <div className="contents-upload-info-wrap">
         <div className="contents-upload-preview">
-          {videoPath ? (
+          {content.videoPath ? (
             <ReactPlayer
-              url={videoPath}
+              url={content.videoPath}
               controls={true}
               width="100%"
               height="100%"

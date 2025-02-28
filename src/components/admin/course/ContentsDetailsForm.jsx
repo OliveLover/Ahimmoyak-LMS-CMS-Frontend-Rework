@@ -172,12 +172,9 @@ const ContentsDetailsForm = ({
           <ContentsUploadForm
             courseId={courseId}
             sessionFormIndex={sessionFormIndex}
-            contentFormIndex={content.contentFormIndex}
-            contentId={content.contentId}
-            propVideoPath={content.videoPath}
-            propFileName={content.fileName}
-            propFileSize={content.fileSize}
-            propVideoDuration={content.videoDuration} />
+            content={content}
+            onUpdateContent={onUpdateContent}
+          />
         </div>
       )}
 
