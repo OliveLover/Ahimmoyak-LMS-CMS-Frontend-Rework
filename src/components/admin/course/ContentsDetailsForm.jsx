@@ -127,7 +127,7 @@ const ContentsDetailsForm = ({
       onDrop={handleContentDrop}>
       <button
         className="details-course-remove-button"
-        onClick={handleDeleteContent}
+        onClick={() => handleDeleteContent()}
       >
         <IoClose />
       </button>

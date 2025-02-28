@@ -98,6 +98,16 @@ const SessionDetailsForm = ({
     }
   };
 
+  const handleDeleteSession = async (session) => {
+    try {
+      await axios.delete(`/api/v1/admin/courses/${courseId}/sessions/${session.sessionId}`);
+  
+      onRemoveSession(session.sessionFormIndex);
+    } catch (error) {
+      console.error("Error deleting session:", error);
+    }
+  };
+  
   const handleAddContent = async () => {
     try {
       onAddContent(session.sessionFormIndex);
@@ -154,7 +164,7 @@ const SessionDetailsForm = ({
           <VscOpenPreview />
         </button>
 
-        <button className="session-details-remove-button" onClick={() => onRemoveSession(session.sessionFormIndex)}>
+        <button className="session-details-remove-button" onClick={() => handleDeleteSession(session)}>
           <IoClose />
         </button>
         <Tooltip id="preview-tooltip" place="top" isOpen={true} > 미리보기 </ Tooltip>
