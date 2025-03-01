@@ -2,3 +2,21 @@
   width: 100%;
   height: 100%;
 }
+
+.course-lifecycle-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.course-lifecycle-delete-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.7rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.3rem;
+}

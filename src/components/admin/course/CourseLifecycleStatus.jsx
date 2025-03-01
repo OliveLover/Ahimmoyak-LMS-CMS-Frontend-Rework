@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
+import axios from '../../../axios';
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +8,44 @@ import './CourseLifecycleStatus.css';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-const CourseLifecycleStatus = ({ courses }) => {
+const CourseLifecycleStatus = ({ courses, setCourses }) => {
   const [lastClickTime, setLastClickTime] = useState(0);
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  const gridRef = useRef(null);
   const navigate = useNavigate();
+
+  const onSelectionChanged = () => {
+    if (gridRef.current && gridRef.current.api) {
+      const selectedNodes = gridRef.current.api.getSelectedNodes();
+      const selectedIds = selectedNodes.map(node => node.data.courseId);
+      setSelectedCourses(selectedIds);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedCourses.length === 0) {
+      alert("삭제할 과정을 선택해주세요.");
+      return;
+    }
+
+    if (window.confirm(`선택한 ${selectedCourses.length}개의 과정을 삭제하시겠습니까?`)) {
+      try {
+        await axios.delete("/api/v1/admin/courses", {
+          data: {
+            courseIds: selectedCourses
+          }
+        });
+
+        const updatedCourses = courses.filter(course => !selectedCourses.includes(course.courseId));
+        setCourses(updatedCourses);
+        setSelectedCourses([]);
+        alert("과정이 성공적으로 삭제되었습니다.");
+      } catch (error) {
+        console.error("과정 삭제 중 오류가 발생했습니다:", error);
+        alert("과정 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
 
   const colDefs = [
     { field: "courseId", headerName: "ID", sortable: true, filter: 'agTextColumnFilter' },
@@ -75,6 +111,12 @@ const CourseLifecycleStatus = ({ courses }) => {
     }
   ];
 
+  const rowSelection = useMemo(() => {
+    return {
+      mode: 'multiRow'
+    };
+  }, []);
+
   const handleRowClick = (params) => {
     const now = Date.now();
     const doubleClickThreshold = 300;
@@ -101,7 +143,13 @@ const CourseLifecycleStatus = ({ courses }) => {
 
   return (
     <div className="course-lifecycle-status">
+      <div className="course-lifecycle-btn-wrap">
+        <button className="course-lifecycle-delete-btn" onClick={handleDeleteSelected} disabled={selectedCourses.length === 0}>
+          선택 삭제
+        </button>
+      </div>
       <AgGridReact
+        ref={gridRef}
         rowData={courses}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
@@ -109,6 +157,8 @@ const CourseLifecycleStatus = ({ courses }) => {
         paginationPageSize={paginationPageSize}
         paginationPageSizeSelector={[10, 25, 50]}
         onRowClicked={handleRowClick}
+        rowSelection={rowSelection}
+        onSelectionChanged={onSelectionChanged}
       />
     </div>
   );

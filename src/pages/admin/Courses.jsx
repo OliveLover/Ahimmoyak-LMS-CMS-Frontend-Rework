@@ -32,15 +32,15 @@ function Courses() {
       <div style={styles.gridContainer}>
         <div style={styles.gridItem}>
           <h2 style={styles.sectionTitle}>활성 과정</h2>
-          <CourseLifecycleStatus courses={activeCourses} />
+          <CourseLifecycleStatus courses={activeCourses} setCourses={setCourses} />
         </div>
         <div style={styles.gridItem}>
           <h2 style={styles.sectionTitle}>미활성 과정</h2>
-          <CourseLifecycleStatus courses={inactiveCourses} />
+          <CourseLifecycleStatus courses={inactiveCourses} setCourses={setCourses} />
         </div>
         <div style={styles.gridItem}>
           <h2 style={styles.sectionTitle}>종료 과정</h2>
-          <CourseLifecycleStatus courses={endedCourses} />
+          <CourseLifecycleStatus courses={endedCourses} setCourses={setCourses} />
         </div>
       </div>
     </div>
