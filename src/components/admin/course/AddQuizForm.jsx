@@ -2,7 +2,6 @@ import { useState } from 'react';
 import axios from '../../../axios';
 import './AddQuizForm.css';
 
-
 const AddQuizForm = ({ courseId, sessionId, contentId, sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
   const [options, setOptions] = useState(quiz.options || ['', '']);
   const [numOptions, setNumOptions] = useState(options.length);

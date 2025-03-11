@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import StorageInfo from '../storage_info/StorageInfo';
 import './AdminSidebar.css';
 
-
 const AdminSidebar = () => {
   return (
     <div className="admin-sidebar">

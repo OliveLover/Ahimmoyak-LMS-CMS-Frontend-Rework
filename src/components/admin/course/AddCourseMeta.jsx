@@ -1,7 +1,6 @@
 import Badge from 'react-bootstrap/Badge'
 import './AddCourseMeta.css';
 
-
 const AddCourseMeta = ({ courseData, setCourseData }) => {
 
   const isCourseTitleValid = courseData.courseTitle.trim() !== '';

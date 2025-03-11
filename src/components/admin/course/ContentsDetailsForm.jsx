@@ -6,7 +6,6 @@ import AddQuizForm from './AddQuizForm';
 import axios from '../../../axios';
 import './ContentsDetailsForm.css';
 
-
 const ContentsDetailsForm = ({
   courseId,
   sessionId,

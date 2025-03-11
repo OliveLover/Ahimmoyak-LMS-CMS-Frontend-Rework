@@ -1,6 +1,5 @@
 import './StorageInfo.css';
 
-
 const StorageInfo = () => {
   const usedStorage = 70;
   const totalStorage = 100;

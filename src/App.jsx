@@ -13,6 +13,8 @@ import UserSidebar from './components/user/sidebar/UserSidebar';
 import Header from './components/user/header/Header';
 import Footer from './components/user/footer/Footer';
 import UserMain from './pages/user/UserMain';
+import UserLogin from './pages/user/UserLogin';
+import UserLoginCallback from './pages/user/UserLoginCallback';
 import MyCourses from './pages/user/MyCourses';
 import MyAchievements from './pages/user/MyAchievements';
 import MyExams from './pages/user/MyExams';
@@ -35,6 +37,8 @@ function App() {
             </div>
           }
         />
+        <Route path="/account/login" element={<UserLogin />} />
+        <Route path="/account/login/callback" element={<UserLoginCallback />} />
 
         <Route
           path="/mypage/*"
