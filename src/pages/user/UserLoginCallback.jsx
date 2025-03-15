@@ -1,18 +1,29 @@
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "react-oidc-context";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const UserLoginCallback = () => {
   const location = useLocation();
-  console.log(location.search);
+  const navigate = useNavigate();
+  const auth = useAuth();
 
   const queryParams = new URLSearchParams(location.search);
-  const code = queryParams.get("code"); // OIDC 인증 코드
+  const code = queryParams.get("code");
 
-  return (
-    <div>
-      <h1>로그인 처리 중...</h1>
-      <p>인증 코드: {code}</p>
-    </div>
-  );
+  useEffect(() => {
+    if (!auth.user) return;
+
+    const userGroups = auth.user?.profile?.["cognito:groups"];
+
+    if (userGroups && userGroups.includes("admin")) {
+      navigate("/admin");
+    } else {
+      navigate("/");
+    }
+
+  }, [auth.user, code, navigate])
+
+  return null;
 };
 
 export default UserLoginCallback;
