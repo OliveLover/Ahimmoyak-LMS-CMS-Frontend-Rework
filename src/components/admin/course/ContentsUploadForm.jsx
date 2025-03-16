@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import axios from "../../../axios";
+import uploadAxiosInstance from "../../../axios-upload";
 import "./ContentsUploadForm.css";
 import ReactPlayer from 'react-player';
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
@@ -150,7 +151,7 @@ const ContentsUploadForm = ({
             const partData = selectedFile.slice(startByte, endByte);
 
             try {
-              const response = await axios.put(presignedUrls[partNumber - 1], partData, {
+              const response = await uploadAxiosInstance.put(presignedUrls[partNumber - 1], partData, {
                 headers: { "Content-Type": "application/octet-stream" },
                 onUploadProgress: (progressEvent) => {
                   const partProgress = (progressEvent.loaded / progressEvent.total) * 100;

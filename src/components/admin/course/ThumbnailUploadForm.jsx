@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import uploadAxiosInstance from "../../../axios-upload";
 import axios from "../../../axios";
 import "./ThumbnailUploadForm.css";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
@@ -148,7 +149,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
           const partData = selectedFile.slice(startByte, endByte);
 
           try {
-            const response = await axios.put(presignedUrls[partNumber - 1], partData, {
+            const response = await uploadAxiosInstance.put(presignedUrls[partNumber - 1], partData, {
               headers: { "Content-Type": "application/octet-stream" },
               onUploadProgress: (progressEvent) => {
                 const partProgress = (progressEvent.loaded / progressEvent.total) * 100;
