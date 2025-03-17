@@ -28,6 +28,13 @@ jobs:
       - name: Set environment variables
         run: |
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env.production
+          echo "VITE_COGNITO_AUTHORITY=${{ secrets.VITE_COGNITO_AUTHORITY }}" >> .env.production
+          echo "VITE_COGNITO_CLIENT_ID=${{ secrets.VITE_COGNITO_CLIENT_ID }}" >> .env.production
+          echo "VITE_COGNITO_REDIRECT_URI=${{ secrets.VITE_COGNITO_REDIRECT_URI }}" >> .env.production
+          echo "VITE_COGNITO_RESPONSE_TYPE=${{ secrets.VITE_COGNITO_RESPONSE_TYPE }}" >> .env.production
+          echo "VITE_COGNITO_SCOPE=${{ secrets.VITE_COGNITO_SCOPE }}" >> .env.production
+          echo "VITE_COGNITO_DOMAIN=${{ secrets.VITE_COGNITO_DOMAIN }}" >> .env.production
+          echo "VITE_COGNITO_LOGOUT_URI=${{ secrets.VITE_COGNITO_LOGOUT_URI }}" >> .env.production
 
       # Step 5: 프로젝트 빌드
       - name: Build the project
