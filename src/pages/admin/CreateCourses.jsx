@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../axios";
+import AuthAxiosInstance from "../../axios-auth";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 
 function CreateCourses() {
@@ -34,7 +34,7 @@ function CreateCourses() {
       return;
     }
 
-    axios
+    AuthAxiosInstance
       .post('/api/v1/admin/courses', courseData)
       .then((response) => {
         if (response.data && response.data.courseId) {

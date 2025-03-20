@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import uploadAxiosInstance from "../../../axios-upload";
-import axios from "../../../axios";
+import axios from "axios";
+import AuthAxiosInstance from "../../../axios-auth";
 import "./ThumbnailUploadForm.css";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
@@ -38,7 +38,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
 
   const initiateMultipartUpload = useCallback(async (fileExtension) => {
     try {
-      const response = await axios.post("/api/v1/s3/initiate", {
+      const response = await AuthAxiosInstance.post("/api/v1/s3/initiate", {
         fileKeyPrefix: `${courseId}/IMAGE/`,
         fileKeyPostfix: `.${fileExtension}`,
       });
@@ -58,7 +58,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
 
   const getPresignedUrls = useCallback(async (uploadId, fileKey, fileSize) => {
     try {
-      const response = await axios.post("/api/v1/s3/presigned-url", {
+      const response = await AuthAxiosInstance.post("/api/v1/s3/presigned-url", {
         uploadId,
         fileKey,
         fileSize,
@@ -80,7 +80,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
   const completeMultipartUpload = useCallback(
     async (fileKey, uploadId, fileId, fileSize, fileName, completedParts) => {
       try {
-        const response = await axios.put("/api/v1/s3/complete", {
+        const response = await AuthAxiosInstance.put("/api/v1/s3/complete", {
           courseId,
           fileKey,
           uploadId,
@@ -149,7 +149,7 @@ const ThumbnailUploadForm = ({ courseId, propThumbnailPath, propThumbnailSize, p
           const partData = selectedFile.slice(startByte, endByte);
 
           try {
-            const response = await uploadAxiosInstance.put(presignedUrls[partNumber - 1], partData, {
+            const response = await axios.put(presignedUrls[partNumber - 1], partData, {
               headers: { "Content-Type": "application/octet-stream" },
               onUploadProgress: (progressEvent) => {
                 const partProgress = (progressEvent.loaded / progressEvent.total) * 100;

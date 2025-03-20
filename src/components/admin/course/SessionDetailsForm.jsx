@@ -7,7 +7,7 @@ import ContentsDetailsForm from './ContentsDetailsForm';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip } from "react-tooltip";
-import axios from '../../../axios';
+import AuthAxiosInstance from '../../../axios-auth';
 
 const SessionDetailsForm = ({
   courseId,
@@ -44,7 +44,7 @@ const SessionDetailsForm = ({
 
     if (session.sessionId) {
       try {
-        await axios.put("/api/v1/admin/courses/sessions", {
+        await AuthAxiosInstance.put("/api/v1/admin/courses/sessions", {
           courseId,
           sessionId: session.sessionId,
           sessionTitle: updatedTitle,
@@ -65,7 +65,7 @@ const SessionDetailsForm = ({
 
     if (fromSessionIndex !== toSessionIndex) {
       try {
-        await axios.patch("/api/v1/admin/courses/sessions/reorder", {
+        await AuthAxiosInstance.patch("/api/v1/admin/courses/sessions/reorder", {
           courseId,
           fromSessionIndex: fromSessionIndex,
           toSessionIndex: toSessionIndex,
@@ -82,7 +82,7 @@ const SessionDetailsForm = ({
     try {
       const newSessionIndex = session.sessionFormIndex;
 
-      const response = await axios.post("/api/v1/admin/courses/sessions", {
+      const response = await AuthAxiosInstance.post("/api/v1/admin/courses/sessions", {
         courseId,
         sessionTitle: session.sessionTitle || "새로운 차시",
         sessionIndex: newSessionIndex,
@@ -100,7 +100,7 @@ const SessionDetailsForm = ({
 
   const handleDeleteSession = async (session) => {
     try {
-      await axios.delete(`/api/v1/admin/courses/${courseId}/sessions/${session.sessionId}`);
+      await AuthAxiosInstance.delete(`/api/v1/admin/courses/${courseId}/sessions/${session.sessionId}`);
   
       onRemoveSession(session.sessionFormIndex);
     } catch (error) {
@@ -114,7 +114,7 @@ const SessionDetailsForm = ({
 
       const newContentIndex = session.contents.length + 1;
 
-      const response = await axios.post("/api/v1/admin/courses/sessions/contents", {
+      const response = await AuthAxiosInstance.post("/api/v1/admin/courses/sessions/contents", {
         courseId,
         sessionId: session.sessionId,
         contentTitle: "새 콘텐츠",

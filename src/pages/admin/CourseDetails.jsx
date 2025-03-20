@@ -1,6 +1,6 @@
 import React, { useReducer, useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../../axios";
+import AuthAxiosInstance from "../../axios-auth";
 import AddCourseMeta from "../../components/admin/course/AddCourseMeta";
 import SessionDetailsForm from "../../components/admin/course/SessionDetailsForm";
 import ThumbnailUploadForm from "../../components/admin/course/ThumbnailUploadForm";
@@ -34,7 +34,7 @@ function CourseDetails() {
     if (!courseId) return;
 
     try {
-      const response = await axios.get(`/api/v1/admin/courses/${courseId}`);
+      const response = await AuthAxiosInstance.get(`/api/v1/admin/courses/${courseId}`);
       setCourseData(response.data);
     } catch (error) {
       console.error("Error fetching course data:", error);
@@ -45,7 +45,7 @@ function CourseDetails() {
     if (!courseId) return;
 
     try {
-      const response = await axios.get(`/api/v1/admin/courses/${courseId}/sessions`);
+      const response = await AuthAxiosInstance.get(`/api/v1/admin/courses/${courseId}/sessions`);
       dispatch({ type: "SET_SESSIONS", payload: response.data });
     } catch (error) {
       console.error("Error fetching session data:", error);
@@ -62,7 +62,7 @@ function CourseDetails() {
       ...courseData,
     };
 
-    axios
+    AuthAxiosInstance
       .put(`/api/v1/admin/courses`, modifiedData)
       .then((response) => {
         alert("수정이 완료되었습니다.");

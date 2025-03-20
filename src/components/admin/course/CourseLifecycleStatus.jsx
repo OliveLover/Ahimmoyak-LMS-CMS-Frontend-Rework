@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useRef } from 'react';
-import axios from '../../../axios';
+import AuthAxiosInstance from '../../../axios-auth';
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ const CourseLifecycleStatus = ({ courses, setCourses }) => {
 
     if (window.confirm(`선택한 ${selectedCourses.length}개의 과정을 삭제하시겠습니까?`)) {
       try {
-        await axios.delete("/api/v1/admin/courses", {
+        await AuthAxiosInstance.delete("/api/v1/admin/courses", {
           data: {
             courseIds: selectedCourses
           }

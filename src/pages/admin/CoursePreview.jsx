@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "../../axios"; // axios import
+import AuthAxiosInstance from "../../axios-auth";
 import PlayerContainer from "../../components/user/player/PlayerContainer";
 
 function CoursePreview() {
@@ -15,7 +15,7 @@ function CoursePreview() {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        const response = await axios.get(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/preview`);
+        const response = await AuthAxiosInstance.get(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/preview`);
         setSession(response.data.session);
       } catch (error) {
         console.error("Error fetching course details:", error);

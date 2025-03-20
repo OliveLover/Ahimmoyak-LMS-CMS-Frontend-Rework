@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
 import ContentsUploadForm from './ContentsUploadForm';
 import AddQuizForm from './AddQuizForm';
-import axios from '../../../axios';
+import AuthAxiosInstance from '../../../axios-auth';
 import './ContentsDetailsForm.css';
 
 const ContentsDetailsForm = ({
@@ -32,7 +32,7 @@ const ContentsDetailsForm = ({
     if (!content.contentId) return;
 
     try {
-      await axios.put("/api/v1/admin/courses/sessions/contents", {
+      await AuthAxiosInstance.put("/api/v1/admin/courses/sessions/contents", {
         courseId,
         contentId: content.contentId,
         contentTitle: content.contentTitle,
@@ -47,7 +47,7 @@ const ContentsDetailsForm = ({
     if (!content.contentId) return;
 
     try {
-      await axios.delete(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/contents/${content.contentId}`);
+      await AuthAxiosInstance.delete(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/contents/${content.contentId}`);
 
       onRemoveContent(sessionFormIndex, content.contentFormIndex);
     } catch (error) {
@@ -75,7 +75,7 @@ const ContentsDetailsForm = ({
 
     if (fromContentIndex !== toContentIndex) {
       try {
-        await axios.patch("/api/v1/admin/courses/sessions/contents/reorder", {
+        await AuthAxiosInstance.patch("/api/v1/admin/courses/sessions/contents/reorder", {
           courseId,
           fromContentIndex: fromContentIndex,
           toContentIndex: toContentIndex,
@@ -99,7 +99,7 @@ const ContentsDetailsForm = ({
     onAddQuiz(sessionFormIndex, content.contentFormIndex);
 
     try {
-      const response = await axios.post("/api/v1/admin/courses/sessions/contents/quizzes", {
+      const response = await AuthAxiosInstance.post("/api/v1/admin/courses/sessions/contents/quizzes", {
         courseId,
         contentId: content.contentId,
         quizId: null,

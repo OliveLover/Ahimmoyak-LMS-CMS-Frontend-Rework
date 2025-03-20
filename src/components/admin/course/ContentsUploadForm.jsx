@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import axios from "../../../axios";
-import uploadAxiosInstance from "../../../axios-upload";
+import AuthAxiosInstance from "../../../axios-auth";
+import axios from "axios";
 import "./ContentsUploadForm.css";
 import ReactPlayer from 'react-player';
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
@@ -37,7 +37,7 @@ const ContentsUploadForm = ({
 
   const initiateMultipartUpload = useCallback(async (fileExtension) => {
     try {
-      const response = await axios.post("/api/v1/s3/initiate", {
+      const response = await AuthAxiosInstance.post("/api/v1/s3/initiate", {
         fileKeyPrefix: `${courseId}/VIDEO/`,
         fileKeyPostfix: `.${fileExtension}`,
       });
@@ -57,7 +57,7 @@ const ContentsUploadForm = ({
 
   const getPresignedUrls = useCallback(async (uploadId, fileKey, fileSize) => {
     try {
-      const response = await axios.post("/api/v1/s3/presigned-url", {
+      const response = await AuthAxiosInstance.post("/api/v1/s3/presigned-url", {
         uploadId,
         fileKey,
         fileSize,
@@ -78,7 +78,7 @@ const ContentsUploadForm = ({
 
   const completeMultipartUpload = useCallback(async (fileKey, uploadId, fileId, fileSize, fileName, videoDuration, completedParts) => {
     try {
-      const response = await axios.put("/api/v1/s3/complete", {
+      const response = await AuthAxiosInstance.put("/api/v1/s3/complete", {
         courseId,
         contentId: content.contentId,
         fileKey,
@@ -151,7 +151,7 @@ const ContentsUploadForm = ({
             const partData = selectedFile.slice(startByte, endByte);
 
             try {
-              const response = await uploadAxiosInstance.put(presignedUrls[partNumber - 1], partData, {
+              const response = await axios.put(presignedUrls[partNumber - 1], partData, {
                 headers: { "Content-Type": "application/octet-stream" },
                 onUploadProgress: (progressEvent) => {
                   const partProgress = (progressEvent.loaded / progressEvent.total) * 100;

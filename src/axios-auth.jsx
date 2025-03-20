@@ -1,11 +1,11 @@
 import axios from "axios";
 import { cognitoAuthConfig } from "./auth/cognitoAuthConfig";
 
-const instance = axios.create({
+const AuthAxiosinstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-instance.interceptors.request.use(
+AuthAxiosinstance.interceptors.request.use(
   (config) => {
     const cognitoTokenKey = `oidc.user:${cognitoAuthConfig.authority}:${cognitoAuthConfig.client_id}`;
     const storedUserData = sessionStorage.getItem(cognitoTokenKey);
@@ -26,4 +26,4 @@ instance.interceptors.request.use(
   }
 );
 
-export default instance;
+export default AuthAxiosinstance;

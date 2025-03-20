@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from '../../../axios';
+import AuthAxiosInstance from '../../../axios-auth';
 import './AddQuizForm.css';
 
 const AddQuizForm = ({ courseId, sessionId, contentId, sessionFormIndex, contentFormIndex, quiz, onUpdateQuiz, onRemoveQuiz }) => {
@@ -50,7 +50,7 @@ const AddQuizForm = ({ courseId, sessionId, contentId, sessionFormIndex, content
     if (!quiz.quizId) return;
 
     try {
-      await axios.put(`/api/v1/admin/courses/sessions/contents/quizzes/${quiz.quizId}`, {
+      await AuthAxiosInstance.put(`/api/v1/admin/courses/sessions/contents/quizzes/${quiz.quizId}`, {
         courseId,
         quizId: quiz.quizId,
         question: quiz.question,
@@ -72,7 +72,7 @@ const AddQuizForm = ({ courseId, sessionId, contentId, sessionFormIndex, content
     if (!quiz.quizId) return;
 
     try {
-      await axios.delete(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/contents/${contentId}/quizzes/${quiz.quizId}`);
+      await AuthAxiosInstance.delete(`/api/v1/admin/courses/${courseId}/sessions/${sessionId}/contents/${contentId}/quizzes/${quiz.quizId}`);
       onRemoveQuiz(sessionFormIndex, contentFormIndex, quiz.quizId);
     } catch (error) {
       console.error("Error deleting quiz:", error);

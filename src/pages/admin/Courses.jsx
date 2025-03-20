@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from '../../axios';
+import AuthAxiosInstance from '../../axios-auth';
 import CourseLifecycleStatus from '../../components/admin/course/CourseLifecycleStatus';
 
 
@@ -8,7 +8,7 @@ function Courses() {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    axios
+    AuthAxiosInstance
       .get('/api/v1/admin/courses')
       .then((response) => {
         setCourses(response.data.courses || response.data);
@@ -20,7 +20,7 @@ function Courses() {
 
   const activeCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'ACTIVE') : [];
   const inactiveCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'INACTIVE') : [];
-  const endedCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'END') : [];
+  const endedCourses = Array.isArray(courses) ? courses.filter(course => course.status === 'CLOSED') : [];
 
   return (
     <div>

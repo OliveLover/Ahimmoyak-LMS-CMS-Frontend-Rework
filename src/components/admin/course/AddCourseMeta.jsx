@@ -184,6 +184,7 @@ const AddCourseMeta = ({ courseData, setCourseData }) => {
             >
               <option value="INACTIVE">비활성화</option>
               <option value="ACTIVE">활성화</option>
+              <option value="CLOSED">종료</option>
             </select>
           </div>
         </div>
