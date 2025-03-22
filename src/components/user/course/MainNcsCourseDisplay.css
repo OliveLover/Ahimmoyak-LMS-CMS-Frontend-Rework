@@ -1,0 +1,38 @@
+.main-ncs-course-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto;
+  width: 80%;
+}
+
+.main-ncs-course-title {
+  flex: 0 0 250px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.course-grid {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+.course-item {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.image-container {
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
