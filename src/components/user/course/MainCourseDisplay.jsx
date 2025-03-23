@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import CourseItem from "./CourseItem";
+import MainCourseItem from "./MainCourseItem";
 import axios from "../../../axios";
 import "./MainCourseDisplay.css";
 
-const MainCourseDisplay = ({type, category}) => {
+const MainCourseDisplay = ({ type, category }) => {
   const [courses, setCourses] = useState([]);
 
   const fetchCourseData = async () => {
@@ -34,8 +34,8 @@ const MainCourseDisplay = ({type, category}) => {
         {courses.map((course, index) => {
           const code = getCodeNumByNcsName(course.ncsName);
           return (
-            <CourseItem 
-              key={index} 
+            <MainCourseItem
+              key={index}
               course={course}
               type={type}
               code={code}

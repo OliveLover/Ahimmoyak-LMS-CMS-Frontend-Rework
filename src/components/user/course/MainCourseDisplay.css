@@ -18,23 +18,6 @@
 
 .course-grid {
   display: flex;
-  gap: 15px;
+  gap: 2rem;
   justify-content: flex-start;
-}
-
-.course-item {
-  width: 200px;
-  flex-shrink: 0;
-}
-
-.image-container {
-  width: 100%;
-  height: 120px;
-  overflow: hidden;
-}
-
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
