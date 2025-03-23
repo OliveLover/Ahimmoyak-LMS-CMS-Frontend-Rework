@@ -2,11 +2,11 @@ import React from "react";
 import "./CourseItem.css";
 import { useNavigate } from "react-router-dom";
 
-const CourseItem = ({ course }) => {
+const CourseItem = ({ course, type, code }) => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/courses/ncs/${course.courseId}`);
+    navigate(`/courses/${type}/${code}/${course.courseId}`);
   }
 
   return (

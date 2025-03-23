@@ -5,8 +5,8 @@ import "./LecLinkSlideWrap.css";
 const LecLinkSlideWrap = ({ title, categories }) => {
   const navigate = useNavigate();
 
-  const handleCategoryClick = (codeNum) => {
-    navigate(`/courses/ncs/${codeNum}`);
+  const handleCategoryClick = (code) => {
+    navigate(`/courses/ncs/${code}`);
   };
 
   return (
@@ -15,10 +15,10 @@ const LecLinkSlideWrap = ({ title, categories }) => {
       <hr />
       <ul className="category-list">
         {categories.map((category) => (
-          <li 
-            key={category.codeNum} 
+          <li
+            key={category.code}
             className="category-item"
-            onClick={() => handleCategoryClick(category.codeNum)}
+            onClick={() => handleCategoryClick(category.code)}
           >
             {category.displayName}
           </li>

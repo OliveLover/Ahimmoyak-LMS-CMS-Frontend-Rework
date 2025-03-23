@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAuth } from "react-oidc-context";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const UserLoginCallback = () => {
+function UserLoginCallback() {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();

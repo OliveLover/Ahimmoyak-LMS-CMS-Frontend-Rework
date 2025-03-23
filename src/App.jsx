@@ -15,7 +15,8 @@ import UserSidebar from './components/user/sidebar/UserSidebar';
 import Header from './components/user/header/Header';
 import Footer from './components/user/footer/Footer';
 import UserMain from './pages/user/UserMain';
-import UserCourseDetail from './pages/user/UserCourseDetail';
+import UserCourses from './pages/user/UserCourses';
+import UserCourseDetails from './pages/user/UserCourseDetails';
 import UserLoginCallback from './pages/user/UserLoginCallback';
 import MyCourses from './pages/user/MyCourses';
 import MyAchievements from './pages/user/MyAchievements';
@@ -45,16 +46,16 @@ function App() {
           <div className="user-layout">
             <Header />
             <div className="user-course-detail-layout">
-              <UserCourseDetail />
+              <Routes>
+                <Route path=":type/:code" element={<UserCourses />} />
+                <Route path=":type/:code" element={<UserCourses />} />
+                <Route path=":type/:code/:courseId" element={<UserCourseDetails />} />
+                <Route path=":type/:code/:courseId" element={<UserCourseDetails />} />
+              </Routes>
             </div>
             <Footer />
           </div>
-        }>
-          <Route path="ncs" element={<UserCourseDetail />} />
-          <Route path="gov" element={<UserCourseDetail />} />
-          <Route path="ncs/:courseId" element={<UserCourseDetail />} />
-          <Route path="gov/:courseId" element={<UserCourseDetail />} />
-        </Route>
+        } />
 
         <Route path="/account/login/callback" element={<UserLoginCallback />} />
 

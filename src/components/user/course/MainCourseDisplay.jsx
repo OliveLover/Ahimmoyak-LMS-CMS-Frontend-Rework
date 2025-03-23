@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import CourseItem from "./CourseItem";
 import axios from "../../../axios";
-import "./MainNcsCourseDisplay.css";
+import "./MainCourseDisplay.css";
 
-const MainNcsCourseDisplay = () => {
+const MainCourseDisplay = ({type, category}) => {
   const [courses, setCourses] = useState([]);
 
   const fetchCourseData = async () => {
@@ -19,6 +19,11 @@ const MainNcsCourseDisplay = () => {
     fetchCourseData();
   }, []);
 
+  const getCodeNumByNcsName = (ncsName) => {
+    const categoryItem = category.find(item => item.displayName === ncsName);
+    return categoryItem ? categoryItem.code : null;
+  };
+
   return (
     <div className="main-ncs-course-container">
       <div className="main-ncs-course-title">
@@ -26,12 +31,20 @@ const MainNcsCourseDisplay = () => {
         <p>정부에서 지원합니다.</p>
       </div>
       <div className="course-grid">
-        {courses.map((course, index) => (
-          <CourseItem key={index} course={course} />
-        ))}
+        {courses.map((course, index) => {
+          const code = getCodeNumByNcsName(course.ncsName);
+          return (
+            <CourseItem 
+              key={index} 
+              course={course}
+              type={type}
+              code={code}
+            />
+          );
+        })}
       </div>
     </div>
   );
 };
 
-export default MainNcsCourseDisplay;
+export default MainCourseDisplay;

@@ -1,0 +1,24 @@
+.course-by-code-container {
+  padding: 1rem;
+}
+
+.course-by-code-title p,
+.course-by-code-category-name p {
+  margin: 0;
+}
+
+.course-by-code-title {
+  text-align: left;
+  font-size: 2rem;
+  font-weight: bolder;
+  border-bottom: 2px solid black;
+  padding: 0.5rem 0;
+}
+
+.course-by-code-category-name {
+  text-align: left;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-bottom: 1px solid black;
+  padding: 0.5rem 0;
+}

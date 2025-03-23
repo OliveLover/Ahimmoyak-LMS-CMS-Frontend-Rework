@@ -1,14 +1,13 @@
 import React from 'react';
 import Banner from '../../components/user/banner/Banner';
-import MainNcsCourseDisplay from '../../components/user/course/MainNcsCourseDisplay';
-
+import MainCourseDisplay from '../../components/user/course/MainCourseDisplay';
+import { jobSkillCategories } from './CourseCategory';
 
 function UserMain() {
-
   return (
     <div>
       <Banner />
-      <MainNcsCourseDisplay />
+      <MainCourseDisplay type={"ncs"} category={jobSkillCategories} />
     </div>
   );
 }

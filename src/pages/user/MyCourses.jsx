@@ -1,7 +1,6 @@
 import React from 'react';
 import PlayerContainer from '../../components/user/player/PlayerContainer';
 
-
 function MyCourses() {
   return (
     <div style={styles.container}>

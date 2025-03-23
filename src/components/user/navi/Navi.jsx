@@ -3,9 +3,9 @@ import "./Navi.css";
 
 const Navi = () => {
   const navigate = useNavigate();
-  
+
   const handleGovClick = () => {
-    navigate(`/courses/gov/01`);
+    navigate(`/courses/gov/A`);
   };
 
   const handleNcsClick = () => {
