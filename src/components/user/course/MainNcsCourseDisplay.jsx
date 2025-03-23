@@ -9,7 +9,7 @@ const MainNcsCourseDisplay = () => {
   const fetchCourseData = async () => {
     try {
       const response = await axios.get(`/api/v1/courses`);
-      setCourses(response.data.courses.slice(0, 5)); // 최대 5개만 가져오기
+      setCourses(response.data.courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }

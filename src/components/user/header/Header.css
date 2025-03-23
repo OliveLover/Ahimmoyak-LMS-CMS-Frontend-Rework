@@ -9,6 +9,10 @@
   justify-content: space-between;
 }
 
+.header-title {
+  cursor: pointer;
+}
+
 .login-text {
   font-size: 16px;
   color: #333;

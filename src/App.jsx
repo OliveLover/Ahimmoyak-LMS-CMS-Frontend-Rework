@@ -15,6 +15,7 @@ import UserSidebar from './components/user/sidebar/UserSidebar';
 import Header from './components/user/header/Header';
 import Footer from './components/user/footer/Footer';
 import UserMain from './pages/user/UserMain';
+import UserCourseDetail from './pages/user/UserCourseDetail';
 import UserLoginCallback from './pages/user/UserLoginCallback';
 import MyCourses from './pages/user/MyCourses';
 import MyAchievements from './pages/user/MyAchievements';
@@ -39,6 +40,21 @@ function App() {
             </div>
           }
         />
+
+        <Route path="/courses/*" element={
+          <div className="user-layout">
+            <Header />
+            <div className="user-course-detail-layout">
+              <UserCourseDetail />
+            </div>
+            <Footer />
+          </div>
+        }>
+          <Route path="ncs" element={<UserCourseDetail />} />
+          <Route path="gov" element={<UserCourseDetail />} />
+          <Route path="ncs/:courseId" element={<UserCourseDetail />} />
+          <Route path="gov/:courseId" element={<UserCourseDetail />} />
+        </Route>
 
         <Route path="/account/login/callback" element={<UserLoginCallback />} />
 

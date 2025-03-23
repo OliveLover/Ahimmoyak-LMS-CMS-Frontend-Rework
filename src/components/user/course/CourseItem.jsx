@@ -1,10 +1,16 @@
 import React from "react";
 import "./CourseItem.css";
+import { useNavigate } from "react-router-dom";
 
 const CourseItem = ({ course }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/courses/ncs/${course.courseId}`);
+  }
 
   return (
-    <div className="col-md-4 mb-4">
+    <div className="col-md-4 mb-4" onClick={handleNavigate}>
       <div className="card h-100 d-flex flex-column">
         <div className="image-container">
           <img
