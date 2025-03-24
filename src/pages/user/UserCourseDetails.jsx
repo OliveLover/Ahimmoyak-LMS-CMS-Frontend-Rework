@@ -1,10 +1,25 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "../../axios";
 import Navi from "../../components/user/navi/Navi";
 import LecLinkSlideWrap from "../../components/user/sidebar/LecLinkSlideWrap";
 import { jobSkillCategories, govEduCategories } from "./CourseCategory";
+import CourseDetailsWrap from "../../components/user/course/CourseDetailsWrap";
 
 function UserCourseDetails() {
   const { type, code, courseId } = useParams();
+  const [courseDetails, setCourseDetails] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`/api/v1/courses/${courseId}`)
+      .then((response) => {
+        setCourseDetails(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, [courseId]);
 
   let title = "";
   let categories = [];
@@ -22,9 +37,7 @@ function UserCourseDetails() {
       <Navi />
       <div style={styles.userContentContainer}>
         <LecLinkSlideWrap title={title} categories={categories} />
-        <div style={styles.mainContent}>
-          UserCourseDetails {type} {code} {courseId}
-        </div>
+        <CourseDetailsWrap courseDetails={courseDetails} />
       </div>
     </div>
   );
@@ -41,16 +54,5 @@ const styles = {
   userContentContainer: {
     display: "flex",
     flex: 1,
-  },
-  sidebar: {
-    flex: 0.3,
-    maxWidth: "250px",
-    backgroundColor: "#f8f9fa",
-    padding: "20px",
-  },
-  mainContent: {
-    flex: 1,
-    padding: "20px",
-    overflowY: "auto",
   },
 };
