@@ -52,6 +52,32 @@ const CourseDetailsWrap = ({ courseDetails }) => {
         <p className="course-details-info-title">📍 교수 소개</p>
         <p className="course-details-info-contents">{courseDetails.instructor}</p>
       </div>
+
+      <div className="course-details-info-wrap">
+        <p className="course-details-info-title">📍 학습 내용</p>
+        <div className="center-table">
+          {courseDetails.sessionPreviews && courseDetails.sessionPreviews.length > 0 ? (
+            <table className="course-session-table">
+              <thead>
+                <tr>
+                  <th>차시</th>
+                  <th>내용</th>
+                </tr>
+              </thead>
+              <tbody>
+                {courseDetails.sessionPreviews.map((session, index) => (
+                  <tr key={index}>
+                    <td>{session.sessionIndex}차시</td>
+                    <td>{session.sessionTitle}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="course-details-info-contents">학습 정보가 없습니다.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
